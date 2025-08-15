@@ -1,0 +1,88 @@
+/* =========================== */
+/*        Global Styles        */
+/* =========================== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  background-color: #000;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+.rewards-dashboard {
+  position: relative;
+  min-height: 100vh;
+  background: url("../../assets/triv2.gif") no-repeat center center fixed;
+  background-size: cover;
+  background-blend-mode: overlay;
+  z-index: 0;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.dashboard-title {
+  font-size: 2.5rem;
+  color: #42f590;
+  text-align: center;
+  margin: 20px 0;
+  text-shadow: 0 0 20px #42f590, 0 0 30px #ffffff;
+}
+
+/* =========================== */
+/*   Dashboard Layout          */
+/* =========================== */
+.dashboard-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+}
+
+.dashboard-row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.dashboard-card {
+  background: linear-gradient(145deg, rgba(10, 10, 20, 0.9), rgba(25, 25, 40, 0.9));
+  border: 1px solid rgba(66, 245, 144, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  width: 45%;
+  box-shadow: 0 0 15px rgba(66, 245, 144, 0.4);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  backdrop-filter: blur(10px);
+}
+
+.dashboard-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 0 30px rgba(66, 245, 144, 0.8), 0 0 50px rgba(255, 255, 255, 0.3);
+}
+
+/* Full width card for tables */
+.full-width {
+  width: 100%;
+}
+
+/* =========================== */
+/*        Responsiveness       */
+/* =========================== */
+@media (max-width: 768px) {
+  .dashboard-card {
+    width: 100%;
+  }
+
+  .dashboard-row {
+    flex-direction: column;
+  }
+
+  .dashboard-title {
+    font-size: 2rem;
+  }
+}

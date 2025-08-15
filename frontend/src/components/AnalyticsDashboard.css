@@ -1,0 +1,400 @@
+/* Analytics Dashboard Styles */
+.analytics-toggle-btn {
+  position: fixed !important;
+  bottom: 180px !important;
+  right: 20px !important;
+  left: auto !important;
+  top: auto !important;
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  min-height: 50px !important;
+  max-width: 50px !important;
+  max-height: 50px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #00d4ff, #0099cc);
+  border: none !important;
+  color: white !important;
+  font-size: 20px !important;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(0, 212, 255, 0.3) !important;
+  transition: all 0.3s ease;
+  z-index: 10001; /* CORECTAT - z-index intermediar */
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+  flex-shrink: 0 !important;
+  flex-grow: 0 !important;
+}
+
+/* Mobile responsive for analytics button */
+@media (max-width: 768px) {
+  .analytics-toggle-btn {
+    bottom: 160px; /* Mobile - Analytics Dashboard - CORECTAT pentru a evita suprapunerea */
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .analytics-toggle-btn {
+    bottom: 140px; /* Small Mobile - Analytics Dashboard - CORECTAT pentru a evita suprapunerea */
+    right: 12px;
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+}
+
+.analytics-toggle-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 24px rgba(0, 212, 255, 0.4);
+}
+
+.analytics-dashboard {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-left: 2px solid #00d4ff;
+  z-index: 10000;
+  overflow-y: auto;
+  animation: slideInRight 0.3s ease-out;
+}
+
+/* Mobile responsive for analytics dashboard */
+@media (max-width: 768px) {
+  .analytics-dashboard {
+    width: calc(100vw - 20px);
+    right: 10px;
+    left: 10px;
+    height: 90vh;
+    top: 5vh;
+    border-radius: 12px;
+    border-left: none;
+    border: 2px solid #00d4ff;
+  }
+}
+
+@media (max-width: 480px) {
+  .analytics-dashboard {
+    width: calc(100vw - 16px);
+    right: 8px;
+    left: 8px;
+    height: 85vh;
+    top: 7.5vh;
+    border-radius: 8px;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background: rgba(0, 212, 255, 0.1);
+  border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.dashboard-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-content {
+  padding: 20px;
+}
+
+.dashboard-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-section h4 {
+  margin: 0 0 15px 0;
+  color: #00d4ff;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.properties-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.property-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.property-label {
+  color: #cccccc;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.property-value {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Experiments Section */
+.experiments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.experiment-item {
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.experiment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.experiment-name {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.experiment-variant {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.variant-blue {
+  background: rgba(0, 212, 255, 0.2);
+  color: #00d4ff;
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.variant-green {
+  background: rgba(0, 255, 136, 0.2);
+  color: #00ff88;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.variant-purple {
+  background: rgba(139, 92, 246, 0.2);
+  color: #8b5cf6;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.variant-compact {
+  background: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+  border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.variant-expanded {
+  background: rgba(156, 39, 176, 0.2);
+  color: #9c27b0;
+  border: 1px solid rgba(156, 39, 176, 0.3);
+}
+
+.variant-enabled {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.variant-disabled {
+  background: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+  border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+.experiment-details {
+  font-size: 12px;
+  color: #cccccc;
+}
+
+.experiment-variants {
+  font-style: italic;
+}
+
+.no-experiments {
+  color: #cccccc;
+  font-style: italic;
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* Actions Section */
+.actions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.action-btn {
+  padding: 10px 15px;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(0, 153, 204, 0.2));
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.3), rgba(0, 153, 204, 0.3));
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 212, 255, 0.2);
+}
+
+.action-btn:active {
+  transform: translateY(0);
+}
+
+/* Scrollbar Styling */
+.analytics-dashboard::-webkit-scrollbar {
+  width: 6px;
+}
+
+.analytics-dashboard::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.analytics-dashboard::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.3);
+  border-radius: 3px;
+}
+
+.analytics-dashboard::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 212, 255, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .analytics-dashboard {
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .analytics-toggle-btn {
+    bottom: 15px;
+    right: 15px;
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+  }
+
+  .dashboard-content {
+    padding: 15px;
+  }
+
+  .dashboard-section {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .property-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .property-value {
+    text-align: left;
+  }
+
+  .experiment-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}
+
+/* Dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  .analytics-dashboard {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .analytics-dashboard {
+    border-left-width: 3px;
+  }
+
+  .dashboard-section {
+    border-width: 2px;
+  }
+
+  .property-item {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .analytics-dashboard {
+    animation: none;
+  }
+
+  .analytics-toggle-btn {
+    transition: none;
+  }
+
+  .action-btn {
+    transition: none;
+  }
+} 
