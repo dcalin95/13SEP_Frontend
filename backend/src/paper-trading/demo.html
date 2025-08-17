@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paper Trading Simulator - Demo</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #2d1b69 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .demo-title {
+            font-size: 3rem;
+            background: linear-gradient(45deg, #00d4ff, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+        }
+        
+        .demo-description {
+            font-size: 1.2rem;
+            color: #8892b0;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+        
+        .feature-description {
+            color: #8892b0;
+            line-height: 1.5;
+        }
+        
+        .demo-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #8892b0;
+            font-size: 0.9rem;
+        }
+        
+        .integration-info {
+            background: rgba(0, 212, 255, 0.1);
+            border: 1px solid #00d4ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .integration-title {
+            font-size: 1.8rem;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+        
+        .integration-description {
+            color: #ffffff;
+            line-height: 1.6;
+        }
+        
+        .btn-demo {
+            background: linear-gradient(45deg, #00ff88, #00d4ff);
+            color: #000000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-demo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="demo-title">🎮 Paper Trading Simulator</h1>
+            <p class="demo-description">
+                Experience real crypto trading with virtual money! Practice your trading strategies with live market data, 
+                zero risk, and gain confidence before investing real funds.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">Live Market Data</h3>
+                <p class="feature-description">
+                    Real-time prices from CoinMarketCap API. Track Bitcoin, Ethereum, STX, ALEX and more with live updates every 30 seconds.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3 class="feature-title">$1000 Virtual Balance</h3>
+                <p class="feature-description">
+                    Start with $1000 virtual money. Practice buying and selling without any real financial risk.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3 class="feature-title">Real Trading Experience</h3>
+                <p class="feature-description">
+                    Execute buy/sell orders at real market prices. Calculate real profit/loss based on actual market movements.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3 class="feature-title">Portfolio Tracking</h3>
+                <p class="feature-description">
+                    Monitor your holdings, track performance, and view detailed P&L calculations in real-time.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3 class="feature-title">AI Trading (Coming Soon)</h3>
+                <p class="feature-description">
+                    Let AI analyze market trends and execute trades automatically based on your risk preferences.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">💳</div>
+                <h3 class="feature-title">Real Money Ready</h3>
+                <p class="feature-description">
+                    Designed to seamlessly transition from virtual to real money trading when you're ready.
+                </p>
+            </div>
+        </div>
+
+        <div class="demo-stats">
+            <div class="stat-card">
+                <div class="stat-value">8</div>
+                <div class="stat-label">Cryptocurrencies Available</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">30s</div>
+                <div class="stat-label">Price Update Interval</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">$1000</div>
+                <div class="stat-label">Starting Virtual Balance</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">0%</div>
+                <div class="stat-label">Trading Fees (Practice Mode)</div>
+            </div>
+        </div>
+
+        <div class="integration-info">
+            <h3 class="integration-title">🔗 Integration with BitSwapDEX</h3>
+            <p class="integration-description">
+                This Paper Trading Simulator is designed to integrate seamlessly with your BitSwapDEX platform. 
+                Users can practice trading before participating in your presale or using real funds. 
+                The simulator includes BITS token simulation and can be easily extended to support your tokenomics.
+            </p>
+        </div>
+
+        <div style="text-align: center; margin: 40px 0;">
+            <button class="btn-demo" onclick="window.parent.postMessage('start-trading', '*')">
+                🚀 Start Paper Trading
+            </button>
+            <button class="btn-demo" onclick="window.parent.postMessage('view-source', '*')">
+                📋 View Source Code
+            </button>
+        </div>
+
+        <div style="margin-top: 60px; padding: 30px; background: rgba(255, 255, 255, 0.05); border-radius: 15px;">
+            <h3 style="color: #00d4ff; margin-bottom: 20px;">🎯 How It Works:</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; text-align: left;">
+                <div>
+                    <strong style="color: #00ff88;">1. Select Crypto</strong><br>
+                    <span style="color: #8892b0;">Choose from BTC, ETH, STX, ALEX, and more</span>
+                </div>
+                <div>
+                    <strong style="color: #00ff88;">2. Check Live Price</strong><br>
+                    <span style="color: #8892b0;">View real-time market prices and 24h changes</span>
+                </div>
+                <div>
+                    <strong style="color: #00ff88;">3. Execute Trade</strong><br>
+                    <span style="color: #8892b0;">Buy or sell at current market prices</span>
+                </div>
+                <div>
+                    <strong style="color: #00ff88;">4. Track Performance</strong><br>
+                    <span style="color: #8892b0;">Monitor your portfolio value and P&L</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; color: #8892b0; font-size: 0.9rem;">
+            <p>© 2025 BitSwapDEX AI & $BITS - Paper Trading Simulator</p>
+            <p>Practice makes perfect! 🎯</p>
+        </div>
+    </div>
+
+    <script>
+        // Demo interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add some interactive animations
+            const cards = document.querySelectorAll('.feature-card, .stat-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animation = 'fadeInUp 0.6s ease forwards';
+            });
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
+

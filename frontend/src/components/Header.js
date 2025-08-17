@@ -119,6 +119,9 @@ const Header = () => {
         <Link to="/staking" className="btn-tokenomics">
           <i className="fas fa-coins"></i> Staking
         </Link>
+        <Link to="/paper-trading" className="btn-paper-trading">
+          <i className="fas fa-gamepad"></i> Paper Trading
+        </Link>
         <Link to="/whitepaper" className="btn-audit">
           <i className="fas fa-file-alt"></i> Whitepaper
         </Link>
@@ -214,6 +217,9 @@ const Header = () => {
           <button onClick={() => { setIsMenuOpen(false); navigate("/ai-assistant"); }}>
             <i className="fas fa-robot"></i> AI BitSwapDEX
           </button>
+          <Link to="/paper-trading" onClick={() => setIsMenuOpen(false)}>
+            <i className="fas fa-gamepad"></i> Paper Trading
+          </Link>
         </nav>
       )}
     </>

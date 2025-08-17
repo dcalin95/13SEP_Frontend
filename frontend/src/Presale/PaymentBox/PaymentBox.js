@@ -39,6 +39,19 @@ const PaymentBox = ({
   // 💳 Payment Method Selection States
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [showPaymentSelector, setShowPaymentSelector] = useState(false);
+  
+  // 🎯 Referral Code State
+  const [referralCode, setReferralCode] = useState("");
+
+  // 🔍 Auto-detect referral code from URL
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeFromURL = urlParams.get("ref");
+    if (codeFromURL) {
+      setReferralCode(codeFromURL);
+      console.log("🎯 Auto-detected referral code from URL:", codeFromURL);
+    }
+  }, []);
 
   // 🔄 Reset payment method when token changes
   React.useEffect(() => {
@@ -75,6 +88,7 @@ const PaymentBox = ({
     setIsConfirmed,
     bonusAmount: paymentState.bonusAmount,
     selectedPaymentMethod: selectedPaymentMethod,
+    referralCode: referralCode, // 🎯 Pass referral code to handler
   });
 
   const handleClosePopup = () => {
@@ -170,6 +184,26 @@ const PaymentBox = ({
         userBalance={paymentState.balances[selectedToken] || 0}
         selectedToken={selectedToken}
       />
+
+      {/* 🎯 Referral Code Input */}
+      <div className="referral-code-container">
+        <label className="referral-code-label">
+          🎯 Referral Code (Optional)
+        </label>
+        <input
+          type="text"
+          placeholder="Enter referral code (e.g., CODE-OE3477)"
+          value={referralCode}
+          onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+          className="referral-code-input"
+          maxLength={20}
+        />
+        {referralCode && (
+          <div className="referral-code-info">
+            ✅ Using referral code: <strong>{referralCode}</strong>
+          </div>
+        )}
+      </div>
 
       {/* 🎯 Terms Acceptance Checkbox */}
       <div className="terms-checkbox-container">

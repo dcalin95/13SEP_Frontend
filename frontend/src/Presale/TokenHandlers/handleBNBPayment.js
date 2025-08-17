@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import axios from "axios";
 import { CONTRACTS } from "../../contract/contracts";
 
-const API_ENDPOINT = process.env.REACT_APP_API_URL + "/transactions";
+const API_ENDPOINT = (process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com") + "/transactions";
 
 const handleBNBPayment = async ({
   amount,
@@ -13,8 +13,10 @@ const handleBNBPayment = async ({
   bonusAmount = 0,
   bonusPercentage = 0,
   fallbackBitsPrice = 1.0,
+  referralCode = "", // 🎯 Add referral code parameter
 }) => {
   console.groupCollapsed("🚀 [handleBNBPayment] START");
+  console.log("🎯 [BNB] Referral Code:", referralCode);
 
   try {
     if (!window.ethereum) throw new Error("No Web3 wallet detected.");
@@ -118,6 +120,7 @@ const handleBNBPayment = async ({
         bonus_percentage: bonusPercentage.toString(),
         bonus_bits: bonusAmount.toString(),
         tx_signature: receipt.transactionHash,
+        referral_code: referralCode || null, // 🎯 Add referral code to transaction data
       };
 
       console.log("💾 Sending transaction to backend:", transactionData);

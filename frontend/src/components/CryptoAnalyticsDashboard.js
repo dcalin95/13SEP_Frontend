@@ -46,7 +46,7 @@ const CryptoAnalyticsDashboard = () => {
     intervalRef.current = setInterval(() => {
       updateRealTimeData();
       updateNetworkStatus();
-    }, 3000);
+    }, 20000); // 🔧 Reduced from 3s to 20s to prevent rate limiting
   };
 
   const updateRealTimeData = () => {

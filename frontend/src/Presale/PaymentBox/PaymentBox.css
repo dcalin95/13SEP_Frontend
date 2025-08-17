@@ -779,6 +779,66 @@ a:hover ~ .custom-cursor,
 }
 
 /* 🎯 TERMS ACCEPTANCE CHECKBOX */
+/* 🎯 REFERRAL CODE INPUT */
+.referral-code-container {
+  margin: 15px 0;
+  padding: 15px;
+  background: rgba(0, 241, 255, 0.05);
+  border: 1px solid rgba(0, 241, 255, 0.2);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.referral-code-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #00f1ff;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.referral-code-input {
+  width: 100%;
+  padding: 12px 15px;
+  background: rgba(13, 13, 18, 0.8);
+  border: 2px solid rgba(0, 241, 255, 0.3);
+  border-radius: 8px;
+  color: #e0e0e0;
+  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-sizing: border-box;
+}
+
+.referral-code-input:focus {
+  border-color: #00f1ff;
+  box-shadow: 0 0 10px rgba(0, 241, 255, 0.3);
+  background: rgba(13, 13, 18, 0.9);
+}
+
+.referral-code-input::placeholder {
+  color: rgba(224, 224, 224, 0.5);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.referral-code-info {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 6px;
+  color: #4CAF50;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+}
+
 .terms-checkbox-container {
   margin: 1rem 0;
   padding: 0.5rem 0.8rem;

@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { getSuggestedPriceForRound } from "./roundHelper";
 import PresaleHistory from "../PresaleHistory";
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 const ADMIN_PASS = process.env.REACT_APP_ADMIN_PASS || "fallback123";
 
 const AdminPanel = () => {

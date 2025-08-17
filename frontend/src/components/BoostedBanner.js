@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import CountUp from "react-countup";
 import "./BoostedBanner.css";
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 
 const BoostedBanner = () => {
   const [boosted, setBoosted] = useState(null);
@@ -406,7 +406,7 @@ const BoostedBanner = () => {
     };
 
     const delayTimer = setTimeout(fetchData, 3000);
-    const interval = setInterval(fetchData, 10000);
+    const interval = setInterval(fetchData, 30000); // ← Crescut de la 10s la 30s
     
     // Efect wow periodic - la fiecare 15 secunde
     const wowInterval = setInterval(triggerWowEffect, 15000);

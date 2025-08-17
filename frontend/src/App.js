@@ -2,6 +2,7 @@
 import "react-toastify/dist/ReactToastify.css";
 import "./styles/GlobalStyles.css";
 import "./toastStyle.css";
+import "./chrome-compatibility-fix.css"; // 🔧 CHROME FIXES
 
 // 🧠 Core React
 import React, { useState, Suspense, lazy } from "react";
@@ -57,13 +58,14 @@ const PresaleHistory = lazy(() => import("./Presale/Timer/PresaleHistory"));
 const PresalePage = lazy(() => import("./Presale/PresalePage"));
 const PaymentBox = lazy(() => import("./Presale/PaymentBox/PaymentBox"));
 
-const RewardsHub = lazy(() => import("./Presale/Rewards/Dashboard"));
+const RewardsHub = lazy(() => import("./components/RewardsHub"));
 const RewardDashboard = lazy(() => import("./components/RewardsDashboard/RewardsDashboard"));
 const InvitePage = lazy(() => import("./components/Invite/InvitePage"));
 const BitcoinAcademy = lazy(() => import("./components/BitcoinAcademy"));
 const ProofOfTransferPage = lazy(() => import("./components/BitcoinAcademy/pages/ProofOfTransferPage"));
 const EducationPage = lazy(() => import("./components/EducationPageModern"));
 const AIPortfolioPage = lazy(() => import("./components/AIPortfolioPage"));
+const PaperTradingPage = lazy(() => import("./papertrade/PaperTradingPage"));
 const STXPaperTrade = lazy(() => import("./papertrade/STXPaperTrade"));
 const TokenPaperTrade = lazy(() => import("./papertrade/TokenPaperTrade"));
 
@@ -143,7 +145,7 @@ const App = () => {
                       <Route path="/roadmap" element={<Roadmap />} />
                       <Route path="/scheme-test" element={<Scheme />} />
                       <Route path="/ai-portfolio" element={<AIPortfolioPage />} />
-                      <Route path="/ai-portfolio/:portfolioId" element={<AIPortfolioPage />} />
+                      <Route path="/paper-trading" element={<PaperTradingPage />} />
                       <Route path="/paper-trade/stx" element={<STXPaperTrade />} />
                       <Route path="/paper-trade/:symbol" element={<TokenPaperTrade />} />
                       <Route path="/ai-assistant" element={<AIBitSwapDEXAssistant />} />
