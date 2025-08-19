@@ -12,6 +12,81 @@
   color: #e6f5ff;
 }
 
+/* AI Pulse Animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+/* AI Rewards Grid Responsive */
+@media (max-width: 768px) {
+  .ai-rewards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+  
+  .ai-reward-card {
+    padding: 10px !important;
+  }
+}
+
+/* Total Unclaimed Rewards Section */
+.unified-rewards-section {
+  background: rgba(15, 20, 30, 0.8);
+  border: 1px solid rgba(0, 255, 195, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px 0;
+  backdrop-filter: blur(10px);
+}
+
+.unified-rewards-section h4 {
+  color: #00ffc3;
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  text-align: center;
+}
+
+.rewards-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 15px 0;
+}
+
+.reward-source {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(0, 255, 195, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(0, 255, 195, 0.1);
+}
+
+.source-icon {
+  font-size: 1.1em;
+  margin-right: 8px;
+}
+
+.source-name {
+  flex: 1;
+  color: #ccd6f6;
+  font-size: 0.9em;
+}
+
+.source-amount {
+  color: #00ffc3;
+  font-weight: 600;
+  font-size: 0.9em;
+}
+
 .rewards-main h2 {
   text-align: center;
   margin-bottom: 2rem;
@@ -135,4 +210,498 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 1rem;
+}
+
+/* Total Unclaimed Rewards Section */
+.unified-rewards-section {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  backdrop-filter: blur(12px);
+}
+
+.unified-rewards-section h4 {
+  margin-bottom: 1rem;
+  color: var(--neon);
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.rewards-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.reward-source {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border-left: 3px solid var(--neon);
+}
+
+.source-icon {
+  font-size: 1.1em;
+  margin-right: 0.5rem;
+}
+
+.source-name {
+  flex: 1;
+  font-weight: 500;
+}
+
+.source-amount {
+  font-weight: bold;
+  color: var(--neon);
+}
+
+/* AI Command Center Styles */
+.ai-command-center {
+  background: rgba(15, 20, 30, 0.9);
+  border: 1px solid rgba(0, 255, 195, 0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.ai-command-center::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #00ffc3, transparent);
+  animation: scan 3s infinite;
+}
+
+@keyframes scan {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* AI System Status Animations */
+@keyframes aiScan {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.ai-command-center h5 {
+  color: #00ffc3;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: 600;
+}
+
+.ai-monitoring-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.status-column h6 {
+  color: #00aaff;
+  margin-bottom: 10px;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.status-indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.status-indicators span {
+  display: flex;
+  align-items: center;
+  font-size: 0.8em;
+  color: #ccd6f6;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.status-dot.online {
+  background: #00ffc3;
+  box-shadow: 0 0 8px rgba(0, 255, 195, 0.6);
+}
+
+.status-dot.pending {
+  background: #ffaa00;
+  box-shadow: 0 0 8px rgba(255, 170, 0, 0.6);
+}
+
+.status-dot.pulse {
+  animation: pulse 2s infinite;
+}
+
+.status-dot.pulse-slow {
+  animation: pulse 3s infinite;
+}
+
+.status-dot.pulse-fast {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+.ai-analytics-mini {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0;
+  padding: 10px;
+  background: rgba(0, 255, 195, 0.05);
+  border-radius: 8px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.metric-label {
+  font-size: 0.7em;
+  color: #8892b0;
+}
+
+.metric-value {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #00ffc3;
+}
+
+.ai-system-messages {
+  margin-top: 10px;
+}
+
+.message-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 80px;
+  overflow: hidden;
+}
+
+.system-message {
+  font-size: 0.75em;
+  color: #8892b0;
+  opacity: 0.8;
+  padding: 2px 0;
+  animation: messageScroll 8s infinite;
+}
+
+@keyframes messageScroll {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* Telegram Activity Card */
+.telegram-activity {
+  position: relative;
+}
+
+.activity-stats {
+  margin-bottom: 15px;
+}
+
+.time-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.hours-decimal {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: #00ffc3;
+}
+
+.hours-formatted {
+  font-size: 0.9em;
+  color: #8892b0;
+}
+
+.messages-display, .activity-rate {
+  font-size: 0.9em;
+  color: #ccd6f6;
+  margin-bottom: 5px;
+}
+
+.milestone-progress {
+  margin: 15px 0;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.8em;
+  color: #ccd6f6;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 255, 195, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00ffc3, #00aaff);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+.time-remaining {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.8em;
+  color: #8892b0;
+}
+
+.countdown-timer {
+  text-align: center;
+  margin-top: 10px;
+  padding: 8px;
+  background: rgba(0, 255, 195, 0.1);
+  border-radius: 6px;
+  font-size: 0.8em;
+  color: #00ffc3;
+}
+
+/* Milestone Roadmap */
+.milestone-roadmap {
+  margin: 25px 0;
+  padding: 20px;
+  background: rgba(15, 20, 30, 0.6);
+  border: 1px solid rgba(0, 255, 195, 0.2);
+  border-radius: 12px;
+}
+
+.milestone-roadmap h5 {
+  color: #00ffc3;
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 1.1em;
+}
+
+.milestones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+}
+
+/* 🚀 DUAL MILESTONE SYSTEM */
+.milestone-category {
+  margin-bottom: 25px;
+}
+
+.milestone-category h6 {
+  color: #00ffc3;
+  margin-bottom: 15px;
+  font-size: 1em;
+  font-weight: 600;
+  text-align: center;
+  background: rgba(0, 255, 195, 0.1);
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.milestone-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px 10px;
+  background: rgba(20, 25, 35, 0.8);
+  border: 1px solid rgba(0, 255, 195, 0.2);
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 🎯 MILESTONE TYPE SPECIFIC STYLING */
+.milestone-card.time {
+  border-color: rgba(0, 255, 195, 0.3);
+  background: rgba(0, 255, 195, 0.05);
+}
+
+.milestone-card.message {
+  border-color: rgba(255, 170, 0, 0.3);
+  background: rgba(255, 170, 0, 0.05);
+}
+
+.milestone-card.time.completed {
+  background: rgba(0, 255, 195, 0.15);
+  border-color: rgba(0, 255, 195, 0.6);
+  box-shadow: 0 0 15px rgba(0, 255, 195, 0.3);
+}
+
+.milestone-card.message.completed {
+  background: rgba(255, 170, 0, 0.15);
+  border-color: rgba(255, 170, 0, 0.6);
+  box-shadow: 0 0 15px rgba(255, 170, 0, 0.3);
+}
+
+.milestone-card.completed {
+  border-color: rgba(0, 255, 195, 0.6);
+  background: rgba(0, 255, 195, 0.1);
+}
+
+.milestone-card.near {
+  border-color: rgba(255, 170, 0, 0.6);
+  background: rgba(255, 170, 0, 0.05);
+}
+
+.milestone-card.special {
+  position: relative;
+}
+
+.milestone-card.legend {
+  border-color: rgba(255, 215, 0, 0.6);
+  background: rgba(255, 215, 0, 0.05);
+}
+
+.milestone-card.immortal {
+  border-color: rgba(147, 0, 211, 0.6);
+  background: rgba(147, 0, 211, 0.05);
+}
+
+.milestone-card.shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+.milestone-card.rainbow {
+  animation: rainbow 3s infinite;
+}
+
+@keyframes rainbow {
+  0% { border-color: rgba(255, 0, 0, 0.6); }
+  16% { border-color: rgba(255, 165, 0, 0.6); }
+  33% { border-color: rgba(255, 255, 0, 0.6); }
+  50% { border-color: rgba(0, 255, 0, 0.6); }
+  66% { border-color: rgba(0, 0, 255, 0.6); }
+  83% { border-color: rgba(75, 0, 130, 0.6); }
+  100% { border-color: rgba(238, 130, 238, 0.6); }
+}
+
+.milestone-icon {
+  font-size: 1.5em;
+  margin-bottom: 8px;
+}
+
+.milestone-target {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #00ffc3;
+  margin-bottom: 4px;
+}
+
+.milestone-reward {
+  font-size: 0.8em;
+  color: #ccd6f6;
+  margin-bottom: 6px;
+}
+
+.milestone-status {
+  font-size: 0.75em;
+  color: #8892b0;
+}
+
+.milestone-card.completed .milestone-status {
+  color: #00ffc3;
+  font-weight: 600;
+}
+
+.rewards-footer-info {
+  text-align: center;
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(0, 255, 195, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 255, 195, 0.1);
+}
+
+.rewards-footer-info p {
+  margin: 5px 0;
+  font-size: 0.9em;
+  color: #ccd6f6;
+}
+
+.rewards-footer-info strong {
+  color: #00ffc3;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .ai-monitoring-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ai-analytics-mini {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .milestones-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .milestones-grid {
+    grid-template-columns: 1fr;
+  }
 }

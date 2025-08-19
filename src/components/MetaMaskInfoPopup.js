@@ -27,80 +27,44 @@ const MetaMaskInfoPopup = ({ isOpen, onClose, onContinue }) => {
 
         <div className="metamask-popup-content">
           {isMobile ? (
-            <>
-              <div className="metamask-step">
-                <div className="step-number">1</div>
-                <div className="step-content">
-                  <h3>Install MetaMask Mobile App</h3>
-                  <p>Download MetaMask from your device's app store</p>
-                  <a href="https://metamask.io/download/" target="_blank" rel="noopener noreferrer" className="metamask-download-link">
-                    📱 Download MetaMask Mobile
-                  </a>
-                </div>
+            <div className="metamask-compact-info">
+              <p className="main-message">
+                📱 <strong>MetaMask Mobile Required</strong><br/>
+                Use MetaMask app's built-in browser to access <strong>bits-ai.io</strong>
+              </p>
+              
+              <div className="quick-steps">
+                <span className="step-mini">1️⃣ Open MetaMask app</span>
+                <span className="step-mini">2️⃣ Use browser feature</span>
+                <span className="step-mini">3️⃣ Go to bits-ai.io</span>
+                <span className="step-mini">4️⃣ Connect wallet</span>
               </div>
-
-              <div className="metamask-step">
-                <div className="step-number">2</div>
-                <div className="step-content">
-                  <h3>Open MetaMask Browser</h3>
-                  <p>MetaMask has its own built-in browser. Open the MetaMask app and use its browser feature</p>
-                </div>
-              </div>
-
-              <div className="metamask-step">
-                <div className="step-number">3</div>
-                <div className="step-content">
-                  <h3>Navigate to bits-ai.io</h3>
-                  <p>In MetaMask's browser, go to <strong>bits-ai.io</strong></p>
-                </div>
-              </div>
-
-              <div className="metamask-step">
-                <div className="step-number">4</div>
-                <div className="step-content">
-                  <h3>Connect Your Wallet</h3>
-                  <p>Tap "Connect Wallet" and select MetaMask</p>
-                </div>
-              </div>
-            </>
+              
+              <a href="https://metamask.io/download/" target="_blank" rel="noopener noreferrer" className="metamask-download-link compact">
+                📱 Download MetaMask Mobile
+              </a>
+            </div>
           ) : (
-            <>
-              <div className="metamask-step">
-                <div className="step-number">1</div>
-                <div className="step-content">
-                  <h3>Install MetaMask Extension</h3>
-                  <p>Add MetaMask to your browser as an extension</p>
-                  <a href="https://metamask.io/download/" target="_blank" rel="noopener noreferrer" className="metamask-download-link">
-                    🦊 Install MetaMask Extension
-                  </a>
-                </div>
+            <div className="metamask-compact-info">
+              <p className="main-message">
+                🦊 <strong>MetaMask Extension Required</strong><br/>
+                Install MetaMask browser extension to connect your wallet
+              </p>
+              
+              <div className="quick-steps">
+                <span className="step-mini">1️⃣ Install extension</span>
+                <span className="step-mini">2️⃣ Create wallet</span>
+                <span className="step-mini">3️⃣ Connect to site</span>
               </div>
-
-              <div className="metamask-step">
-                <div className="step-number">2</div>
-                <div className="step-content">
-                  <h3>Create or Import Wallet</h3>
-                  <p>Set up your MetaMask wallet with a secure password</p>
-                </div>
-              </div>
-
-              <div className="metamask-step">
-                <div className="step-number">3</div>
-                <div className="step-content">
-                  <h3>Connect to bits-ai.io</h3>
-                  <p>Click "Connect Wallet" and select MetaMask</p>
-                </div>
-              </div>
-            </>
+              
+              <a href="https://metamask.io/download/" target="_blank" rel="noopener noreferrer" className="metamask-download-link compact">
+                🦊 Install MetaMask Extension
+              </a>
+            </div>
           )}
 
-          <div className="metamask-note">
-            <h4>💡 Important Notes:</h4>
-            <ul>
-              <li>MetaMask Mobile has its own browser - you cannot connect from Chrome/Safari</li>
-              <li>Make sure you're on the official <strong>bits-ai.io</strong> website</li>
-              <li>Never share your private keys or seed phrase</li>
-            </ul>
+          <div className="metamask-note compact">
+            <p><strong>⚠️ Security:</strong> Never share private keys • Only use official bits-ai.io</p>
           </div>
         </div>
 

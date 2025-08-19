@@ -8,6 +8,7 @@ export default function AIPortfolioLauncher() {
   const [open, setOpen] = useState(false);
   // Always dock to bottom-right (safe-area aware)
   const [dock, setDock] = useState({ right: 24, bottom: 96 });
+  const [isMobile, setIsMobile] = useState(false);
   const isOnDedicatedPage = location?.pathname === '/ai-portfolio';
   // Close on ESC when drawer is open
   useEffect(() => {
@@ -16,6 +17,25 @@ export default function AIPortfolioLauncher() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [open]);
+  
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+             window.innerWidth <= 768 ||
+             ('ontouchstart' in window) ||
+             (navigator.maxTouchPoints > 0);
+    };
+    
+    const handleResize = () => {
+      setIsMobile(checkMobile());
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
   // Respect iOS safe-area and keep constant docking to bottom-right
   useEffect(() => {
     const compute = () => {
@@ -29,6 +49,7 @@ export default function AIPortfolioLauncher() {
     return () => window.removeEventListener('resize', compute);
   }, []);
   if (isOnDedicatedPage) return null; // avoid duplicate when on dedicated page
+  if (isMobile) return null; // on mobile, handled by MobileFloatingUIManager
   return (
     <div style={{ position:'fixed', right: dock.right, bottom: dock.bottom, zIndex: 5000 }}>
       {!open && (

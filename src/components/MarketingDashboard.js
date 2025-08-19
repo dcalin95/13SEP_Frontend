@@ -3,8 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import marketingService from '../services/marketingService';
 import './MarketingDashboard.css';
 
-const MarketingDashboard = () => {
+const MarketingDashboard = ({ 
+  externalIsVisible = null, 
+  onVisibilityChange = null 
+}) => {
   const [isVisible, setIsVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [marketingData, setMarketingData] = useState({});
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(false);
@@ -17,6 +21,38 @@ const MarketingDashboard = () => {
   });
   const intervalRef = useRef(null);
   const particleRef = useRef(null);
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+             window.innerWidth <= 768 ||
+             ('ontouchstart' in window) ||
+             (navigator.maxTouchPoints > 0);
+    };
+    
+    const handleResize = () => {
+      setIsMobile(checkMobile());
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Handle external visibility control (from mobile manager)
+  useEffect(() => {
+    if (externalIsVisible !== null) {
+      setIsVisible(externalIsVisible);
+    }
+  }, [externalIsVisible]);
+
+  // Notify parent about visibility changes
+  useEffect(() => {
+    if (onVisibilityChange) {
+      onVisibilityChange(isVisible);
+    }
+  }, [isVisible, onVisibilityChange]);
 
   useEffect(() => {
     if (isVisible) {
@@ -151,6 +187,11 @@ const MarketingDashboard = () => {
   };
 
   if (!isVisible) {
+    // On mobile, don't render the toggle button (handled by MobileFloatingUIManager)
+    if (isMobile) {
+      return null;
+    }
+    
     return (
       <motion.button
         className="marketing-dashboard-toggle-btn ai-enhanced"

@@ -116,7 +116,9 @@ export const usePresaleState = () => {
     };
 
     fetchPresaleData();
-    const interval = setInterval(fetchPresaleData, 5000);
+    // 🚀 OPTIMIZED: Reduced polling frequency from 5s to 15s to reduce server load
+    // Presale data doesn't change that frequently
+    const interval = setInterval(fetchPresaleData, 15000);
 
     return () => clearInterval(interval);
   }, []);

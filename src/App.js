@@ -14,7 +14,7 @@ import Footer from "./components/Footer";
 import BoostedBanner from "./components/BoostedBanner";
 import HeaderWalletInfo from "./context/HeaderWalletInfo";
 import StarfieldBackground from "./components/StarfieldBackground";
-import CustomCursor from "./components/CustomCursor";
+// import CustomCursor from "./components/CustomCursor"; // Disabled for better performance
 import ErrorBoundary from "./components/ErrorBoundary";
 import SidebarMenu from "./SidebarMenu/SidebarMenu";
 import HamburgerButton from "./HamburgerButton/HamburgerButton";
@@ -34,6 +34,7 @@ import MarketingDashboard from "./components/MarketingDashboard";
 // 🎛 UI/UX Enhancements
 import UIControls from "./components/UIControls";
 import AIPortfolioLauncher from "./components/AIPortfolioLauncher";
+import MobileFloatingUIManager from "./components/MobileFloatingUIManager";
 
 // 📈 Google Analytics
 import GoogleAnalyticsWrapper from "./components/GoogleAnalyticsWrapper";
@@ -57,7 +58,7 @@ const PresaleHistory = lazy(() => import("./Presale/Timer/PresaleHistory"));
 const PresalePage = lazy(() => import("./Presale/PresalePage"));
 const PaymentBox = lazy(() => import("./Presale/PaymentBox/PaymentBox"));
 
-const RewardsHub = lazy(() => import("./Presale/Rewards/Dashboard"));
+const RewardsHub = lazy(() => import("./components/RewardsHub"));
 const RewardDashboard = lazy(() => import("./components/RewardsDashboard/RewardsDashboard"));
 const InvitePage = lazy(() => import("./components/Invite/InvitePage"));
 const BitcoinAcademy = lazy(() => import("./components/BitcoinAcademy"));
@@ -76,10 +77,18 @@ const WalletTestComponent = lazy(() => import("./context/wallet/WalletTestCompon
 
 const App = () => {
   const [amountPay, setAmountPay] = useState(0);
+  
+  // 📱 Dashboard visibility states for mobile manager
+  const [isCryptoVisible, setIsCryptoVisible] = useState(false);
+  const [isMarketingVisible, setIsMarketingVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState("home");
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
+  
+  // 📱 Dashboard control functions for mobile manager
+  const handleOpenCrypto = () => setIsCryptoVisible(true);
+  const handleOpenMarketing = () => setIsMarketingVisible(true);
 
   const handleSidebarSelect = (section) => {
     setCurrentSection(section);
@@ -112,7 +121,7 @@ const App = () => {
           <ErrorBoundary>
             <MobileUI>
               <div className="app-container">
-                <CustomCursor />
+                {/* <CustomCursor /> */}
                 <StarfieldBackground />
                 <Header />
                 <BoostedBanner />
@@ -194,9 +203,21 @@ const App = () => {
             </MobileUI>
 
             {/* Dashboards & Floating UI */}
-            <CryptoAnalyticsDashboard />
-            <MarketingDashboard />
+            <CryptoAnalyticsDashboard 
+              externalIsVisible={isCryptoVisible}
+              onVisibilityChange={setIsCryptoVisible}
+            />
+            <MarketingDashboard 
+              externalIsVisible={isMarketingVisible}
+              onVisibilityChange={setIsMarketingVisible}
+            />
             <UIControls position="bottom-right" />
+            
+            {/* 📱 Mobile Floating UI Manager - coordinates all floating buttons on mobile */}
+            <MobileFloatingUIManager
+              onOpenCrypto={handleOpenCrypto}
+              onOpenMarketing={handleOpenMarketing}
+            />
           </ErrorBoundary>
         </GoogleAnalyticsWrapper>
       </Router>

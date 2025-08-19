@@ -7,7 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../styles/StakeForm.css";
 
-const StakeForm = ({ signer }) => {
+const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
   const { walletAddress } = useContext(WalletContext);
 
   const [amount, setAmount] = useState("");
@@ -15,6 +15,13 @@ const StakeForm = ({ signer }) => {
   const [apr, setApr] = useState("0");
   const [estimatedReward, setEstimatedReward] = useState("0");
   const [loading, setLoading] = useState(false);
+
+  // ✅ Pre-fill amount from rewards
+  useEffect(() => {
+    if (prefilledAmount && !amount) {
+      setAmount(prefilledAmount);
+    }
+  }, [prefilledAmount, amount]);
 
   // ✅ Fetch balance
   useEffect(() => {
@@ -117,6 +124,21 @@ console.log("🧪 Contract address:", contract.address);
   return (
     <div className="stake-form">
       <h3>🔐 Stake $BITS</h3>
+
+      {/* Rewards Pre-filled Banner */}
+      {rewardsSource && (
+        <div style={{
+          background: "rgba(0, 255, 195, 0.1)",
+          border: "1px solid rgba(0, 255, 195, 0.3)",
+          borderRadius: "6px",
+          padding: "8px",
+          marginBottom: "12px",
+          fontSize: "0.9em",
+          textAlign: "center"
+        }}>
+          🎁 <strong>Staking Rewards:</strong> Pre-filled with claimed amount
+        </div>
+      )}
 
       <p><strong>Wallet:</strong> {walletAddress?.slice(0, 6)}...{walletAddress?.slice(-4)}</p>
       <p><strong>Available:</strong> {balance} BITS</p>

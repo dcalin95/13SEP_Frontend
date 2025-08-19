@@ -9,6 +9,19 @@ body {
   cursor: none; /* Hide default cursor */
 }
 
+/* AI Button Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 0%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
 /* 🎯 CUSTOM CURSOR - OPTIMIZAT */
 .custom-cursor {
   position: fixed;

@@ -5,6 +5,25 @@ import './UIControls.css';
 const UIControls = ({ position = 'bottom-right', showLabels = false }) => {
   const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
   const [showScrollTop, setShowScrollTop] = useState(false); // Show based on scroll position
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+             window.innerWidth <= 768 ||
+             ('ontouchstart' in window) ||
+             (navigator.maxTouchPoints > 0);
+    };
+    
+    const handleResize = () => {
+      setIsMobile(checkMobile());
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Show/hide scroll to top button based on scroll position
   useEffect(() => {
@@ -52,6 +71,16 @@ const UIControls = ({ position = 'bottom-right', showLabels = false }) => {
   const closeAccessibility = () => {
     setIsAccessibilityOpen(false);
   };
+
+  // On mobile, don't render (handled by MobileFloatingUIManager)
+  if (isMobile) {
+    return (
+      <AccessibilityPanel 
+        isOpen={isAccessibilityOpen} 
+        onClose={closeAccessibility} 
+      />
+    );
+  }
 
   return (
     <>
