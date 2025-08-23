@@ -69,6 +69,10 @@ const MindNFTGenerator = ({ results }) => {
   const addTextOverlays = async (ctx, canvas, userInfo) => {
     const { username, walletAddress } = userInfo;
     
+    console.log('📝 Adding text overlays...');
+    console.log('👤 Username:', username);
+    console.log('💳 Wallet:', walletAddress ? `${walletAddress.substring(0, 6)}...` : 'None');
+    
     // Bottom right - User info
     if (username || walletAddress) {
       ctx.save();
@@ -120,6 +124,8 @@ const MindNFTGenerator = ({ results }) => {
         hour12: false 
       });
       const dateTimeStr = `${dateStr} ${timeStr}`;
+      
+      console.log('📅 Adding date/time:', dateTimeStr);
       
       ctx.fillStyle = '#666666';
       ctx.font = '10px "Courier New", monospace';
@@ -193,6 +199,7 @@ const MindNFTGenerator = ({ results }) => {
   // Add BITS logo from favicon
   const addBitsLogo = async (ctx, canvas) => {
     try {
+      console.log('🪙 Adding BITS logo...');
       const logo = new Image();
       logo.crossOrigin = 'anonymous';
       
@@ -291,7 +298,14 @@ const MindNFTGenerator = ({ results }) => {
       console.log('✅ DALL-E NFT generated successfully!', data.nft.imageUrl);
       
       // Post-process the image with guaranteed branding overlay
+      console.log('🔄 Starting branding overlay process...');
+      console.log('👤 User info for branding:', userInfo);
+      
       const processedImageUrl = await addBrandingOverlay(data.nft.imageUrl, userInfo);
+      
+      console.log('🎨 Branding process completed');
+      console.log('📸 Original URL:', data.nft.imageUrl);
+      console.log('🖼️ Processed URL type:', processedImageUrl.startsWith('data:') ? 'Canvas Data URL' : 'External URL');
       
       // Set the processed image
       setNftImage(processedImageUrl);
