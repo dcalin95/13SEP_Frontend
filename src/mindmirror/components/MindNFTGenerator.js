@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import WalletContext from '../../context/WalletContext';
+import emailService from '../../services/emailService';
 
 const MindNFTGenerator = ({ results }) => {
   const { walletAddress, walletName } = useContext(WalletContext);
@@ -9,6 +10,8 @@ const MindNFTGenerator = ({ results }) => {
   const [email, setEmail] = useState('');
   const [showEmailOption, setShowEmailOption] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [nftType, setNftType] = useState('basic'); // 'basic' or 'personalized'
+  const [wordAnalysisData, setWordAnalysisData] = useState(null);
 
     // Post-process DALL-E image with guaranteed branding overlay
   const addBrandingOverlay = async (imageUrl, userInfo) => {
@@ -72,8 +75,8 @@ const MindNFTGenerator = ({ results }) => {
       
       // Semi-transparent background for readability
       const padding = 15;
-      const bgHeight = 60;
-      const bgWidth = 200;
+      const bgHeight = 80; // Increased height for date/time
+      const bgWidth = 220; // Increased width for longer text
       const bgX = canvas.width - bgWidth - 20;
       const bgY = canvas.height - bgHeight - 20;
       
@@ -85,15 +88,15 @@ const MindNFTGenerator = ({ results }) => {
       ctx.lineWidth = 2;
       ctx.strokeRect(bgX, bgY, bgWidth, bgHeight);
       
-      // Username
+      // Username (top line)
       if (username) {
         ctx.fillStyle = '#00ff9d';
         ctx.font = 'bold 16px "Courier New", monospace';
         ctx.textAlign = 'right';
-        ctx.fillText(username, canvas.width - 30, canvas.height - 35);
+        ctx.fillText(username, canvas.width - 30, canvas.height - 55);
       }
       
-      // Wallet address
+      // Wallet address (middle line)
       if (walletAddress) {
         const shortWallet = walletAddress.length > 10 ? 
           `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}` : 
@@ -101,8 +104,27 @@ const MindNFTGenerator = ({ results }) => {
         ctx.fillStyle = '#888888';
         ctx.font = '12px "Courier New", monospace';
         ctx.textAlign = 'right';
-        ctx.fillText(shortWallet, canvas.width - 30, canvas.height - 15);
+        ctx.fillText(shortWallet, canvas.width - 30, canvas.height - 35);
       }
+      
+      // Date and time (bottom line)
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit' 
+      });
+      const timeStr = now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: false 
+      });
+      const dateTimeStr = `${dateStr} ${timeStr}`;
+      
+      ctx.fillStyle = '#666666';
+      ctx.font = '10px "Courier New", monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(dateTimeStr, canvas.width - 30, canvas.height - 15);
       
       ctx.restore();
     }
@@ -121,6 +143,51 @@ const MindNFTGenerator = ({ results }) => {
     ctx.fillText(watermarkText, 30, canvas.height - 30);
     
     ctx.restore();
+  };
+
+  // Get word analysis for personalized NFT generation
+  const getWordAnalysis = async (userInfo) => {
+    try {
+      const { walletAddress } = userInfo;
+      
+      if (!walletAddress) {
+        throw new Error('Wallet address required for word analysis');
+      }
+
+      console.log('📡 Fetching word analysis from backend...');
+      
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://backend-server-f82y.onrender.com'}/api/word-analysis/analyze-user-words`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          walletAddress: walletAddress
+        })
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error('No words found for user - using basic NFT style');
+        }
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Word analysis failed');
+      }
+
+      console.log(`📊 Word analysis successful: ${data.wordCount} words analyzed`);
+      console.log('🎨 Visual style:', data.visualStyle.primaryStyle);
+      
+      return data;
+
+    } catch (error) {
+      console.log('⚠️ Word analysis error:', error.message);
+      throw error;
+    }
   };
 
   // Add BITS logo from favicon
@@ -181,7 +248,23 @@ const MindNFTGenerator = ({ results }) => {
 
       console.log('👤 Generating NFT for user:', userInfo.username, userInfo.walletAddress ? `(${userInfo.walletAddress.substring(0, 6)}...)` : '');
 
-      // Call backend DALL-E API
+      // Try to get word analysis for personalized NFT
+      let wordAnalysis = null;
+      try {
+        console.log('🔍 Attempting to get word analysis for personalized NFT...');
+        wordAnalysis = await getWordAnalysis(userInfo);
+        if (wordAnalysis) {
+          console.log('✅ Word analysis obtained:', wordAnalysis.visualStyle?.primaryStyle);
+          setNftType('personalized');
+          setWordAnalysisData(wordAnalysis);
+        }
+      } catch (error) {
+        console.log('⚠️ Word analysis not available, using basic style:', error.message);
+        setNftType('basic');
+        setWordAnalysisData(null);
+      }
+
+      // Call backend DALL-E API with word analysis
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL || 'https://backend-server-f82y.onrender.com'}/api/dalle-nft/generate`, {
         method: 'POST',
         headers: {
@@ -189,7 +272,8 @@ const MindNFTGenerator = ({ results }) => {
         },
         body: JSON.stringify({
           analysisResults: results,
-          userInfo: userInfo
+          userInfo: userInfo,
+          wordAnalysis: wordAnalysis
         })
       });
 
@@ -227,15 +311,40 @@ const MindNFTGenerator = ({ results }) => {
       return;
     }
 
+    if (!emailService.validateEmail(email)) {
+      alert('⚠️ Please enter a valid email address!');
+      return;
+    }
+
     setIsSending(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log('📧 Sending NFT via email...');
+      
+      // Prepare email data
+      const emailData = emailService.formatNFTEmailData(
+        email,
+        nftImage,
+        {
+          username: walletName || 'Anonymous',
+          walletAddress: walletAddress
+        },
+        {
+          wordCount: wordAnalysisData?.wordCount || 0,
+          visualStyle: wordAnalysisData?.visualStyle?.primaryStyle || 'basic',
+          timestamp: new Date().toISOString()
+        }
+      );
+
+      // Send email
+      await emailService.sendNFT(emailData);
       
       alert(`🎉 Your neuropsychological NFT has been sent successfully to ${email}!\n\n✨ Check your inbox for your unique and irreproducible NFT.`);
       setEmail('');
       setShowEmailOption(false);
+      
     } catch (error) {
-      alert('❌ Error sending NFT. Please try again.');
+      console.error('❌ Email sending failed:', error);
+      alert(`❌ Failed to send email: ${error.message}`);
     } finally {
       setIsSending(false);
     }
@@ -250,7 +359,8 @@ const MindNFTGenerator = ({ results }) => {
         // Data URL - direct download
         const link = document.createElement('a');
         link.href = nftImage;
-        link.download = `neuropsychological-nft-${Date.now()}.png`;
+        link.download = `BitSwapDEX_AI_NFT_${Date.now()}.png`;
+        link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -267,14 +377,16 @@ const MindNFTGenerator = ({ results }) => {
         const blob = await response.blob();
         
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `neuropsychological-nft-${Date.now()}.png`;
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = `BitSwapDEX_AI_NFT_${Date.now()}.png`;
+        link.style.display = 'none';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         
         // Clean up the object URL
-        URL.revokeObjectURL(link.href);
+        setTimeout(() => URL.revokeObjectURL(url), 100);
         
         console.log('✅ NFT downloaded successfully (external URL)');
       }
@@ -334,6 +446,29 @@ const MindNFTGenerator = ({ results }) => {
             <p className="nft-subtitle">
               Your cognitive profile and trading psychology captured as a unique digital asset
             </p>
+            
+            {/* NFT Type Indicator */}
+            <div className={`nft-type-indicator ${nftType}`}>
+              {nftType === 'personalized' ? (
+                <>
+                  <span className="type-icon">🧬</span>
+                  <div className="type-info">
+                    <strong>Personalized NFT</strong>
+                    <small>Based on {wordAnalysisData?.wordCount || 0} words analysis</small>
+                    <small>Style: {wordAnalysisData?.visualStyle?.primaryStyle?.replace('_', ' ') || 'Custom'}</small>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <span className="type-icon">⚡</span>
+                  <div className="type-info">
+                    <strong>Basic NFT</strong>
+                    <small>Standard neuropsychological visualization</small>
+                    <small>Collect 1000 words for personalized NFTs</small>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
           
           <div className="nft-preview-container">
