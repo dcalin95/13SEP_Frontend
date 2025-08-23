@@ -58,12 +58,37 @@ const MindMirrorDashboard = () => {
       
       console.log('🔍 Checking word milestone for wallet:', walletAddress);
       
-      const response = await fetch(`${BACKEND_URL}/api/word-analysis/analyze-user-words`, {
+      // First, get telegram_id for this wallet
+      const telegramResponse = await fetch(`${BACKEND_URL}/api/word-analysis/get-telegram-id`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ walletAddress })
+      });
+      
+      if (!telegramResponse.ok) {
+        console.log('❌ No telegram user found for this wallet');
+        setWordMilestone({
+          count: 0,
+          hasAccess: false,
+          isLoading: false
+        });
+        return;
+      }
+      
+      const telegramData = await telegramResponse.json();
+      const telegramId = telegramData.telegramId;
+      
+      console.log('✅ Found telegram_id:', telegramId);
+      
+      // Now get words using telegram_id
+      const response = await fetch(`${BACKEND_URL}/api/word-analysis/analyze-user-words`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ telegramId })
       });
       
       if (response.ok) {
