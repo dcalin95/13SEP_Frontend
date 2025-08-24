@@ -110,28 +110,28 @@ const Header = () => {
 
         {/* ✅ Desktop Navigation - DOAR PE DESKTOP */}
         <nav className="navigation desktop-only">
-        <Link to="/" className="btn-home">
+        <Link to="/" className="btn-home laser-sharp">
           <i className="fas fa-home"></i> Home
         </Link>
-        <Link to="/presale" className="btn-buy">
+        <Link to="/presale" className="btn-buy laser-sharp">
           <i className="fas fa-dollar-sign"></i> Buy $BITS Presale
         </Link>
-        <Link to="/staking" className="btn-tokenomics">
+        <Link to="/staking" className="btn-tokenomics laser-sharp">
           <i className="fas fa-coins"></i> Staking
         </Link>
-        <Link to="/paper-trading" className="btn-paper-trading">
+        <Link to="/paper-trading" className="btn-paper-trading laser-sharp">
           <i className="fas fa-gamepad"></i> Paper Trading
         </Link>
-        <Link to="/whitepaper" className="btn-audit">
+        <Link to="/whitepaper" className="btn-audit laser-sharp">
           <i className="fas fa-file-alt"></i> Whitepaper
         </Link>
-        <Link to="/reward-dashboard" className="btn-leaderboard">
+        <Link to="/reward-dashboard" className="btn-leaderboard laser-sharp">
           <i className="fas fa-chart-line"></i> Rewards Dashboard
         </Link>
-        <Link to="/bitcoin-academy" className="btn-bitcoin-academy">
+        <Link to="/bitcoin-academy" className="btn-bitcoin-academy laser-sharp">
           <i className="fab fa-bitcoin"></i> Bitcoin Academy
         </Link>
-        <Link to="/education" className="btn-education">
+        <Link to="/education" className="btn-education laser-sharp">
           <i className="fas fa-graduation-cap"></i> Education
         </Link>
         <Link to="/proof-of-transfer" className="btn-pox">
@@ -187,22 +187,22 @@ const Header = () => {
       {/* Mobile Navigation Menu - ÎN AFARA HEADER-ULUI */}
       {isMenuOpen && (
         <nav className="mobile-nav-menu">
-          <Link to="/" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
             <i className="fas fa-home"></i> Home
           </Link>
-          <Link to="/presale" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/presale" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
             <i className="fas fa-dollar-sign"></i> Buy $BITS Presale
           </Link>
-          <Link to="/staking" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/staking" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
             <i className="fas fa-coins"></i> Staking
           </Link>
-          <Link to="/paper-trading" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/paper-trading" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
             <i className="fas fa-gamepad"></i> Paper Trading
           </Link>
-          <Link to="/whitepaper" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/whitepaper" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
             <i className="fas fa-file-alt"></i> Whitepaper
           </Link>
-          <Link to="/reward-dashboard" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/reward-dashboard" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
             <i className="fas fa-chart-line"></i> Rewards Dashboard
           </Link>
           <Link to="/bitcoin-academy" onClick={() => setIsMenuOpen(false)}>

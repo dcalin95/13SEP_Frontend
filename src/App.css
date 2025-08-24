@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@600&display=swap');
 
+/* 🔥 LASER-SHARP FONT RENDERING - GLOBAL */
+* {
+  -webkit-font-smoothing: never !important;
+  -moz-osx-font-smoothing: unset !important;
+  text-rendering: geometricPrecision !important;
+}
+
+.laser-sharp {
+  text-shadow: 0.5px 0.5px 0px rgba(0, 0, 0, 0.1);
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
 :root {
   --background-dark: #0d0d0d;
   --background-light: #1a1a1a;

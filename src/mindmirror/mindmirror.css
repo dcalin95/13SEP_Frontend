@@ -2325,3 +2325,80 @@
   margin: 0;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
+
+/* 🏥 PROFESSIONAL TIER DESCRIPTIONS */
+.tier-description {
+  color: #b0b0b0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin: 0.8rem 0 1.2rem 0;
+  font-style: italic;
+  text-align: left;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.tier-card h4 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0.8rem 0;
+  text-align: center;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.tier-card ul li {
+  text-align: left;
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.tier-status {
+  background: rgba(0, 255, 157, 0.2);
+  color: #00ff9d;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.5rem;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.tier-unlock-condition {
+  background: rgba(147, 51, 234, 0.1);
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  border-radius: 8px;
+  padding: 0.6rem;
+  margin: 0.8rem 0;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  color: #e0e0e0;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.tier-unlock-condition strong {
+  color: #9333ea;
+  font-weight: 700;
+}

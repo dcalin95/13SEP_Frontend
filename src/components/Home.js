@@ -37,7 +37,7 @@ const Home = () => {
         transition={{ duration: 1 }}
       >
         <div className="welcome-section">
-          <h1>Welcome to BitSwapDEX AI</h1>
+          <h1 className="laser-sharp">Welcome to BitSwapDEX AI</h1>
           <p>
             <br />From Bits to Bitcoin – Powering the Future of Decentralized Exchange!<br />
             <br />Revolutionizing DeFi with Bits, Bitcoin, and Beyond.<br />
@@ -46,7 +46,7 @@ const Home = () => {
             and secure transactions!<br />
           </p>
         </div>
-        <button className="explore-button" onClick={handleExplorePlatform}>
+        <button className="explore-button laser-sharp" onClick={handleExplorePlatform}>
           Explore Platform
         </button>
       </motion.section>
