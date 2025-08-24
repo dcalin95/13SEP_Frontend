@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import './mindmirror.css';
 import MindNFTGenerator from './components/MindNFTGenerator';
 
@@ -12,11 +13,48 @@ const MindMirrorDashboard = () => {
   const [userBadge, setUserBadge] = useState(null);
   const [currentTier, setCurrentTier] = useState(1);
   const [walletBalance, setWalletBalance] = useState(0);
+  const [hasUsedAnalysis, setHasUsedAnalysis] = useState(false);
+  const [showWarningModal, setShowWarningModal] = useState(false);
   const [wordMilestone, setWordMilestone] = useState({
     count: 0,
     hasAccess: false,
     isLoading: true
   });
+
+  // Check if user has already used the analysis
+  const checkAnalysisUsage = async () => {
+    try {
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
+      
+      if (!connectedWallet) return;
+      
+      const response = await fetch(`${BACKEND_URL}/api/word-analysis/check-usage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ walletAddress: connectedWallet })
+      });
+      
+      const data = await response.json();
+      setHasUsedAnalysis(data.hasUsed || false);
+    } catch (error) {
+      console.error('Error checking analysis usage:', error);
+    }
+  };
+
+  // Page protection against accidental closure
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (analysisResults) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved analysis results! If you leave, the data will be lost forever.';
+        return 'You have unsaved analysis results! If you leave, the data will be lost forever.';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [analysisResults]);
 
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
@@ -28,7 +66,43 @@ const MindMirrorDashboard = () => {
   // Check word milestone on component mount
   useEffect(() => {
     checkWordMilestone();
+    checkAnalysisUsage();
   }, []);
+
+  // Check if user has already used the analysis
+  const checkAnalysisUsage = async () => {
+    try {
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
+      
+      if (!connectedWallet) return;
+      
+      const response = await fetch(`${BACKEND_URL}/api/word-analysis/check-usage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ walletAddress: connectedWallet })
+      });
+      
+      const data = await response.json();
+      setHasUsedAnalysis(data.hasUsed || false);
+    } catch (error) {
+      console.error('Error checking analysis usage:', error);
+    }
+  };
+
+  // Page protection against accidental closure
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (analysisResults) {
+        e.preventDefault();
+        e.returnValue = 'You have unsaved analysis results! If you leave, the data will be lost forever.';
+        return 'You have unsaved analysis results! If you leave, the data will be lost forever.';
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [analysisResults]);
 
   const checkWordMilestone = async () => {
     try {
@@ -45,34 +119,135 @@ const MindMirrorDashboard = () => {
     }
   };
 
-  // Get tier information
-  const getTierInfo = (tier) => {
-    const tiers = {
-      1: { name: "Basic Analysis", price: "Free", features: ["Text Analysis", "Basic Metrics"] },
-      2: { name: "Advanced Analysis", price: "1000 BITS", features: ["Sentiment Analysis", "Emotion Detection"] },
-      3: { name: "Pro Analysis", price: "5000 BITS", features: ["Voice Analysis", "Video Analysis", "Real-time Metrics"] },
-      4: { name: "Enterprise", price: "10000 BITS", features: ["Smart Ring Integration", "24/7 Monitoring"] }
-    };
-    return tiers[tier] || tiers[1];
+  const handleAnalysis = async () => {
+    // Check if user has already used the analysis
+    if (hasUsedAnalysis) {
+      alert('⚠️ You have already used the free psychological analysis! For a new analysis, contact us for paid options.');
+      return;
+    }
+    
+    // Show warning modal before analysis
+    setShowWarningModal(true);
+    
+    // Disable body scroll
+    document.body.style.overflow = 'hidden';
   };
 
-  const handleAnalysis = async () => {
+  // Export functions
+  const handleEmailExport = () => {
+    if (!analysisResults) return;
+    
+    const subject = encodeURIComponent('My Psychological Trading Analysis - MindMirror');
+    const body = encodeURIComponent(`
+🧠 PSYCHOLOGICAL TRADING ANALYSIS RESULTS
+
+${analysisResults.analysis}
+
+Generated by MindMirror AI - bits-ai.io
+Wallet: ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}
+Date: ${new Date().toLocaleDateString()}
+    `);
+    
+    window.open(`mailto:?subject=${subject}&body=${body}`);
+  };
+
+  const handlePDFExport = () => {
+    if (!analysisResults) return;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Psychological Trading Analysis</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { color: #8B5CF6; }
+            .analysis { white-space: pre-wrap; line-height: 1.6; }
+          </style>
+        </head>
+        <body>
+          <h1>🧠 Psychological Trading Analysis</h1>
+          <div class="analysis">${analysisResults.analysis}</div>
+          <hr>
+          <p><strong>Generated by:</strong> MindMirror AI - bits-ai.io</p>
+          <p><strong>Wallet:</strong> ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}</p>
+          <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const handlePrintExport = () => {
+    if (!analysisResults) return;
+    
+    const printContent = `
+🧠 PSYCHOLOGICAL TRADING ANALYSIS RESULTS
+
+${analysisResults.analysis}
+
+Generated by MindMirror AI - bits-ai.io
+Wallet: ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}
+Date: ${new Date().toLocaleDateString()}
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`<pre>${printContent}</pre>`);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const handleShareExport = () => {
+    if (!analysisResults) return;
+    
+    const shareText = `🧠 Just completed my Psychological Trading Analysis with MindMirror AI! 
+
+Trading Score: ${analysisResults.tradingScore || 'N/A'}/100
+
+Check out your own analysis at bits-ai.io
+
+#TradingPsychology #AI #Crypto`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'My Psychological Trading Analysis',
+        text: shareText,
+        url: 'https://bits-ai.io'
+      });
+    } else {
+      navigator.clipboard.writeText(shareText).then(() => {
+        alert('✅ Analysis summary copied to clipboard!');
+      });
+    }
+  };
+
+  const proceedWithAnalysis = async () => {
+    // Restore body scroll
+    document.body.style.overflow = '';
+    
+    setShowWarningModal(false);
     setIsAnalyzing(true);
     
     try {
       const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
       
-      // Prepare the analysis prompt based on collected words
-      const analysisPrompt = `Analyze the neuropsychological profile of a trader based on their collected words from Telegram participation. Word count: ${wordMilestone.count}. Provide detailed cognitive analysis for trading psychology.`;
+      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
       
-      const response = await fetch(`${BACKEND_URL}/api/ai/analyze`, {
+      if (!connectedWallet) {
+        throw new Error('Please connect your wallet first to analyze your psychology profile');
+      }
+
+      const url = `${BACKEND_URL}/api/word-analysis/psychology/analyze`;
+      console.log('🧠 Making psychology analysis request to:', url);
+      console.log('👤 Wallet address:', connectedWallet);
+      
+      const response = await fetch(url, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          text: analysisPrompt,
-          analysisType: 'neuropsychological'
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          walletAddress: connectedWallet,
+          wordCount: wordMilestone.count 
         })
       });
 
@@ -109,6 +284,193 @@ const MindMirrorDashboard = () => {
       };
       
       setAnalysisResults(enhancedResults);
+      setHasUsedAnalysis(true); // Mark as used after successful analysis
+      
+    } catch (error) {
+      console.error('Analysis error:', error);
+      alert(`Analysis failed: ${error.message}. Please try again.`);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  // Get tier information
+  const getTierInfo = (tier) => {
+    const tiers = {
+      1: { name: "Basic Analysis", price: "Free", features: ["Text Analysis", "Basic Metrics"] },
+      2: { name: "Advanced Analysis", price: "1000 BITS", features: ["Sentiment Analysis", "Emotion Detection"] },
+      3: { name: "Pro Analysis", price: "5000 BITS", features: ["Voice Analysis", "Video Analysis", "Real-time Metrics"] },
+      4: { name: "Enterprise", price: "10000 BITS", features: ["Smart Ring Integration", "24/7 Monitoring"] }
+    };
+    return tiers[tier] || tiers[1];
+  };
+
+  const handleAnalysis = async () => {
+    // Check if user has already used the analysis
+    if (hasUsedAnalysis) {
+      alert('⚠️ You have already used the free psychological analysis! For a new analysis, contact us for paid options.');
+      return;
+    }
+    
+    // Show warning modal before analysis
+    setShowWarningModal(true);
+    
+    // Disable body scroll
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Export functions
+  const handleEmailExport = () => {
+    if (!analysisResults) return;
+    
+    const subject = encodeURIComponent('My Psychological Trading Analysis - MindMirror');
+    const body = encodeURIComponent(`
+🧠 PSYCHOLOGICAL TRADING ANALYSIS RESULTS
+
+${analysisResults.analysis}
+
+Generated by MindMirror AI - bits-ai.io
+Wallet: ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}
+Date: ${new Date().toLocaleDateString()}
+    `);
+    
+    window.open(`mailto:?subject=${subject}&body=${body}`);
+  };
+
+  const handlePDFExport = () => {
+    if (!analysisResults) return;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Psychological Trading Analysis</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { color: #8B5CF6; }
+            .analysis { white-space: pre-wrap; line-height: 1.6; }
+          </style>
+        </head>
+        <body>
+          <h1>🧠 Psychological Trading Analysis</h1>
+          <div class="analysis">${analysisResults.analysis}</div>
+          <hr>
+          <p><strong>Generated by:</strong> MindMirror AI - bits-ai.io</p>
+          <p><strong>Wallet:</strong> ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}</p>
+          <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const handlePrintExport = () => {
+    if (!analysisResults) return;
+    
+    const printContent = `
+🧠 PSYCHOLOGICAL TRADING ANALYSIS RESULTS
+
+${analysisResults.analysis}
+
+Generated by MindMirror AI - bits-ai.io
+Wallet: ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}
+Date: ${new Date().toLocaleDateString()}
+    `;
+    
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`<pre>${printContent}</pre>`);
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const handleShareExport = () => {
+    if (!analysisResults) return;
+    
+    const shareText = `🧠 Just completed my Psychological Trading Analysis with MindMirror AI! 
+
+Trading Score: ${analysisResults.tradingScore || 'N/A'}/100
+
+Check out your own analysis at bits-ai.io
+
+#TradingPsychology #AI #Crypto`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'My Psychological Trading Analysis',
+        text: shareText,
+        url: 'https://bits-ai.io'
+      });
+    } else {
+      navigator.clipboard.writeText(shareText).then(() => {
+        alert('✅ Analysis summary copied to clipboard!');
+      });
+    }
+  };
+
+  const proceedWithAnalysis = async () => {
+    // Restore body scroll
+    document.body.style.overflow = '';
+    
+    setShowWarningModal(false);
+    setIsAnalyzing(true);
+    
+    try {
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      
+      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
+      
+      if (!connectedWallet) {
+        throw new Error('Please connect your wallet first to analyze your psychology profile');
+      }
+
+      const url = `${BACKEND_URL}/api/word-analysis/psychology/analyze`;
+      console.log('🧠 Making psychology analysis request to:', url);
+      console.log('👤 Wallet address:', connectedWallet);
+      
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          walletAddress: connectedWallet,
+          wordCount: wordMilestone.count 
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Analysis failed: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      // Enhanced analysis results with more detailed metrics
+      const enhancedResults = {
+        ...data,
+        aiProvider: data.aiProvider || "OpenAI GPT-4 Turbo",
+        analysisTimestamp: new Date().toLocaleString(),
+        // Add some mock advanced metrics for demo
+        pitchVariance: Math.floor(Math.random() * 100),
+        speechRate: Math.floor(Math.random() * 100),
+        pausePatterns: Math.floor(Math.random() * 100),
+        vocalTension: Math.floor(Math.random() * 100),
+        respiratoryStability: Math.floor(Math.random() * 100),
+        confidenceLevel: Math.floor(Math.random() * 100),
+        anxietyLevel: Math.floor(Math.random() * 100),
+        focusLevel: Math.floor(Math.random() * 100),
+        decisionSpeed: 'Moderate-Fast',
+        riskAppetite: 'Conservative-Balanced',
+        // Facial analysis metrics
+        facialTension: Math.floor(Math.random() * 100),
+        eyeMovementPatterns: Math.floor(Math.random() * 100),
+        microExpressions: Math.floor(Math.random() * 100),
+        // Additional psychological metrics
+        stressLevel: Math.floor(Math.random() * 100),
+        emotionalStability: Math.floor(Math.random() * 100),
+        cognitiveLoad: Math.floor(Math.random() * 100)
+      };
+      
+      setAnalysisResults(enhancedResults);
+      setHasUsedAnalysis(true); // Mark as used after successful analysis
       
     } catch (error) {
       console.error('Analysis error:', error);
@@ -274,6 +636,38 @@ const MindMirrorDashboard = () => {
               <span>•</span>
               <span>{analysisResults.analysisTimestamp}</span>
             </div>
+            
+            {/* Export Actions */}
+            <div className="export-actions">
+              <button 
+                className="export-btn email-btn" 
+                onClick={handleEmailExport}
+                title="Send via Email"
+              >
+                📧 Email
+              </button>
+              <button 
+                className="export-btn pdf-btn" 
+                onClick={handlePDFExport}
+                title="Export as PDF"
+              >
+                📄 PDF
+              </button>
+              <button 
+                className="export-btn print-btn" 
+                onClick={handlePrintExport}
+                title="Print Analysis"
+              >
+                🖨️ Print
+              </button>
+              <button 
+                className="export-btn share-btn" 
+                onClick={handleShareExport}
+                title="Share Results"
+              >
+                📤 Share
+              </button>
+            </div>
           </div>
           
           <div className="results-grid">
@@ -348,7 +742,78 @@ const MindMirrorDashboard = () => {
           </div>
         </div>
       </footer>
+      
+      {/* Warning Modal rendered via Portal */}
+      <WarningModal 
+        showWarningModal={showWarningModal}
+        setShowWarningModal={setShowWarningModal}
+        proceedWithAnalysis={proceedWithAnalysis}
+      />
+
     </div>
+  );
+};
+
+// Warning Modal Component rendered via Portal
+const WarningModal = ({ showWarningModal, setShowWarningModal, proceedWithAnalysis }) => {
+  if (!showWarningModal) return null;
+
+  return createPortal(
+    <div className="warning-modal-overlay">
+      <div className="warning-modal">
+        <div className="warning-header">
+          <h2>⚠️ IMPORTANT WARNING!</h2>
+        </div>
+        
+        <div className="warning-content">
+          <div className="warning-section">
+            <h3>🔒 Unique & Free Analysis</h3>
+            <p>This professional psychological analysis can be performed <strong>only once for free</strong> per wallet.</p>
+          </div>
+          
+          <div className="warning-section">
+            <h3>💾 Protect Your Results</h3>
+            <p>If you close the page or refresh, <strong>the analysis will be permanently lost</strong>!</p>
+            <p>Use the export buttons (📧 Email, 📄 PDF, 🖨️ Print) to save your results.</p>
+          </div>
+          
+          <div className="warning-section">
+            <h3>💰 Additional Analyses</h3>
+            <p>For additional analyses or repeating the analysis, a fee will be required. Contact us for details.</p>
+          </div>
+          
+          <div className="warning-section critical">
+            <h3>🚨 Confirm You Understand</h3>
+            <p>By continuing, you confirm that:</p>
+            <ul>
+              <li>✅ You understand this is a unique free analysis</li>
+              <li>✅ You will save results using export options</li>
+              <li>✅ You know data is lost if you close the page</li>
+            </ul>
+          </div>
+        </div>
+        
+        <div className="warning-actions">
+          <button 
+            className="cancel-btn"
+            onClick={() => {
+              // Restore body scroll
+              document.body.style.overflow = '';
+              setShowWarningModal(false);
+            }}
+          >
+            ❌ Cancel
+          </button>
+          <button 
+            className="proceed-btn"
+            onClick={proceedWithAnalysis}
+          >
+            ✅ I Understand & Continue
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body
   );
 };
 
