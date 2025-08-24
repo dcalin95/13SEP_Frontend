@@ -16,12 +16,12 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
   const [estimatedReward, setEstimatedReward] = useState("0");
   const [loading, setLoading] = useState(false);
 
-  // ✅ Pre-fill amount from rewards
+  // ✅ Set prefilled amount from rewards
   useEffect(() => {
-    if (prefilledAmount && !amount) {
-      setAmount(prefilledAmount);
+    if (prefilledAmount && prefilledAmount > 0) {
+      setAmount(prefilledAmount.toString());
     }
-  }, [prefilledAmount, amount]);
+  }, [prefilledAmount]);
 
   // ✅ Fetch balance
   useEffect(() => {
@@ -124,19 +124,19 @@ console.log("🧪 Contract address:", contract.address);
   return (
     <div className="stake-form">
       <h3>🔐 Stake $BITS</h3>
-
-      {/* Rewards Pre-filled Banner */}
+      
       {rewardsSource && (
         <div style={{
           background: "rgba(0, 255, 195, 0.1)",
           border: "1px solid rgba(0, 255, 195, 0.3)",
-          borderRadius: "6px",
-          padding: "8px",
-          marginBottom: "12px",
-          fontSize: "0.9em",
-          textAlign: "center"
+          borderRadius: "8px",
+          padding: "10px",
+          marginBottom: "15px",
+          fontSize: "0.9em"
         }}>
-          🎁 <strong>Staking Rewards:</strong> Pre-filled with claimed amount
+          <p style={{ margin: "0", color: "#00ffc3" }}>
+            🎁 <strong>Staking Rewards:</strong> Pre-filled with your claimed rewards amount!
+          </p>
         </div>
       )}
 

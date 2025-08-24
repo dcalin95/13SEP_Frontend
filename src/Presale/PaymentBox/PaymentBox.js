@@ -39,16 +39,19 @@ const PaymentBox = ({
   // 💳 Payment Method Selection States
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [showPaymentSelector, setShowPaymentSelector] = useState(false);
-
-  // 🎁 Invite Code State
-  const [inviteCode, setInviteCode] = useState('');
-  const [autoDetectedCode, setAutoDetectedCode] = useState('');
-  const [inviteCodeChecking, setInviteCodeChecking] = useState(false);
   
-  // 🤝 NEW: Friend referral code states
-  const [friendReferralCode, setFriendReferralCode] = useState('');
-  const [friendCodeStatus, setFriendCodeStatus] = useState(null); // null, 'valid', 'invalid', 'applied'
-  const [referralStatus, setReferralStatus] = useState(null); // Full referral status from backend
+  // 🎯 Referral Code State
+  const [referralCode, setReferralCode] = useState("");
+
+  // 🔍 Auto-detect referral code from URL
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeFromURL = urlParams.get("ref");
+    if (codeFromURL) {
+      setReferralCode(codeFromURL);
+      console.log("🎯 Auto-detected referral code from URL:", codeFromURL);
+    }
+  }, []);
 
   // 🔄 Reset payment method when token changes
   React.useEffect(() => {
@@ -66,174 +69,6 @@ const PaymentBox = ({
       console.log("🔄 [RESET] State after timeout - selectedPaymentMethod should be null");
     }, 100);
   }, [selectedToken]);
-
-  // 🎁 Auto-detect invite code when wallet connects (OPTIMIZED with caching)
-  React.useEffect(() => {
-    const checkInviteCodeAndStatus = async () => {
-      if (!paymentState.walletAddress || inviteCodeChecking) return;
-      
-      // 🚀 LOCAL CACHE: Check if we already have data for this wallet (avoid redundant calls)
-      const cacheKey = `referral_data_${paymentState.walletAddress}`;
-      const cachedData = sessionStorage.getItem(cacheKey);
-      const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
-      
-      if (cachedData) {
-        try {
-          const parsed = JSON.parse(cachedData);
-          if (Date.now() - parsed.timestamp < CACHE_DURATION) {
-            console.log("🚀 [INVITE] Using cached referral data for:", paymentState.walletAddress);
-            
-            // Apply cached data
-            if (parsed.inviteCode) {
-              setAutoDetectedCode(parsed.inviteCode);
-              setInviteCode(parsed.inviteCode);
-            }
-            if (parsed.referralStatus) {
-              setReferralStatus(parsed.referralStatus);
-              if (parsed.referralStatus.usedFriendCode) {
-                setFriendReferralCode(parsed.referralStatus.usedFriendCode);
-                setFriendCodeStatus('applied');
-              }
-            }
-            return; // Exit early if cache is valid
-          }
-        } catch (e) {
-          console.warn("⚠️ [INVITE] Cache parse error:", e.message);
-        }
-      }
-      
-      setInviteCodeChecking(true);
-      try {
-        console.log("🔍 [INVITE] Fetching referral status for wallet (cache miss):", paymentState.walletAddress);
-        
-        // Batch both requests simultaneously to reduce total time
-        const [codeResponse, statusResponse] = await Promise.all([
-          fetch(`https://backend-server-f82y.onrender.com/api/invite/check-code/${paymentState.walletAddress}`),
-          fetch(`https://backend-server-f82y.onrender.com/api/invite/referral-status/${paymentState.walletAddress}`)
-        ]);
-        
-        let inviteCode = null;
-        let referralStatus = null;
-        
-        // Process invite code response
-        if (codeResponse.ok) {
-          const codeData = await codeResponse.json();
-          if (codeData.code) {
-            console.log("✅ [INVITE] Found invite code:", codeData.code);
-            inviteCode = codeData.code;
-            setAutoDetectedCode(codeData.code);
-            setInviteCode(codeData.code);
-          }
-        }
-
-        // Process referral status response
-        if (statusResponse.ok) {
-          const statusData = await statusResponse.json();
-          referralStatus = statusData;
-          setReferralStatus(statusData);
-          
-          if (statusData.usedFriendCode) {
-            setFriendReferralCode(statusData.usedFriendCode);
-            setFriendCodeStatus('applied');
-            console.log("🤝 [REFERRAL] User already referred by:", statusData.referrerWallet, "with code:", statusData.usedFriendCode);
-          }
-          
-          console.log("📊 [REFERRAL] Full status:", statusData);
-        }
-        
-        // 🚀 CACHE: Store the results for next time
-        const dataToCache = {
-          inviteCode,
-          referralStatus,
-          timestamp: Date.now()
-        };
-        sessionStorage.setItem(cacheKey, JSON.stringify(dataToCache));
-        console.log("💾 [INVITE] Cached referral data for future use");
-        
-      } catch (error) {
-        console.warn("⚠️ [INVITE] Error checking referral status:", error.message);
-      } finally {
-        setInviteCodeChecking(false);
-      }
-    };
-
-    // 🚀 DEBOUNCE: Prevent rapid successive calls
-    const timeoutId = setTimeout(checkInviteCodeAndStatus, 300);
-    return () => clearTimeout(timeoutId);
-  }, [paymentState.walletAddress]);
-
-  // 🤝 Function to apply friend's referral code
-  const applyFriendReferralCode = async (friendCode) => {
-    console.log("🤝 [FRIEND-CODE] Function called with code:", friendCode);
-    
-    if (!paymentState.walletAddress) {
-      console.log("❌ [FRIEND-CODE] No wallet connected");
-      setFriendCodeStatus('invalid');
-      alert('Please connect your wallet first.');
-      return { success: false, message: 'Please connect your wallet first.' };
-    }
-
-    if (!friendCode.trim()) {
-      console.log("❌ [FRIEND-CODE] No code provided");
-      setFriendCodeStatus('invalid');
-      alert('Please enter a referral code.');
-      return { success: false, message: 'Please enter a referral code.' };
-    }
-
-    try {
-      console.log("🤝 [FRIEND-CODE] Applying friend's referral code:", friendCode);
-      setFriendCodeStatus('checking'); // New status for loading
-      
-      const requestBody = {
-        walletAddress: paymentState.walletAddress,
-        friendCode: friendCode.trim().toUpperCase()
-      };
-      
-      console.log("📤 [FRIEND-CODE] Sending request:", requestBody);
-      
-      const response = await fetch(`https://backend-server-f82y.onrender.com/api/invite/use-friend-code`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody)
-      });
-
-      console.log("📥 [FRIEND-CODE] Raw response status:", response.status);
-      
-      const data = await response.json();
-
-      console.log("🔍 [FRIEND-CODE] Response:", response.status, data);
-      console.log("🔍 [FRIEND-CODE] Response.ok:", response.ok);
-
-      if (response.ok && data.success) {
-        if (data.alreadyReferred) {
-          setFriendCodeStatus('applied');
-          console.log("ℹ️ [FRIEND-CODE] Already referred:", data.message);
-          alert(`Success: ${data.message}`);
-          return { success: true, message: data.message, alreadyReferred: true };
-        } else {
-          setFriendCodeStatus('applied');
-          setFriendReferralCode(friendCode.trim().toUpperCase());
-          console.log("✅ [FRIEND-CODE] Successfully applied:", data.message);
-          alert(`Success: ${data.message}`);
-          return { success: true, message: data.message };
-        }
-      } else {
-        setFriendCodeStatus('invalid');
-        console.error("❌ [FRIEND-CODE] Failed:", data);
-        
-        // Show specific error message from backend
-        const errorMessage = data.message || data.error || 'Failed to apply referral code';
-        alert(`Error: ${errorMessage}`);
-        
-        return { success: false, message: errorMessage };
-      }
-    } catch (error) {
-      setFriendCodeStatus('invalid');
-      console.error("❌ [FRIEND-CODE] Error:", error.message);
-      alert(`Network Error: ${error.message}`);
-      return { success: false, message: 'Failed to apply referral code. Please try again.' };
-    }
-  };
 
   // 🚀 Transaction Handler
   const { handleBuy } = useHandleTransaction({
@@ -253,7 +88,7 @@ const PaymentBox = ({
     setIsConfirmed,
     bonusAmount: paymentState.bonusAmount,
     selectedPaymentMethod: selectedPaymentMethod,
-    inviteCode: inviteCode || (friendCodeStatus === 'applied' ? friendReferralCode : ''), // 🎁 Pass invite code or friend code to transaction
+    referralCode: referralCode, // 🎯 Pass referral code to handler
   });
 
   const handleClosePopup = () => {
@@ -350,6 +185,26 @@ const PaymentBox = ({
         selectedToken={selectedToken}
       />
 
+      {/* 🎯 Referral Code Input */}
+      <div className="referral-code-container">
+        <label className="referral-code-label">
+          🎯 Referral Code (Optional)
+        </label>
+        <input
+          type="text"
+          placeholder="Enter referral code (e.g., CODE-OE3477)"
+          value={referralCode}
+          onChange={(e) => setReferralCode(e.target.value.toUpperCase())}
+          className="referral-code-input"
+          maxLength={20}
+        />
+        {referralCode && (
+          <div className="referral-code-info">
+            ✅ Using referral code: <strong>{referralCode}</strong>
+          </div>
+        )}
+      </div>
+
       {/* 🎯 Terms Acceptance Checkbox */}
       <div className="terms-checkbox-container">
         <label className="terms-checkbox-label">
@@ -397,259 +252,41 @@ const PaymentBox = ({
         <>
           <button 
             onClick={handleBuy} 
+            className="buy-button"
             disabled={!paymentState.canProceed || !termsAccepted}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px',
-              width: '220px',
-              margin: '15px auto',
-              fontSize: '1.1rem',
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              padding: '12px 20px',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: paymentState.canProceed && termsAccepted ? 'pointer' : 'not-allowed',
-              color: '#ffffff',
-              background: paymentState.canProceed && termsAccepted 
-                ? '#007bff'
-                : '#666666',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              if (paymentState.canProceed && termsAccepted) {
-                e.target.style.background = '#0056b3';
-                e.target.style.transform = 'translateY(-2px)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (paymentState.canProceed && termsAccepted) {
-                e.target.style.background = '#007bff';
-                e.target.style.transform = 'translateY(0)';
-              }
-            }}
           >
-            <img 
-              src="/logo.png" 
-              alt="BITS Logo" 
-              style={{
-                width: '24px',
-                height: '24px'
-              }}
-            />
-            BUY $BITS NOW
+            <img src="/logo.png" alt="BITS Logo" className="button-logo" />
+            <span className="button-text">BUY  $BITS  NOW</span>
           </button>
           
-          {/* 🚨 Smart Warning Card - Only show when needed */}
-          {(!paymentState.canProceed || !termsAccepted) && (
-            <div className="payment-warning-card" style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              margin: '10px auto',
-              padding: '10px 15px',
-              maxWidth: '300px',
-              background: 'rgba(255, 107, 107, 0.05)',
-              border: '1px solid rgba(255, 107, 107, 0.2)',
-              borderRadius: '10px',
-              backdropFilter: 'blur(5px)',
-              textAlign: 'center'
-            }}>
-              <div style={{
-                fontSize: '0.85rem',
-                fontWeight: '600',
-                color: '#ff6b6b',
-                marginBottom: '8px',
-                letterSpacing: '0.5px'
-              }}>
-                ⚠️ Requirements Not Met
-              </div>
-              <div style={{
+          {/* 🚨 Debug Info - ALWAYS SHOW for debugging */}
+          {(true) && (
+            <div className="button-debug-info" style={{
               fontSize: '0.8rem',
-                color: 'rgba(255, 107, 107, 0.9)',
+              color: '#ff6b6b',
+              marginTop: '8px',
+              padding: '12px',
+              background: 'rgba(255, 107, 107, 0.1)',
+              borderRadius: '8px',
+              border: '1px solid rgba(255, 107, 107, 0.3)',
+              textAlign: 'center',
+              minWidth: 'fit-content',
+              maxWidth: '100%',
+              wordWrap: 'break-word',
               lineHeight: '1.4'
             }}>
-                {!paymentState.hasValidAmount && <div>• Amount must be greater than 0</div>}
-                {!paymentState.hasValidBalance && !isFiatToken && <div>• Insufficient {selectedToken} balance</div>}
-                {paymentState.isLoading && <div>• Loading payment data...</div>}
-                {!termsAccepted && <div>• Accept Terms & Conditions</div>}
-                {selectedToken === "SOL" && !window.solana && <div>• Install Phantom Wallet</div>}
-              </div>
+              <div>🚨 Button disabled because:</div>
+              {!paymentState.hasValidAmount && <div>• Invalid amount: {paymentState.safeAmountPay}</div>}
+              {!paymentState.hasValidBalance && !isFiatToken && <div>• Insufficient balance: {paymentState.balances[selectedToken] || 0} {selectedToken}</div>}
+              {isFiatToken && <div>• ✅ Fiat payment - no crypto balance required</div>}
+              {paymentState.isLoading && <div>• Loading data...</div>}
+              {!termsAccepted && <div>• Terms & Conditions not accepted</div>}
+              {selectedToken === "SOL" && !window.solana && <div>• Phantom Wallet not detected (install Phantom)</div>}
+              
+
             </div>
           )}
         </>
-      )}
-
-      {/* 🎁 Invite Code Input Field */}
-      <div className="invite-code-section" style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        margin: '15px auto',
-        padding: '10px 15px',
-        maxWidth: '280px',
-        background: 'rgba(0, 255, 195, 0.03)',
-        border: '1px solid rgba(0, 255, 195, 0.15)',
-        borderRadius: '10px',
-        backdropFilter: 'blur(5px)'
-      }}>
-        <label style={{
-          fontSize: '0.75rem',
-          fontWeight: '500',
-          color: autoDetectedCode ? '#00ffc3' : 'rgba(0, 255, 195, 0.7)',
-          marginBottom: '6px',
-          textAlign: 'center',
-          letterSpacing: '0.5px'
-        }}>
-          🎁 {autoDetectedCode ? 'Referral Code (Auto-detected)' : 'Referral Code (Optional)'}
-        </label>
-        <input
-          type="text"
-          value={inviteCode}
-          onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-          placeholder={autoDetectedCode ? autoDetectedCode : "Enter code"}
-          style={{
-            width: '100%',
-            maxWidth: '180px',
-            padding: '8px 12px',
-            background: autoDetectedCode ? 'rgba(0, 255, 195, 0.08)' : 'rgba(0, 20, 30, 0.6)',
-            border: `1px solid ${autoDetectedCode ? '#00ffc3' : 'rgba(0, 255, 195, 0.25)'}`,
-            borderRadius: '6px',
-            color: '#ffffff',
-            fontSize: '0.85rem',
-            fontWeight: '600',
-            textAlign: 'center',
-            outline: 'none',
-            transition: 'all 0.3s ease',
-            boxShadow: autoDetectedCode ? '0 0 8px rgba(0, 255, 195, 0.2)' : 'none'
-          }}
-          disabled={inviteCodeChecking}
-        />
-        {autoDetectedCode && (
-          <div style={{
-            marginTop: '4px',
-            fontSize: '0.7rem',
-            color: 'rgba(0, 255, 195, 0.8)',
-            textAlign: 'center',
-            fontWeight: '500'
-          }}>
-            ✅ Found: {autoDetectedCode}
-          </div>
-        )}
-        {inviteCode && inviteCode !== autoDetectedCode && (
-          <div style={{
-            marginTop: '4px',
-            fontSize: '0.7rem',
-            color: 'rgba(255, 179, 71, 0.9)',
-            textAlign: 'center',
-            fontWeight: '500'
-          }}>
-            ✏️ Manual: {inviteCode}
-          </div>
-        )}
-      </div>
-
-      {/* 🤝 Friend's Referral Code Section - Show if user doesn't have a referrer yet OR for debugging */}
-      {(paymentState.walletAddress && (!referralStatus?.hasReferrer || true)) && (
-        <div className="friend-referral-section" style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          margin: '15px auto',
-          padding: '12px 15px',
-          maxWidth: '280px',
-          background: 'rgba(255, 179, 71, 0.03)',
-          border: '1px solid rgba(255, 179, 71, 0.15)',
-          borderRadius: '10px',
-          backdropFilter: 'blur(5px)'
-        }}>
-          <label style={{
-            fontSize: '0.75rem',
-            fontWeight: '500',
-            color: friendCodeStatus === 'applied' ? '#ffb347' : 'rgba(255, 179, 71, 0.7)',
-            marginBottom: '6px',
-            textAlign: 'center',
-            letterSpacing: '0.5px'
-          }}>
-            🤝 Friend's Referral Code {referralStatus && `(Debug: hasReferrer=${referralStatus.hasReferrer})`}
-          </label>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
-            <input
-              type="text"
-              value={friendReferralCode}
-              onChange={(e) => setFriendReferralCode(e.target.value.toUpperCase())}
-              placeholder={`Enter friend's code (Status: ${friendCodeStatus || 'null'}, Checking: ${inviteCodeChecking})`}
-              disabled={false} // Temporarily always enabled for testing
-              style={{
-                flex: 1,
-                padding: '8px 12px',
-                background: friendCodeStatus === 'applied' 
-                  ? 'rgba(255, 179, 71, 0.08)' 
-                  : 'rgba(30, 20, 0, 0.6)',
-                border: `1px solid ${
-                  friendCodeStatus === 'applied' ? '#ffb347' :
-                  friendCodeStatus === 'invalid' ? '#ff6b6b' :
-                  'rgba(255, 179, 71, 0.25)'
-                }`,
-                borderRadius: '6px',
-                color: '#ffffff',
-                fontSize: '0.85rem',
-                fontWeight: '600',
-                textAlign: 'center',
-                outline: 'none',
-                transition: 'all 0.3s ease',
-                boxShadow: friendCodeStatus === 'applied' ? '0 0 8px rgba(255, 179, 71, 0.2)' : 'none'
-              }}
-            />
-            
-            {friendCodeStatus !== 'applied' && (
-              <button
-                onClick={() => applyFriendReferralCode(friendReferralCode)}
-                disabled={!friendReferralCode.trim()}
-                style={{
-                  padding: '8px 12px',
-                  background: friendReferralCode.trim() ? '#ffb347' : '#666666',
-                  border: 'none',
-                  borderRadius: '6px',
-                  color: '#000000',
-                  fontSize: '0.75rem',
-                  fontWeight: '600',
-                  cursor: friendReferralCode.trim() ? 'pointer' : 'not-allowed',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                Apply
-              </button>
-            )}
-          </div>
-
-          {friendCodeStatus === 'applied' && (
-            <div style={{
-              marginTop: '4px',
-              fontSize: '0.7rem',
-              color: 'rgba(255, 179, 71, 0.8)',
-              textAlign: 'center',
-              fontWeight: '500'
-            }}>
-              ✅ Applied: {friendReferralCode}
-            </div>
-          )}
-
-          {friendCodeStatus === 'invalid' && (
-            <div style={{
-              marginTop: '4px',
-              fontSize: '0.7rem',
-              color: '#ff6b6b',
-              textAlign: 'center',
-              fontWeight: '500'
-            }}>
-              ❌ Invalid or already used
-            </div>
-          )}
-        </div>
       )}
 
       {/* 🎯 Payment Summary */}

@@ -19,7 +19,7 @@ const useHandleTransaction = ({
   setIsConfirmed,
   bonusAmount,
   selectedPaymentMethod,
-  inviteCode,
+  referralCode, // 🎯 Add referral code parameter
 }) => {
   const confirmedOnce = useRef(false); // ✅ Evită dublarea confirmării
 
@@ -32,7 +32,7 @@ const useHandleTransaction = ({
     console.log("- pureBits:", pureBits);
     console.log("- usdValue:", usdValue);
     console.log("- walletAddress:", walletAddress);
-    console.log("- inviteCode:", inviteCode); // 🎁 Log invite code
+    console.log("- referralCode:", referralCode); // 🎯 Log referral code
 
     try {
       console.log("🎯 [STEP 2] Starting token mapping...");
@@ -186,7 +186,7 @@ const useHandleTransaction = ({
             usdInvested: Math.floor(usdValue),
             bonusAmount: validBonusAmount,
             bonusPercentage: validBonusAmount > 0 ? 5 : 0,
-            inviteCode: inviteCode, // 🎁 Add invite code
+            referralCode: referralCode, // 🎯 Add referral code
             onStatusUpdate: (status) => {
               console.log(`💳 Payment status update: ${status}`);
             }
@@ -203,7 +203,7 @@ const useHandleTransaction = ({
             bonusAmount: validBonusAmount,
             bonusPercentage: validBonusAmount > 0 ? 5 : 0,
             fallbackBitsPrice: pricePerBitsUSD,
-            inviteCode: inviteCode, // 🎁 Add invite code
+            referralCode: referralCode, // 🎯 Add referral code
           });
         } else {
           txResult = await handler({
@@ -214,8 +214,8 @@ const useHandleTransaction = ({
             usdInvested: Math.floor(usdValue),
             bonusAmount: validBonusAmount,
             bonusPercentage: validBonusAmount > 0 ? 5 : 0,
-            inviteCode: inviteCode, // 🎁 Add invite code
             fallbackBitsPrice: pricePerBitsUSD, // ✅ inclus acum corect
+            referralCode: referralCode, // 🎯 Add referral code
           });
         }
 
@@ -296,7 +296,6 @@ const useHandleTransaction = ({
     setPopupVisible,
     bonusAmount,
     setIsConfirmed,
-    inviteCode, // 🎁 Add invite code dependency
   ]);
 
   return { handleBuy };

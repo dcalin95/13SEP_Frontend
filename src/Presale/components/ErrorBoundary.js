@@ -39,12 +39,12 @@ class PresaleErrorBoundary extends React.Component {
       return (
         <div className="error-boundary">
           <div className="error-content">
-            <h2>🚨 Oops! Ceva nu a mers bine</h2>
-            <p>Ne pare rău, a apărut o eroare neașteptată în aplicația de presale.</p>
+            <h2>🤖 AI System Error</h2>
+            <p>Our neural networks encountered an unexpected anomaly in the presale application.</p>
             
             <div className="error-details">
               <details>
-                <summary>Detalii tehnice (pentru dezvoltatori)</summary>
+                <summary>Technical Details (for developers)</summary>
                 <pre>{this.state.error && this.state.error.toString()}</pre>
                 <pre>{this.state.errorInfo && this.state.errorInfo.componentStack}</pre>
               </details>
@@ -52,15 +52,15 @@ class PresaleErrorBoundary extends React.Component {
 
             <div className="error-actions">
               <button onClick={this.handleRetry} className="retry-button">
-                🔄 Încearcă din nou
+                🔄 Retry Connection
               </button>
               <button onClick={() => window.location.reload()} className="reload-button">
-                🔄 Reîncarcă pagina
+                🔄 Reload Application
               </button>
             </div>
 
             <div className="error-help">
-              <p>Dacă problema persistă, contactează echipa de suport.</p>
+              <p>If the problem persists, please contact our support team.</p>
             </div>
           </div>
         </div>

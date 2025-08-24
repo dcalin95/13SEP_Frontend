@@ -2,6 +2,7 @@
 import "react-toastify/dist/ReactToastify.css";
 import "./styles/GlobalStyles.css";
 import "./toastStyle.css";
+import "./chrome-compatibility-fix.css"; // 🔧 CHROME FIXES
 
 // 🧠 Core React
 import React, { useState, Suspense, lazy } from "react";
@@ -14,7 +15,7 @@ import Footer from "./components/Footer";
 import BoostedBanner from "./components/BoostedBanner";
 import HeaderWalletInfo from "./context/HeaderWalletInfo";
 import StarfieldBackground from "./components/StarfieldBackground";
-// import CustomCursor from "./components/CustomCursor"; // Disabled for better performance
+import CustomCursor from "./components/CustomCursor";
 import ErrorBoundary from "./components/ErrorBoundary";
 import SidebarMenu from "./SidebarMenu/SidebarMenu";
 import HamburgerButton from "./HamburgerButton/HamburgerButton";
@@ -32,9 +33,8 @@ import CryptoAnalyticsDashboard from "./components/CryptoAnalyticsDashboard";
 import MarketingDashboard from "./components/MarketingDashboard";
 
 // 🎛 UI/UX Enhancements
-import UIControls from "./components/UIControls";
-import AIPortfolioLauncher from "./components/AIPortfolioLauncher";
-import MobileFloatingUIManager from "./components/MobileFloatingUIManager";
+
+import FloatingMenu from "./components/FloatingMenu";
 
 // 📈 Google Analytics
 import GoogleAnalyticsWrapper from "./components/GoogleAnalyticsWrapper";
@@ -65,6 +65,7 @@ const BitcoinAcademy = lazy(() => import("./components/BitcoinAcademy"));
 const ProofOfTransferPage = lazy(() => import("./components/BitcoinAcademy/pages/ProofOfTransferPage"));
 const EducationPage = lazy(() => import("./components/EducationPageModern"));
 const AIPortfolioPage = lazy(() => import("./components/AIPortfolioPage"));
+const PaperTradingPage = lazy(() => import("./papertrade/PaperTradingPage"));
 const STXPaperTrade = lazy(() => import("./papertrade/STXPaperTrade"));
 const TokenPaperTrade = lazy(() => import("./papertrade/TokenPaperTrade"));
 
@@ -74,21 +75,14 @@ const TermsPart3 = lazy(() => import("./Legal/TermsPart3"));
 const Privacy = lazy(() => import("./Legal/Privacy"));
 
 const WalletTestComponent = lazy(() => import("./context/wallet/WalletTestComponent"));
+const MindMirror = lazy(() => import("./mindmirror/MindMirrorDashboard"));
 
 const App = () => {
   const [amountPay, setAmountPay] = useState(0);
-  
-  // 📱 Dashboard visibility states for mobile manager
-  const [isCryptoVisible, setIsCryptoVisible] = useState(false);
-  const [isMarketingVisible, setIsMarketingVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [currentSection, setCurrentSection] = useState("home");
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
-  
-  // 📱 Dashboard control functions for mobile manager
-  const handleOpenCrypto = () => setIsCryptoVisible(true);
-  const handleOpenMarketing = () => setIsMarketingVisible(true);
 
   const handleSidebarSelect = (section) => {
     setCurrentSection(section);
@@ -121,7 +115,7 @@ const App = () => {
           <ErrorBoundary>
             <MobileUI>
               <div className="app-container">
-                {/* <CustomCursor /> */}
+                <CustomCursor />
                 <StarfieldBackground />
                 <Header />
                 <BoostedBanner />
@@ -152,7 +146,7 @@ const App = () => {
                       <Route path="/roadmap" element={<Roadmap />} />
                       <Route path="/scheme-test" element={<Scheme />} />
                       <Route path="/ai-portfolio" element={<AIPortfolioPage />} />
-                      <Route path="/ai-portfolio/:portfolioId" element={<AIPortfolioPage />} />
+                      <Route path="/paper-trading" element={<PaperTradingPage />} />
                       <Route path="/paper-trade/stx" element={<STXPaperTrade />} />
                       <Route path="/paper-trade/:symbol" element={<TokenPaperTrade />} />
                       <Route path="/ai-assistant" element={<AIBitSwapDEXAssistant />} />
@@ -179,6 +173,7 @@ const App = () => {
                       />
                       <Route path="/privacy-policy" element={<Privacy />} />
                       <Route path="/wallet-test" element={<WalletTestComponent />} />
+                      <Route path="/mind-mirror" element={<MindMirror />} />
                       <Route
                         path="/test-payment"
                         element={
@@ -198,26 +193,13 @@ const App = () => {
 
                 <Footer />
                 <PWAInstallPrompt />
-                <AIPortfolioLauncher />
               </div>
             </MobileUI>
 
             {/* Dashboards & Floating UI */}
-            <CryptoAnalyticsDashboard 
-              externalIsVisible={isCryptoVisible}
-              onVisibilityChange={setIsCryptoVisible}
-            />
-            <MarketingDashboard 
-              externalIsVisible={isMarketingVisible}
-              onVisibilityChange={setIsMarketingVisible}
-            />
-            <UIControls position="bottom-right" />
-            
-            {/* 📱 Mobile Floating UI Manager - coordinates all floating buttons on mobile */}
-            <MobileFloatingUIManager
-              onOpenCrypto={handleOpenCrypto}
-              onOpenMarketing={handleOpenMarketing}
-            />
+            <CryptoAnalyticsDashboard />
+            <MarketingDashboard />
+            <FloatingMenu />
           </ErrorBoundary>
         </GoogleAnalyticsWrapper>
       </Router>

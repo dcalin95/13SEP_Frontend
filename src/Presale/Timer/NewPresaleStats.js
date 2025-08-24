@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./NewPresaleStats.module.css";
 import axios from "axios";
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 
 // AnimatedNumber component
 const AnimatedNumber = ({ value, duration = 1000, prefix = "", suffix = "", compact = false }) => {

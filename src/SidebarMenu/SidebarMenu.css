@@ -132,6 +132,12 @@
   color: #ff922b;
 }
 
+.btn-mindmirror {
+  background-color: black;
+  border: 2px solid #00ff9d;
+  color: #00ff9d;
+}
+
 .btn-go-main {
   background-color: black;
   border: 2px solid #f3722c;

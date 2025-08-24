@@ -397,7 +397,7 @@ const startPaymentStatusPolling = ({ paymentId, backendURL, onStatusUpdate, onEr
       console.warn('❌ Status poll failed:', error);
       onError(error);
     }
-  }, 5000); // Poll every 5 seconds
+  }, 10000); // 🔧 Poll every 10 seconds (reduced from 5s to prevent rate limiting)
 
   return poller;
 };

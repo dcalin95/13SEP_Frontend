@@ -1,7 +1,7 @@
 class ErrorService {
   constructor(config = {}) {
     this.config = {
-      apiUrl: process.env.REACT_APP_API_URL || 'http://localhost:3001',
+      apiUrl: process.env.REACT_APP_BACKEND_URL || 'https://backend-server-f82y.onrender.com',
       enableLogging: process.env.NODE_ENV === 'production',
       enableAnalytics: process.env.NODE_ENV === 'production',
       ...config

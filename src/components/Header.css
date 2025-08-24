@@ -11,8 +11,10 @@
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 100;
+  z-index: 1000; /* 🔧 CHROME FIX - Increased z-index */
   border-bottom: 1px solid rgba(0, 255, 200, 0.2);
+  backdrop-filter: blur(10px); /* 🔧 CHROME FIX - Better rendering */
+  -webkit-backdrop-filter: blur(10px); /* 🔧 CHROME FIX - Webkit support */
 }
 
 /* === LOGO === */
@@ -76,6 +78,7 @@
   box-shadow: 0 0 8px rgba(0, 255, 255, 0.15);
   background-size: 200% auto;
   animation: shine 14s linear infinite;
+
 }
 
 .navigation a::before,
@@ -94,6 +97,7 @@
   z-index: -1;
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
+
 }
 
 .navigation a:hover,
@@ -115,6 +119,7 @@
 .navigation .btn-home i        { color: #69db7c; }
 .navigation .btn-buy i         { color: #ffd43b; }
 .navigation .btn-tokenomics i  { color: #4dabf7; }
+.navigation .btn-paper-trading i { color: #ff6b35; }
 .navigation .btn-audit i       { color: #9775fa; }
 .navigation .btn-leaderboard i { color: #74c0fc; }
 .navigation .btn-bitcoin-academy i { color: #f7931e; }
@@ -128,6 +133,7 @@
 .btn-home        { border-color: #69db7c; }
 .btn-buy         { border-color: #ffd43b; }
 .btn-tokenomics  { border-color: #4dabf7; }
+.btn-paper-trading { border-color: #ff6b35; }
 .btn-audit       { border-color: #9775fa; }
 .btn-leaderboard { border-color: #74c0fc; }
 .btn-bitcoin-academy { border-color: #f7931e; }

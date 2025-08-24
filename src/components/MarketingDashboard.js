@@ -3,12 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import marketingService from '../services/marketingService';
 import './MarketingDashboard.css';
 
-const MarketingDashboard = ({ 
-  externalIsVisible = null, 
-  onVisibilityChange = null 
-}) => {
+const MarketingDashboard = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [marketingData, setMarketingData] = useState({});
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(false);
@@ -22,38 +18,6 @@ const MarketingDashboard = ({
   const intervalRef = useRef(null);
   const particleRef = useRef(null);
 
-  // Detect mobile device
-  useEffect(() => {
-    const checkMobile = () => {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-             window.innerWidth <= 768 ||
-             ('ontouchstart' in window) ||
-             (navigator.maxTouchPoints > 0);
-    };
-    
-    const handleResize = () => {
-      setIsMobile(checkMobile());
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Handle external visibility control (from mobile manager)
-  useEffect(() => {
-    if (externalIsVisible !== null) {
-      setIsVisible(externalIsVisible);
-    }
-  }, [externalIsVisible]);
-
-  // Notify parent about visibility changes
-  useEffect(() => {
-    if (onVisibilityChange) {
-      onVisibilityChange(isVisible);
-    }
-  }, [isVisible, onVisibilityChange]);
-
   useEffect(() => {
     if (isVisible) {
       initializeDashboard();
@@ -63,6 +27,12 @@ const MarketingDashboard = ({
         if (intervalRef.current) clearInterval(intervalRef.current);
       };
     }
+  }, [isVisible]);
+
+  useEffect(() => {
+    const handleToggle = () => setIsVisible(!isVisible);
+    window.addEventListener('toggleMarketingDashboard', handleToggle);
+    return () => window.removeEventListener('toggleMarketingDashboard', handleToggle);
   }, [isVisible]);
 
   const startRealTimeUpdates = () => {
@@ -187,48 +157,7 @@ const MarketingDashboard = ({
   };
 
   if (!isVisible) {
-    // On mobile, don't render the toggle button (handled by MobileFloatingUIManager)
-    if (isMobile) {
-      return null;
-    }
-    
-    return (
-      <motion.button
-        className="marketing-dashboard-toggle-btn ai-enhanced"
-        onClick={toggleDashboard}
-        title="AI Marketing Dashboard"
-        whileHover={{ 
-          scale: 1.15, 
-          rotateY: 15,
-          boxShadow: "0 0 35px rgba(102, 126, 234, 0.7)",
-          background: "linear-gradient(135deg, #667eea 0%, #764ba2 30%, #f093fb 70%, #667eea 100%)"
-        }}
-        whileTap={{ scale: 0.9 }}
-        animate={{
-          boxShadow: [
-            "0 10px 25px rgba(102, 126, 234, 0.4)",
-            "0 15px 35px rgba(118, 75, 162, 0.5)",
-            "0 10px 25px rgba(240, 147, 251, 0.4)",
-            "0 10px 25px rgba(102, 126, 234, 0.4)"
-          ],
-          rotate: [0, 2, -2, 0]
-        }}
-        transition={{ 
-          duration: 3, 
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      >
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-        >
-          🤖
-        </motion.div>
-        <div className="pulse-ring"></div>
-        <div className="pulse-ring delay-1"></div>
-      </motion.button>
-    );
+    return null; // Nu afișa butonul floating, doar din hamburger
   }
 
   return (

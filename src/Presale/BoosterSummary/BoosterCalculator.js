@@ -41,7 +41,7 @@ const BoosterCalculator = ({ baseBits }) => {
 
       const formatted = rewards.map((r, i) => {
         const limit = parseFloat(ethers.utils.formatUnits(r.limit, 18));
-        const percent = parseFloat(ethers.utils.formatUnits(r.percent, 2));
+        const percent = Number(r.percent); // Percent values are integers (5, 7, 10, 15)
         console.log(`📈 Tier ${i}: limit=${limit}, bonus=${percent}%`);
         return { limit, percent };
       });

@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './RoundDurationStatus.css';
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 
 const RoundDurationStatus = ({ presaleState }) => {
 

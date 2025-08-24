@@ -94,15 +94,11 @@ export const WalletProvider = ({ children }) => {
       
       const isMetaMask = type === WALLET_TYPES.EVM;
       
-      // Show popup for MetaMask on mobile (only for first-time users)
+      // Show popup for MetaMask on mobile
       if (isMobile && isMetaMask) {
-        const hasSeenMetaMaskGuide = localStorage.getItem('metamask-guide-seen');
-        
-        if (!hasSeenMetaMaskGuide) {
-          setPendingWalletType(type);
-          setShowMetaMaskPopup(true);
-          return; // Exit early, will continue after user confirms
-        }
+        setPendingWalletType(type);
+        setShowMetaMaskPopup(true);
+        return; // Exit early, will continue after user confirms
       }
 
       // Continue with normal connection logic
@@ -252,9 +248,6 @@ export const WalletProvider = ({ children }) => {
 
   // Handle MetaMask popup continue
   const handleMetaMaskPopupContinue = async () => {
-    // Mark as seen so it won't show again
-    localStorage.setItem('metamask-guide-seen', 'true');
-    
     setShowMetaMaskPopup(false);
     if (pendingWalletType) {
       await performWalletConnection(pendingWalletType);

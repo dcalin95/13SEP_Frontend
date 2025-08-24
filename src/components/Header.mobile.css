@@ -59,7 +59,7 @@
     gap: 0.1rem;
     border: 1px solid #00ffff;
     border-radius: 8px;
-    height: 280px; /* Optimized height for all components */
+    height: 320px; /* Increased height to fit all 11 buttons */
     overflow: hidden; /* No scrolling needed */
     box-sizing: border-box;
   }
@@ -121,6 +121,13 @@
   }
   .mobile-nav-menu a[href="/staking"] i { color: #4dabf7 !important; font-size: 0.7rem; }
   
+  .mobile-nav-menu a[href="/paper-trading"] { 
+    border-color: #ff6b35 !important; 
+    color: #ff6b35 !important;
+    text-shadow: 0 0 4px rgba(255, 107, 53, 0.3);
+  }
+  .mobile-nav-menu a[href="/paper-trading"] i { color: #ff6b35 !important; font-size: 0.7rem; }
+  
   .mobile-nav-menu a[href="/whitepaper"] { 
     border-color: #9775fa !important; 
     color: #9775fa !important;
@@ -142,25 +149,35 @@
   }
   .mobile-nav-menu a[href="/bitcoin-academy"] i { color: #f7931e !important; font-size: 0.7rem; }
   
+  .mobile-nav-menu a[href="/education"] { 
+    border-color: #4ecdc4 !important; 
+    color: #4ecdc4 !important;
+    text-shadow: 0 0 4px rgba(78, 205, 196, 0.3);
+  }
+  .mobile-nav-menu a[href="/education"] i { color: #4ecdc4 !important; font-size: 0.7rem; }
+  
+  .mobile-nav-menu a[href="/proof-of-transfer"] { 
+    border-color: #00ff88 !important; 
+    color: #00ff88 !important;
+    text-shadow: 0 0 4px rgba(0, 255, 136, 0.3);
+  }
+  .mobile-nav-menu a[href="/proof-of-transfer"] i { color: #00ff88 !important; font-size: 0.7rem; }
+  
   .mobile-nav-menu a[href="/rewards-hub"] { 
     border-color: #f783ac !important; 
     color: #f783ac !important;
     text-shadow: 0 0 4px rgba(247, 131, 172, 0.3);
   }
-  .mobile-nav-menu a[href="/rewards-hub"] i { color: #f783ac !important; font-size: 0.8rem; }
-
-  /* AI BitSwapDEX button */
+  .mobile-nav-menu a[href="/rewards-hub"] i { color: #f783ac !important; font-size: 0.7rem; }
+  
+  /* AI BitSwapDEX button styling */
   .mobile-nav-menu button {
-    justify-content: flex-start;
-    border-color: #f3722c !important;
+    border-color: #f3722c !important; 
     color: #f3722c !important;
     text-shadow: 0 0 4px rgba(243, 114, 44, 0.3);
   }
+  .mobile-nav-menu button i { color: #f3722c !important; font-size: 0.7rem; }
 
-  .mobile-nav-menu button i {
-    color: #f3722c !important;
-    font-size: 0.8rem;
-  }
   .header {
     display: flex;
     flex-wrap: nowrap; /* Nu permite afișarea pe 2 rânduri */

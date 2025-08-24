@@ -77,26 +77,6 @@ html, body, #root {
   color: var(--text-light);
   line-height: 1.5;
   font-display: swap;
-  cursor: default !important; /* Ensure default cursor is always visible */
-}
-
-/* ===============================
-   🖱️ CURSOR OVERRIDE FIX
-=============================== */
-* {
-  cursor: inherit !important; /* Inherit cursor from parent */
-}
-
-/* Interactive elements should show pointer cursor */
-a, button, input[type="submit"], input[type="button"], input[type="reset"],
-select, [role="button"], [onclick], .clickable {
-  cursor: pointer !important;
-}
-
-/* Text inputs should show text cursor */
-input[type="text"], input[type="email"], input[type="password"], 
-input[type="search"], input[type="url"], textarea {
-  cursor: text !important;
 }
 
 html, body {

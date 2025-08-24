@@ -152,17 +152,52 @@
     font-weight: bold;
 }
 
+/* ===== Card Icons ===== */
+.card-icon {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 2rem;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 50%;
+    padding: 0.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.info-card {
+    position: relative;
+    background: var(--color-background);
+    border-radius: 15px;
+    padding: 1.5rem;
+    width: 300px;
+    box-shadow: 0 8px 20px var(--shadow-dark);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
 /* ===== CTA ===== */
 .cta-section {
     text-align: center;
-    padding: 2rem 1rem;
-    margin-top: 2rem;
+    padding: 3rem 1rem;
+    margin-top: 3rem;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(255, 0, 124, 0.1));
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
 }
 
 .cta-title {
     font-size: var(--font-size-title);
     color: var(--color-highlight);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.cta-subtitle {
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    margin-bottom: 2rem;
+    opacity: 0.9;
 }
 
 .cta-button {
@@ -170,13 +205,20 @@
     background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
     color: white;
     font-size: var(--font-size-large);
-    padding: 1rem 2rem;
+    padding: 1rem 2.5rem;
     border-radius: 50px;
     cursor: pointer;
     border: none;
     box-shadow: 0 8px 20px var(--shadow-dark);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cta-icon {
+    font-size: 1.2rem;
 }
 
 .cta-button:hover {
@@ -395,6 +437,64 @@
     }
 }
 
+/* ===== Features Highlight Section ===== */
+.features-highlight {
+    margin-top: 4rem;
+    padding: 3rem 1rem;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(0, 212, 255, 0.1));
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.features-title {
+    font-size: var(--font-size-title);
+    color: var(--color-highlight);
+    margin-bottom: 2rem;
+    font-weight: bold;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.feature-item {
+    background: rgba(30, 30, 47, 0.8);
+    padding: 2rem 1.5rem;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.feature-item h4 {
+    color: var(--color-primary);
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.feature-item p {
+    color: var(--color-text);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
 /* Landscape orientation for mobile */
 @media (max-width: 768px) and (orientation: landscape) {
     .how-to-buy-header {
@@ -414,5 +514,45 @@
     .info-card {
         width: calc(50% - 0.5rem);
         min-width: 250px;
+    }
+    
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+}
+
+/* Mobile responsive pentru features */
+@media (max-width: 768px) {
+    .features-highlight {
+        margin-top: 2rem;
+        padding: 2rem 1rem;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .feature-item {
+        padding: 1.5rem 1rem;
+    }
+    
+    .feature-icon {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .features-title {
+        font-size: 1.6rem;
+    }
+    
+    .feature-item h4 {
+        font-size: 1.1rem;
+    }
+    
+    .feature-item p {
+        font-size: 0.9rem;
     }
 }

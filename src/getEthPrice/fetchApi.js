@@ -1,5 +1,5 @@
 // Configurare pentru URL-ul backend-ului
-const API_URL = "http://localhost:5000"; // Schimbă cu URL-ul backend-ului tău
+const API_URL = "https://backend-server-f82y.onrender.com"; // Backend Render URL
 
 /**
  * Funcție generică pentru cereri API

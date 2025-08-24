@@ -1,31 +1,23 @@
-import React, { useState, useEffect, useContext } from 'react';
-import WalletContext from '../context/WalletContext';
-import { useNavigate } from 'react-router-dom';
-import unifiedRewardsService from '../services/unifiedRewardsService';
-import './RewardsHub.css';
+import React, { useState, useEffect, useContext } from "react";
+import WalletContext from "../context/WalletContext";
+import unifiedRewardsService from "../services/unifiedRewardsService";
+import { ethers } from "ethers";
+import "./RewardsHub.css";
 
 const RewardsHub = () => {
-  const { walletAddress } = useContext(WalletContext);
-  const navigate = useNavigate();
-  
+  const { signer, walletAddress } = useContext(WalletContext);
   const [rewards, setRewards] = useState({
-    wallet: null,
     totalPending: 0,
     totalClaimed: 0,
     pendingRewards: [],
-    telegram: { pending: 0, claimed: 0, timeSpent: 0, messages: 0 },
-    invite: { pending: 0, claimed: 0, hasCode: false, code: null },
-    unified: { totalPending: 0, totalClaimed: 0, pendingRewards: [] },
     loading: true,
-    error: null,
-    lastUpdated: null
+    error: null
   });
+  const [claiming, setClaiming] = useState(false);
+  const [staking, setStaking] = useState(false);
+  const [statusMsg, setStatusMsg] = useState("");
 
-  const [claiming, setClaiming] = useState({
-    individual: {},
-    all: false
-  });
-
+  // Load rewards data
   useEffect(() => {
     if (walletAddress) {
       loadRewards();
@@ -36,12 +28,12 @@ const RewardsHub = () => {
     try {
       console.log("🔄 RewardsHub: Loading rewards for wallet:", walletAddress);
       setRewards(prev => ({ ...prev, loading: true }));
-
-      // Fetch unified rewards
+      
+      // Get unified rewards
       const unifiedData = await unifiedRewardsService.getRewardsSummary(walletAddress);
       console.log("📋 RewardsHub: Unified rewards data:", unifiedData);
-
-      // Fetch Telegram rewards
+      
+      // Get Telegram rewards separately
       let telegramRewards = { pending: 0, claimed: 0 };
       try {
         const telegramResponse = await fetch(`https://backend-server-f82y.onrender.com/api/telegram-rewards/reward/${walletAddress}`);
@@ -50,7 +42,7 @@ const RewardsHub = () => {
           console.log("💬 RewardsHub: Telegram rewards data:", telegramData);
           telegramRewards = {
             pending: telegramData.eligible && telegramData.reward > 0 ? telegramData.reward : 0,
-            claimed: 0, // Telegram doesn't track claimed yet
+            claimed: 0, // Telegram rewards are always pending until claimed
             timeSpent: telegramData.time_spent_hours || 0,
             messages: telegramData.messages_total || 0
           };
@@ -58,78 +50,31 @@ const RewardsHub = () => {
       } catch (telegramError) {
         console.warn("⚠️ RewardsHub: Could not fetch Telegram rewards:", telegramError);
       }
-
-      // Fetch invite/referral data (OPTIMIZED: use same cache as PaymentBox)
+      
+      // Get Invite/Referral code info
       let inviteRewards = { pending: 0, claimed: 0, hasCode: false };
       try {
-        // 🚀 Check session cache first (same key as PaymentBox for consistency)
-        const cacheKey = `referral_data_${walletAddress}`;
-        const cachedData = sessionStorage.getItem(cacheKey);
-        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-        
-        if (cachedData) {
-          try {
-            const parsed = JSON.parse(cachedData);
-            if (Date.now() - parsed.timestamp < CACHE_DURATION && parsed.inviteCode !== undefined) {
-              console.log("🚀 RewardsHub: Using cached invite data for:", walletAddress);
-              inviteRewards = {
-                pending: 0,
-                claimed: 0,
-                hasCode: !!parsed.inviteCode,
-                code: parsed.inviteCode || null
-              };
-            } else {
-              // Cache miss - fetch fresh data
-              const inviteResponse = await fetch(`https://backend-server-f82y.onrender.com/api/invite/check-code/${walletAddress}`);
-              if (inviteResponse.ok) {
-                const inviteData = await inviteResponse.json();
-                console.log("👥 RewardsHub: Fresh invite data:", inviteData);
-                inviteRewards = {
-                  pending: 0,
-                  claimed: 0,
-                  hasCode: inviteData.hasCode || false,
-                  code: inviteData.code || null
-                };
-              }
-            }
-          } catch (parseError) {
-            // Cache parse error - fetch fresh data as fallback
-            const inviteResponse = await fetch(`https://backend-server-f82y.onrender.com/api/invite/check-code/${walletAddress}`);
-            if (inviteResponse.ok) {
-              const inviteData = await inviteResponse.json();
-              inviteRewards = {
-                pending: 0,
-                claimed: 0,
-                hasCode: inviteData.hasCode || false,
-                code: inviteData.code || null
-              };
-            }
-          }
-        } else {
-          // No cache - fetch fresh data
-          const inviteResponse = await fetch(`https://backend-server-f82y.onrender.com/api/invite/check-code/${walletAddress}`);
-          if (inviteResponse.ok) {
-            const inviteData = await inviteResponse.json();
-            console.log("👥 RewardsHub: Fresh invite data:", inviteData);
-            inviteRewards = {
-              pending: 0,
-              claimed: 0,
-              hasCode: inviteData.hasCode || false,
-              code: inviteData.code || null
-            };
-          }
+        const inviteResponse = await fetch(`https://backend-server-f82y.onrender.com/api/invite/check-code/${walletAddress}`);
+        if (inviteResponse.ok) {
+          const inviteData = await inviteResponse.json();
+          console.log("👥 RewardsHub: Invite data:", inviteData);
+          inviteRewards = {
+            pending: 0, // Invite rewards come from purchases, not having a code
+            claimed: 0,
+            hasCode: inviteData.hasCode || false,
+            code: inviteData.code || null
+          };
         }
       } catch (inviteError) {
         console.warn("⚠️ RewardsHub: Could not fetch invite data:", inviteError);
       }
-
-      // Calculate totals
+      
+      // Combine all rewards
       const totalPending = (unifiedData.totalPending || 0) + telegramRewards.pending;
       const totalClaimed = (unifiedData.totalClaimed || 0) + telegramRewards.claimed;
-
-      // Build pending rewards list
-      const pendingRewards = [...(unifiedData.pendingRewards || [])];
       
+      // Create combined pending rewards list
+      const pendingRewards = [...(unifiedData.pendingRewards || [])];
       if (telegramRewards.pending > 0) {
         pendingRewards.push({
           id: 'telegram-activity',
@@ -139,7 +84,13 @@ const RewardsHub = () => {
           description: `Telegram Activity: ${telegramRewards.timeSpent}h, ${telegramRewards.messages} messages`
         });
       }
-
+      
+      console.log("✅ RewardsHub: Combined rewards calculated:", {
+        totalPending,
+        totalClaimed,
+        pendingCount: pendingRewards.length
+      });
+      
       setRewards({
         wallet: walletAddress,
         totalPending,
@@ -152,92 +103,86 @@ const RewardsHub = () => {
         error: null,
         lastUpdated: new Date().toISOString()
       });
-
+      
     } catch (error) {
       console.error("❌ RewardsHub: Error loading rewards:", error);
-      setRewards(prev => ({ ...prev, loading: false, error: error.message }));
+      setRewards(prev => ({
+        ...prev,
+        loading: false,
+        error: error.message
+      }));
     }
   };
 
-  const claimReward = async (rewardId) => {
-    try {
-      setClaiming(prev => ({ ...prev, individual: { ...prev.individual, [rewardId]: true } }));
-      
-      if (rewardId === 'telegram-activity') {
-        // Handle Telegram reward claiming (if implemented)
-        console.log("🎁 Claiming Telegram reward...");
-        // For now, just simulate success
-        setTimeout(() => {
-          setClaiming(prev => ({ ...prev, individual: { ...prev.individual, [rewardId]: false } }));
-          loadRewards(); // Reload to update state
-        }, 2000);
-        return;
-      }
-
-      // Handle unified system rewards
-      const result = await unifiedRewardsService.claimReward(walletAddress, rewardId);
-      console.log("✅ RewardsHub: Reward claimed:", result);
-      
-      // Reload rewards after successful claim
-      await loadRewards();
-      
-    } catch (error) {
-      console.error("❌ RewardsHub: Error claiming reward:", error);
-      alert(`Error claiming reward: ${error.message}`);
-    } finally {
-      setClaiming(prev => ({ ...prev, individual: { ...prev.individual, [rewardId]: false } }));
-    }
-  };
-
-  const claimAllRewards = async () => {
-    try {
-      setClaiming(prev => ({ ...prev, all: true }));
-      
-      // Claim all unified rewards
-      if (rewards.unified.totalPending > 0) {
-        const result = await unifiedRewardsService.claimAllRewards(walletAddress);
-        console.log("✅ RewardsHub: All unified rewards claimed:", result);
-      }
-
-      // Handle Telegram rewards if any
-      if (rewards.telegram.pending > 0) {
-        console.log("🎁 Claiming all Telegram rewards...");
-        // Simulate Telegram claim
-      }
-
-      // Reload rewards after successful claims
-      await loadRewards();
-      
-    } catch (error) {
-      console.error("❌ RewardsHub: Error claiming all rewards:", error);
-      alert(`Error claiming rewards: ${error.message}`);
-    } finally {
-      setClaiming(prev => ({ ...prev, all: false }));
-    }
-  };
-
+  // Claim rewards to wallet
   const handleClaimToWallet = async () => {
-    if (rewards.totalPending > 0) {
-      await claimAllRewards();
-      alert(`🎉 Successfully claimed ${Math.round(rewards.totalPending)} BITS to your wallet!`);
+    if (rewards.pendingRewards.length === 0) {
+      setStatusMsg("❌ No pending rewards to claim");
+      return;
+    }
+
+    try {
+      setClaiming(true);
+      setStatusMsg("🔄 Claiming rewards to your wallet...");
+
+      const result = await unifiedRewardsService.claimAllRewards(walletAddress);
+      
+      if (result.success) {
+        setStatusMsg(`🎉 Successfully claimed ${result.totalAmount} $BITS to your wallet!`);
+        await loadRewards(); // Refresh data
+      } else {
+        throw new Error(result.error || "Claim failed");
+      }
+    } catch (error) {
+      console.error("❌ Claim failed:", error);
+      setStatusMsg(`❌ Claim failed: ${error.message}`);
+    } finally {
+      setClaiming(false);
     }
   };
 
-  const handleClaimAndStake = async () => {
-    if (rewards.totalPending > 0) {
-      await claimAllRewards();
-      // Navigate to staking with pre-filled amount
-      navigate(`/staking?amount=${Math.round(rewards.totalPending)}&source=rewards`);
+  // Stake rewards directly
+  const handleStakeRewards = async () => {
+    if (rewards.pendingRewards.length === 0) {
+      setStatusMsg("❌ No pending rewards to stake");
+      return;
+    }
+
+    try {
+      setStaking(true);
+      setStatusMsg("🔄 Claiming and staking your rewards...");
+
+      // First claim rewards
+      const claimResult = await unifiedRewardsService.claimAllRewards(walletAddress);
+      
+      if (!claimResult.success) {
+        throw new Error(claimResult.error || "Claim failed");
+      }
+
+      // Then redirect to staking with the claimed amount
+      const claimedAmount = parseFloat(claimResult.totalAmount);
+      setStatusMsg(`✅ Claimed ${claimedAmount} $BITS! Redirecting to staking...`);
+      
+      // Redirect to staking page with pre-filled amount
+      setTimeout(() => {
+        window.location.href = `/staking?amount=${claimedAmount}&source=rewards`;
+      }, 2000);
+
+    } catch (error) {
+      console.error("❌ Stake rewards failed:", error);
+      setStatusMsg(`❌ Stake failed: ${error.message}`);
+    } finally {
+      setStaking(false);
     }
   };
 
   if (!walletAddress) {
     return (
       <div className="rewards-hub">
-        <div className="rewards-container">
-          <div className="wallet-connect-prompt">
-            <h2>🔗 Connect Your Wallet</h2>
-            <p>Please connect your wallet to view and claim your rewards.</p>
+        <div className="hub-container">
+          <h1>🎁 Rewards Hub</h1>
+          <div className="connect-wallet-prompt">
+            <p>🔌 Please connect your wallet to view and manage your rewards.</p>
           </div>
         </div>
       </div>
@@ -246,152 +191,138 @@ const RewardsHub = () => {
 
   return (
     <div className="rewards-hub">
-      <div className="rewards-container">
-        <div className="rewards-header">
-          <h1>🎁 Rewards Hub</h1>
-          <p>Manage all your $BITS rewards in one place</p>
-        </div>
+      <div className="hub-container">
+        <h1>🎁 Rewards Hub</h1>
+        <p className="hub-subtitle">Claim your rewards directly to wallet or stake them for additional yield</p>
 
-        {rewards.loading && (
-          <div className="loading-state">
-            <div className="spinner"></div>
-            <p>Loading your rewards...</p>
-          </div>
-        )}
-
-        {rewards.error && (
-          <div className="error-state">
-            <h3>❌ Error Loading Rewards</h3>
-            <p>{rewards.error}</p>
-            <button onClick={loadRewards} className="retry-btn">🔄 Retry</button>
-          </div>
-        )}
-
-        {!rewards.loading && !rewards.error && (
-          <>
-            {/* Summary Section */}
-            <div className="rewards-summary">
-              <div className="summary-cards">
-                <div className="summary-card pending">
-                  <h3>💰 Pending Rewards</h3>
-                  <div className="amount">{Math.round(rewards.totalPending)} $BITS</div>
-                  <p>{rewards.pendingRewards.length} reward(s) available</p>
+        {/* Rewards Summary */}
+        <div className="rewards-summary-card">
+          <h2>💰 Your Rewards Summary</h2>
+          
+          {rewards.loading ? (
+            <div className="loading-state">
+              <p>⏳ Loading your rewards...</p>
+            </div>
+          ) : rewards.error ? (
+            <div className="error-state">
+              <p>⚠️ Error: {rewards.error}</p>
+              <button onClick={loadRewards} className="retry-btn">🔄 Retry</button>
+            </div>
+          ) : (
+            <>
+              <div className="summary-stats">
+                <div className="stat-card">
+                  <h3>💎 Total Pending</h3>
+                  <p className="stat-value">{Math.round(rewards.totalPending)} $BITS</p>
                 </div>
-                
-                <div className="summary-card claimed">
-                  <h3>✅ Claimed Rewards</h3>
-                  <div className="amount">{Math.round(rewards.totalClaimed)} $BITS</div>
-                  <p>Total claimed to date</p>
+                <div className="stat-card">
+                  <h3>✅ Total Claimed</h3>
+                  <p className="stat-value">{Math.round(rewards.totalClaimed)} $BITS</p>
                 </div>
-                
-                <div className="summary-card activity">
-                  <h3>📊 Activity Stats</h3>
-                  <div className="activity-stats">
-                    <div>💬 {rewards.telegram.timeSpent}h Telegram</div>
-                    <div>📨 {rewards.telegram.messages} Messages</div>
-                    <div>🔗 {rewards.invite.hasCode ? 'Code Generated' : 'No Code'}</div>
+                <div className="stat-card">
+                  <h3>📋 Pending Count</h3>
+                  <p className="stat-value">{rewards.pendingRewards.length} rewards</p>
+                </div>
+              </div>
+
+              {/* Pending Rewards List */}
+              {rewards.pendingRewards.length > 0 && (
+                <div className="pending-rewards-section">
+                  <h3>📋 Pending Rewards</h3>
+                  <div className="rewards-list">
+                    {rewards.pendingRewards.map((reward) => (
+                      <div key={reward.id} className="reward-item">
+                        <div className="reward-info">
+                          <span className="reward-type">
+                            {reward.reward_type === 'telegram' ? '💬' : 
+                             reward.reward_type === 'referral' ? '👥' : '🎁'} 
+                            {reward.reward_type.charAt(0).toUpperCase() + reward.reward_type.slice(1)}
+                          </span>
+                          <span className="reward-amount">{Math.round(parseFloat(reward.amount))} $BITS</span>
+                        </div>
+                        <div className="reward-date">
+                          {new Date(reward.created_at).toLocaleDateString()}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            {rewards.totalPending > 0 && (
-              <div className="action-buttons">
-                <button 
-                  onClick={handleClaimToWallet}
-                  disabled={claiming.all}
-                  className="action-btn claim-btn"
-                >
-                  {claiming.all ? (
-                    <>🔄 Claiming...</>
-                  ) : (
-                    <>💰 Claim to Wallet</>
-                  )}
-                </button>
-                
-                <button 
-                  onClick={handleClaimAndStake}
-                  disabled={claiming.all}
-                  className="action-btn stake-btn"
-                >
-                  {claiming.all ? (
-                    <>🔄 Processing...</>
-                  ) : (
-                    <>🔐 Claim & Stake</>
-                  )}
-                </button>
-              </div>
-            )}
-
-            {/* Pending Rewards List */}
-            {rewards.pendingRewards.length > 0 && (
-              <div className="pending-rewards">
-                <h3>📋 Pending Rewards</h3>
-                <div className="rewards-list">
-                  {rewards.pendingRewards.map((reward) => (
-                    <div key={reward.id} className="reward-item">
-                      <div className="reward-info">
-                        <div className="reward-type">
-                          {reward.reward_type === 'telegram' && '💬 Telegram Activity'}
-                          {reward.reward_type === 'referral' && '👥 Referral Bonus'}
-                          {reward.reward_type === 'investment' && '💎 Investment Bonus'}
-                          {!['telegram', 'referral', 'investment'].includes(reward.reward_type) && `🎁 ${reward.reward_type}`}
-                        </div>
-                        <div className="reward-description">
-                          {reward.description || `${reward.reward_type} reward`}
-                        </div>
-                        <div className="reward-amount">{Math.round(reward.amount)} $BITS</div>
-                      </div>
-                      <button
-                        onClick={() => claimReward(reward.id)}
-                        disabled={claiming.individual[reward.id]}
-                        className="claim-individual-btn"
-                      >
-                        {claiming.individual[reward.id] ? '🔄' : '🎁 Claim'}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Info Cards */}
-            <div className="info-cards">
-              <div className="info-card">
-                <h4>💰 About Claiming</h4>
-                <ul>
-                  <li>✅ Instant transfer to your wallet</li>
-                  <li>🔐 Secure smart contract execution</li>
-                  <li>⛽ Gas fees covered by the protocol</li>
-                  <li>📊 Transaction history tracked</li>
-                </ul>
-              </div>
-              
-              <div className="info-card">
-                <h4>🔐 About Staking</h4>
-                <ul>
-                  <li>🎯 Earn additional rewards by staking</li>
-                  <li>⏰ Flexible staking periods available</li>
-                  <li>🔄 Unstake anytime (subject to terms)</li>
-                  <li>📈 Compound your earnings automatically</li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Footer Info */}
-            <div className="rewards-footer">
-              <p>
-                <strong>💡 Pro Tip:</strong> Claiming and staking your rewards immediately maximizes your earning potential!
-              </p>
-              {rewards.lastUpdated && (
-                <p className="last-updated">
-                  Last updated: {new Date(rewards.lastUpdated).toLocaleString()}
-                </p>
               )}
+
+              {/* Action Buttons */}
+              <div className="action-section">
+                <h3>🚀 What would you like to do?</h3>
+                <div style={{ 
+                  background: "rgba(0, 170, 255, 0.1)", 
+                  border: "1px solid rgba(0, 170, 255, 0.3)", 
+                  borderRadius: "8px", 
+                  padding: "12px", 
+                  marginBottom: "15px",
+                  fontSize: "0.9em",
+                  textAlign: "center"
+                }}>
+                  💡 <strong>Pro Tip:</strong> $BITS can always be staked later! Claim now or stake directly - both options keep your staking flexibility.
+                </div>
+                
+                {rewards.totalPending > 0 ? (
+                  <div className="action-buttons">
+                    <button
+                      onClick={handleClaimToWallet}
+                      disabled={claiming || staking}
+                      className="action-btn claim-btn"
+                    >
+                      {claiming ? "🔄 Claiming..." : "💳 Claim to Wallet"}
+                      <span className="btn-subtitle">Receive {Math.round(rewards.totalPending)} $BITS directly</span>
+                    </button>
+                    
+                    <button
+                      onClick={handleStakeRewards}
+                      disabled={claiming || staking}
+                      className="action-btn stake-btn"
+                    >
+                      {staking ? "🔄 Processing..." : "🏦 Claim & Stake"}
+                      <span className="btn-subtitle">Auto-stake for additional yield</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="no-rewards">
+                    <p>🎯 No pending rewards to claim</p>
+                    <p style={{ fontSize: "0.9em", opacity: 0.8 }}>
+                      Keep participating in Telegram activities and referrals to earn more rewards!
+                    </p>
+                    <a href="/presale" className="back-link">← Back to Presale</a>
+                  </div>
+                )}
+              </div>
+
+              {/* Status Message */}
+              {statusMsg && (
+                <div className="status-message">
+                  <p>{statusMsg}</p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Additional Info */}
+        <div className="info-section">
+          <h3>ℹ️ How it works</h3>
+          <div className="info-grid">
+            <div className="info-card">
+              <h4>💳 Claim to Wallet</h4>
+              <p>Receive your $BITS directly in your connected wallet. Available immediately for trading, transfers, or <strong>you can stake them later</strong> from the <a href="/staking" style={{ color: "#00ffc3" }}>Staking page</a>.</p>
             </div>
-          </>
-        )}
+            <div className="info-card">
+              <h4>🏦 Claim & Stake</h4>
+              <p>Automatically stake your claimed rewards to earn additional yield. Higher rewards but with lock-up period. This is the <strong>fastest way to start earning</strong>.</p>
+            </div>
+            <div className="info-card">
+              <h4>🔄 Flexibility</h4>
+              <p><strong>Important:</strong> $BITS can always be staked! You can claim now and stake later, or stake other $BITS you already own. <a href="/staking" style={{ color: "#00aaff" }}>Visit Staking →</a></p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

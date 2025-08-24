@@ -19,6 +19,7 @@ const SidebarMenu = ({ isMenuOpen, setCurrentSection, currentSection }) => {
     if (path === "/how-it-works") return "howItWorks";
     if (path === "/roadmap") return "roadmap";
     if (path === "/invite") return "invite";
+    if (path === "/mind-mirror") return "mindMirror";
     return "home";
   };
 
@@ -82,6 +83,13 @@ const SidebarMenu = ({ isMenuOpen, setCurrentSection, currentSection }) => {
         onClick={() => handleClick("about", "/about")}
       >
         <i className="fas fa-info-circle"></i> About
+      </button>
+
+      <button
+        className={`btn-mindmirror ${isActive("mindMirror")}`}
+        onClick={() => handleClick("mindMirror", "/mind-mirror")}
+      >
+        <i className="fas fa-brain"></i> Mind Mirror
       </button>
 
       <button className="btn-go-main" onClick={() => {

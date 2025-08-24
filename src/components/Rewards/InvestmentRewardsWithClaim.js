@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import contractABI from "../../abi/nodeABI.js";
+import nodeRewardsService, { formatBitsAmount, validateWalletConnection } from "../../services/nodeRewardsService.js";
 
 const contractAddress = "0xe447db49E8e031d38c291E7e499c71a00aB80347";
 
@@ -10,6 +11,12 @@ const InvestmentRewardsWithClaim = () => {
   const [nowWorth, setNowWorth] = useState(0);
   const [walletAddress, setWalletAddress] = useState("");
   const [isConnected, setIsConnected] = useState(false);
+  
+  // 🎯 HYBRID: Node.sol reward data
+  const [nodeRewardBalance, setNodeRewardBalance] = useState("0");
+  const [rewardTiers, setRewardTiers] = useState([]);
+  const [loadingRewards, setLoadingRewards] = useState(false);
+  const [rewardError, setRewardError] = useState("");
 
   useEffect(() => {
     const checkWalletConnection = async () => {
@@ -22,6 +29,8 @@ const InvestmentRewardsWithClaim = () => {
             setWalletAddress(accounts[0]);
             setIsConnected(true);
             fetchInvestmentData(accounts[0]);
+            // 🎯 HYBRID: Fetch Node.sol rewards
+            await fetchNodeRewards(accounts[0]);
           }
         } catch (error) {
           console.error("Error connecting to wallet:", error);
@@ -33,6 +42,31 @@ const InvestmentRewardsWithClaim = () => {
 
     checkWalletConnection();
   }, []);
+
+  // 🎯 HYBRID: Fetch rewards from Node.sol
+  const fetchNodeRewards = async (wallet) => {
+    setLoadingRewards(true);
+    setRewardError("");
+    
+    try {
+      await nodeRewardsService.initialize();
+      
+      // Get user reward balance from Node.sol
+      const balance = await nodeRewardsService.getUserRewardBalance(wallet);
+      setNodeRewardBalance(balance);
+      
+      // Get reward tiers
+      const tiers = await nodeRewardsService.getAdditionalRewardTiers();
+      setRewardTiers(tiers);
+      
+      console.log("✅ Node.sol rewards loaded:", { balance, tiers });
+    } catch (error) {
+      console.error("❌ Error fetching Node.sol rewards:", error);
+      setRewardError("Failed to load rewards from blockchain");
+    } finally {
+      setLoadingRewards(false);
+    }
+  };
 
   const fetchInvestmentData = async (wallet) => {
     try {
@@ -90,19 +124,72 @@ const InvestmentRewardsWithClaim = () => {
   };
 
   return (
-    <div>
-      <h4>Investment Rewards</h4>
-      <p>Wallet Address: {walletAddress}</p>
-      <p>Total Investment: ${currentInvestment.toFixed(2)}</p>
-      <p>Total Tokens Bought: {totalTokensBought.toFixed(2)} $BITS</p>
-      <p>Now worth: ${nowWorth.toFixed(2)} USD</p>
-      <button
-        onClick={claimReward}
-        disabled={!isConnected || currentInvestment === 0}
-        className="claim-button"
-      >
-        Claim Reward
-      </button>
+    <div className="investment-rewards-container">
+      <h4>🎯 Investment Rewards (HYBRID)</h4>
+      
+      {/* 👛 Wallet Info */}
+      <div className="wallet-section">
+        <p><strong>Wallet Address:</strong> {walletAddress}</p>
+        <p><strong>Total Investment:</strong> ${currentInvestment.toFixed(2)}</p>
+        <p><strong>Total Tokens Bought:</strong> {totalTokensBought.toFixed(2)} $BITS</p>
+        <p><strong>Now worth:</strong> ${nowWorth.toFixed(2)} USD</p>
+      </div>
+
+      {/* 🎁 Node.sol Rewards */}
+      <div className="node-rewards-section">
+        <h5>🔗 Blockchain Rewards (Node.sol)</h5>
+        
+        {loadingRewards ? (
+          <p>⏳ Loading rewards from blockchain...</p>
+        ) : rewardError ? (
+          <p className="error">❌ {rewardError}</p>
+        ) : (
+          <div>
+            <p><strong>Available Reward Balance:</strong> {formatBitsAmount(nodeRewardBalance)} $BITS</p>
+            
+            {rewardTiers.length > 0 && (
+              <div className="reward-tiers">
+                <p><strong>Reward Tiers:</strong></p>
+                <ul>
+                  {rewardTiers.map((tier, index) => (
+                    <li key={index}>
+                      {tier.percent}% bonus up to {formatBitsAmount(tier.limit)} $BITS
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* 🎯 Action Buttons */}
+      <div className="action-buttons">
+        <button
+          onClick={claimReward}
+          disabled={!isConnected || parseFloat(nodeRewardBalance) === 0}
+          className="claim-button"
+        >
+          {parseFloat(nodeRewardBalance) > 0 
+            ? `Claim ${formatBitsAmount(nodeRewardBalance)} $BITS` 
+            : "No Rewards Available"
+          }
+        </button>
+        
+        <button
+          onClick={() => fetchNodeRewards(walletAddress)}
+          disabled={!isConnected || loadingRewards}
+          className="refresh-button"
+        >
+          🔄 Refresh Rewards
+        </button>
+      </div>
+
+      {/* 📊 Debug Info */}
+      <details className="debug-info">
+        <summary>🔧 Debug Info</summary>
+        <pre>{JSON.stringify(nodeRewardsService.getContractInfo(), null, 2)}</pre>
+      </details>
     </div>
   );
 };

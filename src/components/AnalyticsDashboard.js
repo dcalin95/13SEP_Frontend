@@ -84,15 +84,7 @@ const AnalyticsDashboard = () => {
   };
 
   if (!isVisible) {
-    return (
-      <button
-        className="analytics-toggle-btn"
-        onClick={toggleDashboard}
-        title="Analytics Dashboard"
-      >
-        📊
-      </button>
-    );
+    return null; // Nu afișa butonul floating, doar din hamburger
   }
 
   return (

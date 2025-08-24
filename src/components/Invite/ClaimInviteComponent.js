@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import "./ClaimInviteComponent.css";
+import nodeRewardsService, { formatBitsAmount, validateWalletConnection } from "../../services/nodeRewardsService.js";
 
 const FULL_BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 const API_ROOT = FULL_BACKEND_URL.replace("/api/invite", "");
@@ -40,7 +41,7 @@ const ClaimInviteComponent = () => {
     detectWallet();
   }, []);
 
-  // 2️⃣ Verificare cod
+  // 🎯 HYBRID: Check code directly from Node.sol
   const handleCheckCode = async () => {
     setLoading(true);
     setMessage("");
@@ -59,102 +60,135 @@ const ClaimInviteComponent = () => {
     }
 
     try {
-      const response = await fetch(`${API_ROOT}/api/claim/check`, {
-
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ referralCode, wallet: walletAddress }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setRewardInfo(result);
-        setMessage("✅ Reward available!");
+      // 🔗 Read directly from Node.sol contract
+      await nodeRewardsService.initialize();
+      const codeInfo = await nodeRewardsService.getCodeRewardInfo(referralCode);
+      
+      if (codeInfo.hasRewards) {
+        // Calculate reward (assuming 10% as in old backend)
+        const rewardAmount = parseFloat(codeInfo.codeBalance) * 0.10;
+        
+        setRewardInfo({
+          rewardPercentage: 10,
+          amountPurchased: formatBitsAmount(codeInfo.codeBalance),
+          rewardAmount: formatBitsAmount(rewardAmount.toString()),
+          firstReferralRate: codeInfo.firstReferralRate,
+          secondReferralRate: codeInfo.secondReferralRate
+        });
+        setMessage("✅ Reward available from blockchain!");
       } else {
-        setMessage(`❌ ${result.message}`);
+        setMessage("❌ No rewards available for this referral code.");
       }
     } catch (error) {
-      console.error("Check Error:", error);
-      setMessage("❌ Could not check reward.");
+      console.error("❌ Error checking code from Node.sol:", error);
+      
+      // 🔄 Fallback to backend API if Node.sol fails
+      try {
+        console.log("🔄 Fallback to backend API...");
+        const response = await fetch(`${API_ROOT}/api/claim/check`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ referralCode, wallet: walletAddress }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          setRewardInfo(result);
+          setMessage("✅ Reward available (via backend)!");
+        } else {
+          setMessage(`❌ ${result.message}`);
+        }
+      } catch (backendError) {
+        console.error("❌ Backend also failed:", backendError);
+        setMessage("❌ Could not check reward. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // 3️⃣ Claim
+  // 🎯 HYBRID: Claim directly via Node.sol service
   const handleClaim = async () => {
     setClaiming(true);
     setMessage("");
 
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const userAddress = await signer.getAddress();
-      const chainId = await signer.getChainId();
-
-      if (userAddress.toLowerCase() !== walletAddress.toLowerCase()) {
-        setMessage("⚠️ Wallet mismatch. Please reconnect.");
+      // Validate wallet connection
+      const validation = await validateWalletConnection();
+      if (!validation.valid) {
+        setMessage(`⚠️ ${validation.message}`);
         setClaiming(false);
         return;
       }
 
-      if (chainId !== 97) {
-        setMessage("⚠️ Please switch your wallet to BSC Testnet (Chain ID 97).");
-        setClaiming(false);
-        return;
-      }
+      // 🔗 Use Node.sol service for claiming
+      const result = await nodeRewardsService.claimReferralReward(
+        referralCode, 
+        [TOKEN_CONTRACT_ADDRESS]
+      );
 
-      const deadline = Math.floor(Date.now() / 1000) + 3600;
-
-      const domain = {
-        name: "Node",
-        version: "1",
-        chainId,
-        verifyingContract: NODE_CONTRACT_ADDRESS,
-      };
-
-      const types = {
-        Claim: [
-          { name: "tokens", type: "address[]" },
-          { name: "code", type: "string" },
-          { name: "user", type: "address" },
-          { name: "deadline", type: "uint256" },
-        ],
-      };
-
-      const value = {
-        tokens: [TOKEN_CONTRACT_ADDRESS],
-        code: referralCode,
-        user: userAddress,
-        deadline,
-      };
-
-      const signature = await signer._signTypedData(domain, types, value);
-      const { r, s, v } = ethers.utils.splitSignature(signature);
-
-      const claimResponse = await fetch(`${API_ROOT}/api/claim/claim`, {
-
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          referralCode,
-          signature: { r, s, v },
-        }),
-      });
-
-      const claimResult = await claimResponse.json();
-
-      if (claimResponse.ok) {
-        setMessage("🎉 Reward claimed successfully!");
+      if (result.success) {
+        setMessage(`🎉 ${result.message} (TX: ${result.txHash?.slice(0, 10)}...)`);
         setRewardInfo(null);
         setReferralCode("");
       } else {
-        setMessage(`❌ ${claimResult.message}`);
+        // 🔄 Fallback to backend API if Node.sol fails
+        console.log("🔄 Fallback to backend claim...");
+        
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const userAddress = await signer.getAddress();
+        const deadline = Math.floor(Date.now() / 1000) + 3600;
+
+        const domain = {
+          name: "Node",
+          version: "1",
+          chainId: 97,
+          verifyingContract: NODE_CONTRACT_ADDRESS,
+        };
+
+        const types = {
+          Claim: [
+            { name: "tokens", type: "address[]" },
+            { name: "code", type: "string" },
+            { name: "user", type: "address" },
+            { name: "deadline", type: "uint256" },
+          ],
+        };
+
+        const value = {
+          tokens: [TOKEN_CONTRACT_ADDRESS],
+          code: referralCode,
+          user: userAddress,
+          deadline,
+        };
+
+        const signature = await signer._signTypedData(domain, types, value);
+        const { r, s, v } = ethers.utils.splitSignature(signature);
+
+        const claimResponse = await fetch(`${API_ROOT}/api/claim/claim`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            referralCode,
+            signature: { r, s, v },
+          }),
+        });
+
+        const claimResult = await claimResponse.json();
+
+        if (claimResponse.ok) {
+          setMessage("🎉 Reward claimed successfully (via backend)!");
+          setRewardInfo(null);
+          setReferralCode("");
+        } else {
+          setMessage(`❌ ${claimResult.message || result.message}`);
+        }
       }
     } catch (error) {
-      console.error("Claim Error:", error);
-      setMessage("❌ Failed to claim reward.");
+      console.error("❌ Claim Error:", error);
+      setMessage("❌ Failed to claim reward. Please try again.");
     } finally {
       setClaiming(false);
     }
@@ -162,7 +196,7 @@ const ClaimInviteComponent = () => {
 
   return (
     <div className="claim-invite-container">
-      <h2>🎁 Claim Your Invite Reward</h2>
+      <h2>🎁 Claim Your Invite Reward (HYBRID)</h2>
 
       <input
         type="text"

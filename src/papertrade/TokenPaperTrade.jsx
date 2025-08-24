@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import useTokenPriceFeed from "./useTokenPriceFeed";
 
@@ -13,12 +13,19 @@ function formatTime(ts) { try { return new Date(ts).toLocaleTimeString(); } catc
 
 export default function TokenPaperTrade({ symbol = "STX", initialUsdt = 1000 }) {
   const cfg = TOKEN_CFG[symbol] || { id: null, fixed: 1 };
-  const { series, price, loading, error, refresh } = useTokenPriceFeed({ coingeckoId: cfg.id, fixedPrice: cfg.fixed });
+  const { series, price, loading, error, useDemo, refresh } = useTokenPriceFeed({ coingeckoId: cfg.id, fixedPrice: cfg.fixed });
   const [usdt, setUsdt] = useState(initialUsdt);
   const [qty, setQty] = useState(0);
   const [history, setHistory] = useState([]);
   const [amount, setAmount] = useState(100);
   const [slippageBps] = useState(20);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const equity = useMemo(() => {
     const val = (qty * (price || 0));
@@ -46,9 +53,35 @@ export default function TokenPaperTrade({ symbol = "STX", initialUsdt = 1000 }) 
   const chartData = useMemo(() => series.map(p => ({ x: p.time, y: Number(p.price?.toFixed(6)) })), [series]);
 
   return (
-    <div style={{ background:'#0b0b10', color:'#e9eef6', borderRadius:12, padding:16 }}>
+    <div style={{ background:'#0b0b10', color:'#e9eef6', borderRadius:10, padding:12 }}>
       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
-        <div style={{ fontWeight:600 }}>{symbol} Paper Trade</div>
+        <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+          <span style={{ fontWeight:600 }}>{symbol} Paper Trade</span>
+          {useDemo && (
+            <span style={{ 
+              background:'linear-gradient(135deg, #ff6b6b, #ee5a24)', 
+              color:'#fff', 
+              fontSize:'0.7rem', 
+              padding:'2px 8px', 
+              borderRadius:8, 
+              fontWeight:600 
+            }}>
+              DEMO DATA
+            </span>
+          )}
+          {!useDemo && (
+            <span style={{ 
+              background:'linear-gradient(135deg, #2ecc71, #27ae60)', 
+              color:'#fff', 
+              fontSize:'0.7rem', 
+              padding:'2px 8px', 
+              borderRadius:8, 
+              fontWeight:600 
+            }}>
+              REAL DATA
+            </span>
+          )}
+        </div>
         <div>
           <span style={{ opacity:.8, marginRight:8 }}>Price:</span>
           <span style={{ fontWeight:700 }}>{loading ? '…' : (price ? `$${price.toFixed(6)}` : 'N/A')}</span>
@@ -56,7 +89,14 @@ export default function TokenPaperTrade({ symbol = "STX", initialUsdt = 1000 }) 
         </div>
       </div>
 
-      <div style={{ width:'100%', height:360, background:'#0f1421', border:'1px solid #26304a', borderRadius:10, marginBottom:12 }}>
+      <div style={{ 
+        width:'100%', 
+        height: isMobile ? 220 : 280, 
+        background:'#0f1421', 
+        border:'1px solid #26304a', 
+        borderRadius:8, 
+        marginBottom:8 
+      }}>
         {chartData.length > 1 ? (
           <ResponsiveContainer>
             <AreaChart data={chartData} margin={{ left: 16, right: 16, top: 8, bottom: 8 }}>

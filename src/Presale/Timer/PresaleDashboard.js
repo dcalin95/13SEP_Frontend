@@ -21,20 +21,61 @@ const PresaleDashboard = () => {
   if (error) {
     return (
       <div className={styles.error}>
-        ❌ Eroare la încărcarea datelor din backend:<br />
-        <code>{error}</code>
+        <div className={styles.aiErrorContainer}>
+          <div className={styles.aiOrb}>
+            <div className={styles.pulse}></div>
+            <div className={styles.glow}></div>
+            <span className={styles.aiIcon}>🤖</span>
+          </div>
+          <div className={styles.errorContent}>
+            <h3 className={styles.errorTitle}>AI System Temporarily Offline</h3>
+            <p className={styles.errorMessage}>
+              Our neural networks are recalibrating market data streams. 
+              The presale continues operating normally.
+            </p>
+            <div className={styles.statusIndicator}>
+              <span className={styles.dot}></span>
+              <span>Reconnecting to data sources...</span>
+            </div>
+            <div className={styles.techDetails}>
+              <details>
+                <summary>Technical Details</summary>
+                <code>{error}</code>
+              </details>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!isLoaded) {
-    return <div className={styles.loading}>⏳ Se încarcă datele...</div>;
+    return (
+      <div className={styles.loading}>
+        <div className={styles.aiLoadingContainer}>
+          <div className={styles.neuralNetwork}>
+            <div className={styles.node}></div>
+            <div className={styles.node}></div>
+            <div className={styles.node}></div>
+            <div className={styles.connection}></div>
+            <div className={styles.connection}></div>
+          </div>
+          <span className={styles.loadingText}>Neural Networks Initializing...</span>
+        </div>
+      </div>
+    );
   }
 
   if (!roundActive) {
     return (
       <div className={styles.info}>
-        ℹ️ În acest moment nu există o rundă activă de vânzare. Revenim în curând!
+        <div className={styles.infoContainer}>
+          <div className={styles.hologram}>
+            <span className={styles.infoIcon}>⚡</span>
+          </div>
+          <h3>Next Generation Presale</h3>
+          <p>The next presale round is being computed by our AI systems. Stay tuned!</p>
+        </div>
       </div>
     );
   }

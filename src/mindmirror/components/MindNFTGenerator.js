@@ -12,6 +12,7 @@ const MindNFTGenerator = ({ results }) => {
   const [isSending, setIsSending] = useState(false);
   const [nftType, setNftType] = useState('basic'); // 'basic' or 'personalized'
   const [wordAnalysisData, setWordAnalysisData] = useState(null);
+  const [isSendingTelegram, setIsSendingTelegram] = useState(false);
 
     // Post-process DALL-E image with guaranteed branding overlay
   const addBrandingOverlay = async (imageUrl, userInfo) => {
@@ -29,20 +30,27 @@ const MindNFTGenerator = ({ results }) => {
       return new Promise((resolve, reject) => {
         img.onload = async () => {
           try {
+            console.log('🖼️ Image loaded successfully, size:', img.width, 'x', img.height);
+            
             // Set canvas size to match image
             canvas.width = img.width;
             canvas.height = img.height;
+            console.log('📐 Canvas size set to:', canvas.width, 'x', canvas.height);
             
             // Draw the original DALL-E image
             ctx.drawImage(img, 0, 0);
+            console.log('🎨 Original image drawn to canvas');
             
             // Add branding overlays
+            console.log('🔄 Starting text overlays...');
             await addTextOverlays(ctx, canvas, userInfo);
+            console.log('🔄 Starting logo overlay...');
             await addBitsLogo(ctx, canvas);
             
             // Convert to data URL
             const processedImageUrl = canvas.toDataURL('image/png', 1.0);
             console.log('✅ Branding overlay added successfully!');
+            console.log('📊 Final image type:', processedImageUrl.startsWith('data:') ? 'Canvas Data URL' : 'External URL');
             resolve(processedImageUrl);
             
           } catch (error) {
@@ -51,12 +59,19 @@ const MindNFTGenerator = ({ results }) => {
           }
         };
         
-        img.onerror = () => {
-          console.error('❌ Failed to load DALL-E image');
+        img.onerror = (error) => {
+          console.error('❌ Failed to load DALL-E image:', error);
+          console.error('🔗 Image URL:', imageUrl);
+          console.error('🌐 CORS Origin:', img.crossOrigin);
           resolve(imageUrl); // Fallback to original image
         };
         
-        img.src = imageUrl;
+        // Use backend proxy to fix CORS issues
+        const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+        const proxyUrl = `${BACKEND_URL}/api/dalle-nft/proxy-image?url=${encodeURIComponent(imageUrl)}`;
+        
+        console.log('🔗 Using proxy URL for CORS fix:', proxyUrl.substring(0, 100) + '...');
+        img.src = proxyUrl;
       });
       
     } catch (error) {
@@ -84,20 +99,27 @@ const MindNFTGenerator = ({ results }) => {
       const bgX = canvas.width - bgWidth - 20;
       const bgY = canvas.height - bgHeight - 20;
       
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      // Semi-transparent background (no green border)
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
       ctx.fillRect(bgX, bgY, bgWidth, bgHeight);
       
-      // Border glow
-      ctx.strokeStyle = 'rgba(0, 255, 157, 0.5)';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(bgX, bgY, bgWidth, bgHeight);
-      
-      // Username (top line)
+      // Username (top line) with AI gradient effect
       if (username) {
-        ctx.fillStyle = '#00ff9d';
-        ctx.font = 'bold 16px "Courier New", monospace';
+        // Create gradient effect by drawing text multiple times with different colors
+        ctx.font = 'bold 20px "Arial", sans-serif';
         ctx.textAlign = 'right';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+        ctx.shadowBlur = 4;
+        
+        // Gradient simulation: cyan to blue
+        const gradient = ctx.createLinearGradient(canvas.width - 200, canvas.height - 55, canvas.width - 30, canvas.height - 55);
+        gradient.addColorStop(0, '#00ffff'); // Cyan
+        gradient.addColorStop(0.5, '#00a3ff'); // Blue
+        gradient.addColorStop(1, '#ff3366'); // Pink accent
+        
+        ctx.fillStyle = gradient;
         ctx.fillText(username, canvas.width - 30, canvas.height - 55);
+        ctx.shadowBlur = 0;
       }
       
       // Wallet address (middle line)
@@ -105,10 +127,18 @@ const MindNFTGenerator = ({ results }) => {
         const shortWallet = walletAddress.length > 10 ? 
           `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}` : 
           walletAddress;
-        ctx.fillStyle = '#888888';
-        ctx.font = '12px "Courier New", monospace';
+        // Wallet gradient: blue to white
+        const walletGradient = ctx.createLinearGradient(canvas.width - 180, canvas.height - 35, canvas.width - 30, canvas.height - 35);
+        walletGradient.addColorStop(0, '#00a3ff'); // Blue
+        walletGradient.addColorStop(1, '#ffffff'); // White
+        
+        ctx.fillStyle = walletGradient;
+        ctx.font = 'bold 14px "Arial", sans-serif';
         ctx.textAlign = 'right';
+        ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+        ctx.shadowBlur = 3;
         ctx.fillText(shortWallet, canvas.width - 30, canvas.height - 35);
+        ctx.shadowBlur = 0;
       }
       
       // Date and time (bottom line)
@@ -127,19 +157,34 @@ const MindNFTGenerator = ({ results }) => {
       
       console.log('📅 Adding date/time:', dateTimeStr);
       
-      ctx.fillStyle = '#666666';
-      ctx.font = '10px "Courier New", monospace';
+      // Date/time gradient: gray to cyan
+      const dateGradient = ctx.createLinearGradient(canvas.width - 160, canvas.height - 15, canvas.width - 30, canvas.height - 15);
+      dateGradient.addColorStop(0, '#888888'); // Gray
+      dateGradient.addColorStop(1, '#00ffff'); // Cyan
+      
+      ctx.fillStyle = dateGradient;
+      ctx.font = 'bold 12px "Arial", sans-serif';
       ctx.textAlign = 'right';
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+      ctx.shadowBlur = 2;
       ctx.fillText(dateTimeStr, canvas.width - 30, canvas.height - 15);
+      ctx.shadowBlur = 0;
       
       ctx.restore();
     }
     
-    // Bottom left - BitSwapDEX AI watermark
+    // Bottom left - BitSwapDEX AI watermark with gradient
     ctx.save();
     
     const watermarkText = 'BitSwapDEX AI';
-    ctx.fillStyle = 'rgba(0, 163, 255, 0.8)';
+    
+    // Watermark gradient: blue to cyan to pink
+    const watermarkGradient = ctx.createLinearGradient(30, canvas.height - 30, 200, canvas.height - 30);
+    watermarkGradient.addColorStop(0, '#00a3ff'); // Blue
+    watermarkGradient.addColorStop(0.5, '#00ffff'); // Cyan
+    watermarkGradient.addColorStop(1, '#ff3366'); // Pink
+    
+    ctx.fillStyle = watermarkGradient;
     ctx.font = 'bold 18px "Arial", sans-serif';
     ctx.textAlign = 'left';
     
@@ -248,10 +293,16 @@ const MindNFTGenerator = ({ results }) => {
       console.log('🎨 Starting REAL OpenAI DALL-E NFT generation...');
       
       // Prepare user info for branding
+      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
+      const telegramUsername = window.telegramUsername || 'BitSwapDEX';
       const userInfo = {
-        username: walletName || 'Anonymous',
-        walletAddress: walletAddress
+        username: telegramUsername, // Use Telegram username instead of wallet name
+        walletAddress: walletAddress || connectedWallet
       };
+      
+      console.log('🔍 DEBUG - User info:', userInfo);
+      console.log('🔍 DEBUG - Context wallet:', walletAddress);
+      console.log('🔍 DEBUG - Connected wallet:', connectedWallet);
 
       console.log('👤 Generating NFT for user:', userInfo.username, userInfo.walletAddress ? `(${userInfo.walletAddress.substring(0, 6)}...)` : '');
 
@@ -364,6 +415,70 @@ const MindNFTGenerator = ({ results }) => {
     }
   };
 
+  // Handle Telegram sending
+  const handleSendToTelegram = async () => {
+    setIsSendingTelegram(true);
+    
+    try {
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      
+      // Get telegram info from stored data
+      const telegramUsername = window.telegramUsername || 'BitSwapDEX';
+      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
+      
+      // Get telegram ID from the stored data or make API call
+      let telegramId = window.telegramId;
+      
+      if (!telegramId) {
+        // Get telegram ID from backend
+        const telegramResponse = await fetch(`${BACKEND_URL}/api/word-analysis/get-telegram-id`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ walletAddress: walletAddress || connectedWallet })
+        });
+        
+        if (!telegramResponse.ok) {
+          throw new Error('Could not find your Telegram account. Please make sure your wallet is linked.');
+        }
+        
+        const telegramData = await telegramResponse.json();
+        telegramId = telegramData.telegramId;
+      }
+      
+      console.log('📱 Sending NFT to Telegram for user:', telegramUsername, telegramId);
+      
+      const response = await fetch(`${BACKEND_URL}/api/dalle-nft/send-to-telegram`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nftImageUrl: nftImage,
+          telegramId: telegramId,
+          username: telegramUsername,
+          walletAddress: walletAddress || connectedWallet
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || errorData.error || 'Failed to send to Telegram');
+      }
+      
+      const result = await response.json();
+      console.log('✅ NFT sent to Telegram successfully!');
+      alert('🎉 NFT sent to your Telegram successfully! Check your private messages.');
+      
+    } catch (error) {
+      console.error('❌ Telegram send error:', error);
+      alert(`❌ Failed to send to Telegram: ${error.message}`);
+    } finally {
+      setIsSendingTelegram(false);
+    }
+  };
+
   const downloadNFT = async () => {
     try {
       console.log('💾 Starting NFT download...');
@@ -420,10 +535,10 @@ const MindNFTGenerator = ({ results }) => {
       {!nftGenerated ? (
         <div className="nft-generation-prompt">
           <div className="nft-prompt-header">
-            <h3>🧬 Generate Neuropsychological NFT</h3>
+            <h3>✨ Your Neuropsychological NFT</h3>
             <p className="nft-prompt-description">
-              Transform your neuropsychological analysis into a <strong>unique and irreproducible NFT</strong> 
-              generated with advanced OpenAI GPT-4 artificial intelligence.
+              Your cognitive profile and trading psychology captured as a <strong>unique digital asset</strong> 
+              generated with advanced AI technology.
             </p>
           </div>
           
@@ -447,8 +562,8 @@ const MindNFTGenerator = ({ results }) => {
               </>
             ) : (
               <>
-                <span className="ai-icon">🤖</span>
-                Generate Neuropsychological NFT
+                <span className="ai-icon">🎨</span>
+                Generate My Unique NFT
               </>
             )}
           </button>
@@ -499,6 +614,14 @@ const MindNFTGenerator = ({ results }) => {
               onClick={() => setShowEmailOption(!showEmailOption)}
             >
               📧 Send to Email
+            </button>
+            
+            <button 
+              className="telegram-btn" 
+              onClick={handleSendToTelegram}
+              disabled={isSendingTelegram}
+            >
+              {isSendingTelegram ? '📱 Sending...' : '📱 Send to Telegram'}
             </button>
           </div>
 

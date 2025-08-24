@@ -23,7 +23,7 @@ const PurchaseBooster = ({ tokensReceive }) => {
       const rewards = await contract.getAdditionalRewardInfo();
       const formattedRewards = rewards.map((reward) => ({
         limit: parseFloat(ethers.utils.formatUnits(reward.limit, 18)),
-        percent: parseFloat(ethers.utils.formatUnits(reward.percent, 2)),
+        percent: Number(reward.percent), // Percent values are integers (5, 7, 10, 15)
       }));
       setRewardInfo(formattedRewards);
     } catch (error) {

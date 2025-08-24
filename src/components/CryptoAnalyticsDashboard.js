@@ -3,12 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import cryptoAnalyticsService from '../services/cryptoAnalyticsService';
 import './CryptoAnalyticsDashboard.css';
 
-const CryptoAnalyticsDashboard = ({ 
-  externalIsVisible = null, 
-  onVisibilityChange = null 
-}) => {
+const CryptoAnalyticsDashboard = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
   const [analyticsData, setAnalyticsData] = useState({});
   const [userInsights, setUserInsights] = useState({});
   const [performanceMetrics, setPerformanceMetrics] = useState({});
@@ -34,38 +30,6 @@ const CryptoAnalyticsDashboard = ({
   const intervalRef = useRef(null);
   const particleRef = useRef(null);
 
-  // Detect mobile device
-  useEffect(() => {
-    const checkMobile = () => {
-      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-             window.innerWidth <= 768 ||
-             ('ontouchstart' in window) ||
-             (navigator.maxTouchPoints > 0);
-    };
-    
-    const handleResize = () => {
-      setIsMobile(checkMobile());
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Handle external visibility control (from mobile manager)
-  useEffect(() => {
-    if (externalIsVisible !== null) {
-      setIsVisible(externalIsVisible);
-    }
-  }, [externalIsVisible]);
-
-  // Notify parent about visibility changes
-  useEffect(() => {
-    if (onVisibilityChange) {
-      onVisibilityChange(isVisible);
-    }
-  }, [isVisible, onVisibilityChange]);
-
   // Real-time data updates
   useEffect(() => {
     if (isVisible) {
@@ -82,7 +46,7 @@ const CryptoAnalyticsDashboard = ({
     intervalRef.current = setInterval(() => {
       updateRealTimeData();
       updateNetworkStatus();
-    }, 3000);
+    }, 20000); // 🔧 Reduced from 3s to 20s to prevent rate limiting
   };
 
   const updateRealTimeData = () => {
@@ -176,6 +140,12 @@ const CryptoAnalyticsDashboard = ({
     }
   };
 
+  useEffect(() => {
+    const handleToggle = () => toggleDashboard();
+    window.addEventListener('toggleCryptoDashboard', handleToggle);
+    return () => window.removeEventListener('toggleCryptoDashboard', handleToggle);
+  }, []);
+
   const handleAIAction = (action) => {
     setLoading(true);
     console.log(`🤖 AI Action: ${action}`);
@@ -243,48 +213,7 @@ const CryptoAnalyticsDashboard = ({
   };
 
   if (!isVisible) {
-    // On mobile, don't render the toggle button (handled by MobileFloatingUIManager)
-    if (isMobile) {
-      return null;
-    }
-    
-    return (
-      <motion.button
-        className="crypto-analytics-toggle-btn ai-enhanced"
-        onClick={toggleDashboard}
-        title="AI Crypto Analytics Dashboard"
-        whileHover={{ 
-          scale: 1.15, 
-          rotateY: 15,
-          boxShadow: "0 0 35px rgba(0, 212, 255, 0.7)",
-          background: "linear-gradient(135deg, #00d4ff 0%, #7c3aed 30%, #f59e0b 70%, #00d4ff 100%)"
-        }}
-        whileTap={{ scale: 0.9 }}
-        animate={{
-          boxShadow: [
-            '0 10px 25px rgba(0, 212, 255, 0.4)',
-            '0 15px 35px rgba(124, 58, 237, 0.5)',
-            '0 10px 25px rgba(245, 158, 11, 0.4)',
-            '0 10px 25px rgba(0, 212, 255, 0.4)'
-          ],
-          rotate: [0, 2, -2, 0]
-        }}
-        transition={{ 
-          duration: 3, 
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      >
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-        >
-          🚀
-        </motion.div>
-        <div className="pulse-ring"></div>
-        <div className="pulse-ring delay-1"></div>
-      </motion.button>
-    );
+    return null; // Nu afișa butonul floating, doar din hamburger
   }
 
   return (

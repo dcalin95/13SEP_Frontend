@@ -22,6 +22,7 @@ body, html, .app-container {
   min-height: 100vh;
   overflow-x: hidden;
   transition: background 0.5s, color 0.5s;
+  padding-top: 80px; /* 🔧 CHROME FIX - Space for fixed header */
 }
 
 
@@ -191,7 +192,7 @@ body, html, .app-container {
   position: fixed;
   top: 80px; /* sub header */
   left: 30px;
-  z-index: 9999;
+  z-index: 999;
   background: var(--secondary-glow);
   color: #0d0d0d;
   font-size: 1.5rem;

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { default as axios } from "axios";
 import contractService from "../../services/contractService";
+import cachedFetch, { rateLimitConfig, requestLimiter } from "../../utils/requestCache.js";
 
-const API_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 
 export const usePresaleState = () => {
   const [state, setState] = useState({
@@ -49,8 +50,9 @@ export const usePresaleState = () => {
     const fetchPresaleData = async () => {
       try {
         console.log('🔄 Fetching presale data...');
-        const response = await axios.get(`${API_URL}/api/presale/current`);
-        const data = response.data;
+        const data = await cachedFetch.get(`${API_URL}/api/presale/current`, {
+          cacheTTL: rateLimitConfig.presaleData
+        });
         console.log('📦 Raw API Response:', data);
 
         if (data) {
@@ -116,9 +118,7 @@ export const usePresaleState = () => {
     };
 
     fetchPresaleData();
-    // 🚀 OPTIMIZED: Reduced polling frequency from 5s to 15s to reduce server load
-    // Presale data doesn't change that frequently
-    const interval = setInterval(fetchPresaleData, 15000);
+    const interval = setInterval(fetchPresaleData, 60000); // ← Crescut de la 15s la 60s pentru a reduce flood-ul
 
     return () => clearInterval(interval);
   }, []);
