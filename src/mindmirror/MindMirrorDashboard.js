@@ -108,7 +108,7 @@ const MindMirrorDashboard = () => {
       }
 
       const data = await response.json();
-      const wordCount = data.totalWords || 0;
+      const wordCount = data.wordCount || 0;
       
       console.log('📊 Word count result:', { wordCount, hasAccess: wordCount >= 1000 });
 
