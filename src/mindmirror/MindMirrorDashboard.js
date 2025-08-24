@@ -20,6 +20,8 @@ const MindMirrorDashboard = () => {
     hasAccess: false,
     isLoading: true
   });
+  const [hoveredFeature, setHoveredFeature] = useState(null);
+  const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
 
   // Check if user has already used the analysis
   const checkAnalysisUsage = async () => {
@@ -69,27 +71,6 @@ const MindMirrorDashboard = () => {
     checkAnalysisUsage();
   }, []);
 
-  // Check if user has already used the analysis
-  const checkAnalysisUsage = async () => {
-    try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
-      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
-      
-      if (!connectedWallet) return;
-      
-      const response = await fetch(`${BACKEND_URL}/api/word-analysis/check-usage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ walletAddress: connectedWallet })
-      });
-      
-      const data = await response.json();
-      setHasUsedAnalysis(data.hasUsed || false);
-    } catch (error) {
-      console.error('Error checking analysis usage:', error);
-    }
-  };
-
   // Page protection against accidental closure
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -106,16 +87,39 @@ const MindMirrorDashboard = () => {
 
   const checkWordMilestone = async () => {
     try {
-      // Simulate checking word milestone - replace with actual API call
-      const mockWordCount = 29; // This should come from your backend
+      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
+      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
+      
+      if (!connectedWallet) {
+        setWordMilestone({ count: 0, hasAccess: false, isLoading: false });
+        return;
+      }
+
+      console.log('🔍 Fetching word count for wallet:', connectedWallet);
+
+      const response = await fetch(`${BACKEND_URL}/api/word-analysis/analyze-user-words`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ walletAddress: connectedWallet })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch word count: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const wordCount = data.totalWords || 0;
+      
+      console.log('📊 Word count result:', { wordCount, hasAccess: wordCount >= 1000 });
+
       setWordMilestone({
-        count: mockWordCount,
-        hasAccess: true, // Allow analysis even with few words for testing
+        count: wordCount,
+        hasAccess: wordCount >= 1000, // Require 1000 words for analysis
         isLoading: false
       });
     } catch (error) {
-      console.error('Error checking word milestone:', error);
-      setWordMilestone({ count: 0, hasAccess: true, isLoading: false });
+      console.error('❌ Error checking word milestone:', error);
+      setWordMilestone({ count: 0, hasAccess: false, isLoading: false });
     }
   };
 
@@ -222,6 +226,51 @@ Check out your own analysis at bits-ai.io
     }
   };
 
+  // Popup handling functions
+  const handleFeatureHover = (featureKey, event) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setPopupPosition({
+      x: rect.left + rect.width / 2,
+      y: rect.top - 10 // Position above the feature
+    });
+    setHoveredFeature(featureKey);
+  };
+
+  const handleFeatureLeave = () => {
+    setHoveredFeature(null);
+  };
+
+  // Feature popup content
+  const getFeaturePopupContent = (featureKey) => {
+    const features = {
+      'emotional_prosody': {
+        title: '🎯 Emotional Prosody Mapping',
+        description: 'Advanced AI analysis of emotional patterns in speech, detecting micro-expressions and vocal stress indicators that reveal true trading psychology.',
+        access: 'Level 2+ (5,000 BITS)',
+        status: 'Premium Feature'
+      },
+      'trading_psychology': {
+        title: '📊 Trading Psychology Profiling',
+        description: 'Comprehensive psychological assessment combining behavioral analysis, risk tolerance evaluation, and decision-making pattern recognition.',
+        access: 'Level 1+ (1,000 BITS)',
+        status: 'Available Now'
+      },
+      'voice_analysis': {
+        title: '🔊 Real-time Voice Analysis',
+        description: 'Live monitoring of vocal biomarkers during trading sessions, providing instant feedback on stress levels and emotional state.',
+        access: 'Level 3+ (25,000 BITS)',
+        status: 'Coming Soon'
+      },
+      'personalized_trading': {
+        title: '💡 Personalized Trading Recommendations',
+        description: 'AI-powered trading suggestions based on your unique psychological profile, risk tolerance, and historical decision patterns.',
+        access: 'Level 2+ (5,000 BITS)',
+        status: 'Beta Testing'
+      }
+    };
+    return features[featureKey];
+  };
+
   const proceedWithAnalysis = async () => {
     // Restore body scroll
     document.body.style.overflow = '';
@@ -257,18 +306,24 @@ Check out your own analysis at bits-ai.io
 
       const data = await response.json();
       
-      // Enhanced analysis results with more detailed metrics
+      // Enhanced analysis results with OpenAI data
       const enhancedResults = {
         ...data,
         aiProvider: data.aiProvider || "OpenAI GPT-4 Turbo",
         analysisTimestamp: new Date().toLocaleString(),
-        // Add some mock advanced metrics for demo
+        // Map OpenAI response to frontend format
+        sentiment: data.tradingScore >= 70 ? 'positive' : data.tradingScore >= 40 ? 'neutral' : 'negative',
+        confidence: (data.tradingScore || 0) / 100,
+        trading_psychology: {
+          type: data.tradingScore >= 70 ? 'Aggressive' : data.tradingScore >= 40 ? 'Balanced' : 'Conservative'
+        },
+        // Keep some demo metrics for visual completeness
         pitchVariance: Math.floor(Math.random() * 100),
         speechRate: Math.floor(Math.random() * 100),
         pausePatterns: Math.floor(Math.random() * 100),
         vocalTension: Math.floor(Math.random() * 100),
         respiratoryStability: Math.floor(Math.random() * 100),
-        confidenceLevel: Math.floor(Math.random() * 100),
+        confidenceLevel: data.tradingScore || Math.floor(Math.random() * 100),
         anxietyLevel: Math.floor(Math.random() * 100),
         focusLevel: Math.floor(Math.random() * 100),
         decisionSpeed: 'Moderate-Fast',
@@ -303,181 +358,6 @@ Check out your own analysis at bits-ai.io
       4: { name: "Enterprise", price: "10000 BITS", features: ["Smart Ring Integration", "24/7 Monitoring"] }
     };
     return tiers[tier] || tiers[1];
-  };
-
-  const handleAnalysis = async () => {
-    // Check if user has already used the analysis
-    if (hasUsedAnalysis) {
-      alert('⚠️ You have already used the free psychological analysis! For a new analysis, contact us for paid options.');
-      return;
-    }
-    
-    // Show warning modal before analysis
-    setShowWarningModal(true);
-    
-    // Disable body scroll
-    document.body.style.overflow = 'hidden';
-  };
-
-  // Export functions
-  const handleEmailExport = () => {
-    if (!analysisResults) return;
-    
-    const subject = encodeURIComponent('My Psychological Trading Analysis - MindMirror');
-    const body = encodeURIComponent(`
-🧠 PSYCHOLOGICAL TRADING ANALYSIS RESULTS
-
-${analysisResults.analysis}
-
-Generated by MindMirror AI - bits-ai.io
-Wallet: ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}
-Date: ${new Date().toLocaleDateString()}
-    `);
-    
-    window.open(`mailto:?subject=${subject}&body=${body}`);
-  };
-
-  const handlePDFExport = () => {
-    if (!analysisResults) return;
-    
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Psychological Trading Analysis</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            h1 { color: #8B5CF6; }
-            .analysis { white-space: pre-wrap; line-height: 1.6; }
-          </style>
-        </head>
-        <body>
-          <h1>🧠 Psychological Trading Analysis</h1>
-          <div class="analysis">${analysisResults.analysis}</div>
-          <hr>
-          <p><strong>Generated by:</strong> MindMirror AI - bits-ai.io</p>
-          <p><strong>Wallet:</strong> ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}</p>
-          <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-  };
-
-  const handlePrintExport = () => {
-    if (!analysisResults) return;
-    
-    const printContent = `
-🧠 PSYCHOLOGICAL TRADING ANALYSIS RESULTS
-
-${analysisResults.analysis}
-
-Generated by MindMirror AI - bits-ai.io
-Wallet: ${window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet')}
-Date: ${new Date().toLocaleDateString()}
-    `;
-    
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`<pre>${printContent}</pre>`);
-    printWindow.document.close();
-    printWindow.print();
-  };
-
-  const handleShareExport = () => {
-    if (!analysisResults) return;
-    
-    const shareText = `🧠 Just completed my Psychological Trading Analysis with MindMirror AI! 
-
-Trading Score: ${analysisResults.tradingScore || 'N/A'}/100
-
-Check out your own analysis at bits-ai.io
-
-#TradingPsychology #AI #Crypto`;
-    
-    if (navigator.share) {
-      navigator.share({
-        title: 'My Psychological Trading Analysis',
-        text: shareText,
-        url: 'https://bits-ai.io'
-      });
-    } else {
-      navigator.clipboard.writeText(shareText).then(() => {
-        alert('✅ Analysis summary copied to clipboard!');
-      });
-    }
-  };
-
-  const proceedWithAnalysis = async () => {
-    // Restore body scroll
-    document.body.style.overflow = '';
-    
-    setShowWarningModal(false);
-    setIsAnalyzing(true);
-    
-    try {
-      const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
-      
-      const connectedWallet = window.ethereum?.selectedAddress || localStorage.getItem('connectedWallet');
-      
-      if (!connectedWallet) {
-        throw new Error('Please connect your wallet first to analyze your psychology profile');
-      }
-
-      const url = `${BACKEND_URL}/api/word-analysis/psychology/analyze`;
-      console.log('🧠 Making psychology analysis request to:', url);
-      console.log('👤 Wallet address:', connectedWallet);
-      
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          walletAddress: connectedWallet,
-          wordCount: wordMilestone.count 
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`Analysis failed: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      
-      // Enhanced analysis results with more detailed metrics
-      const enhancedResults = {
-        ...data,
-        aiProvider: data.aiProvider || "OpenAI GPT-4 Turbo",
-        analysisTimestamp: new Date().toLocaleString(),
-        // Add some mock advanced metrics for demo
-        pitchVariance: Math.floor(Math.random() * 100),
-        speechRate: Math.floor(Math.random() * 100),
-        pausePatterns: Math.floor(Math.random() * 100),
-        vocalTension: Math.floor(Math.random() * 100),
-        respiratoryStability: Math.floor(Math.random() * 100),
-        confidenceLevel: Math.floor(Math.random() * 100),
-        anxietyLevel: Math.floor(Math.random() * 100),
-        focusLevel: Math.floor(Math.random() * 100),
-        decisionSpeed: 'Moderate-Fast',
-        riskAppetite: 'Conservative-Balanced',
-        // Facial analysis metrics
-        facialTension: Math.floor(Math.random() * 100),
-        eyeMovementPatterns: Math.floor(Math.random() * 100),
-        microExpressions: Math.floor(Math.random() * 100),
-        // Additional psychological metrics
-        stressLevel: Math.floor(Math.random() * 100),
-        emotionalStability: Math.floor(Math.random() * 100),
-        cognitiveLoad: Math.floor(Math.random() * 100)
-      };
-      
-      setAnalysisResults(enhancedResults);
-      setHasUsedAnalysis(true); // Mark as used after successful analysis
-      
-    } catch (error) {
-      console.error('Analysis error:', error);
-      alert(`Analysis failed: ${error.message}. Please try again.`);
-    } finally {
-      setIsAnalyzing(false);
-    }
   };
 
   const startVideoRecording = async () => {
@@ -530,19 +410,35 @@ Check out your own analysis at bits-ai.io
           </div>
 
           <div className="hero-features">
-            <div className="feature-item">
+            <div 
+              className="feature-item"
+              onMouseEnter={(e) => handleFeatureHover('emotional_prosody', e)}
+              onMouseLeave={handleFeatureLeave}
+            >
               <span className="feature-icon">🎯</span>
               <span>Emotional prosody mapping</span>
             </div>
-            <div className="feature-item">
+            <div 
+              className="feature-item"
+              onMouseEnter={(e) => handleFeatureHover('trading_psychology', e)}
+              onMouseLeave={handleFeatureLeave}
+            >
               <span className="feature-icon">📊</span>
               <span>Trading psychology profiling</span>
             </div>
-            <div className="feature-item">
+            <div 
+              className="feature-item"
+              onMouseEnter={(e) => handleFeatureHover('voice_analysis', e)}
+              onMouseLeave={handleFeatureLeave}
+            >
               <span className="feature-icon">🔊</span>
               <span>Real-time voice analysis</span>
             </div>
-            <div className="feature-item">
+            <div 
+              className="feature-item"
+              onMouseEnter={(e) => handleFeatureHover('personalized_trading', e)}
+              onMouseLeave={handleFeatureLeave}
+            >
               <span className="feature-icon">💡</span>
               <span>Personalized trading recommendations</span>
             </div>
@@ -714,6 +610,19 @@ Check out your own analysis at bits-ai.io
             </div>
           </div>
 
+          {/* Full Psychological Analysis */}
+          {analysisResults.analysis && (
+            <div className="analysis-text-section">
+              <div className="analysis-text-header">
+                <h3>📋 Complete Psychological Analysis</h3>
+                <p>Professional psychological trading profile generated by OpenAI GPT-4 Turbo</p>
+              </div>
+              <div className="analysis-text-content">
+                <pre className="analysis-text">{analysisResults.analysis}</pre>
+              </div>
+            </div>
+          )}
+
           {/* NFT Generation Section */}
           <div className="nft-section">
             <div className="nft-header">
@@ -749,6 +658,30 @@ Check out your own analysis at bits-ai.io
         setShowWarningModal={setShowWarningModal}
         proceedWithAnalysis={proceedWithAnalysis}
       />
+
+      {/* Feature Popup */}
+      {hoveredFeature && (
+        <div 
+          className="feature-popup"
+          style={{
+            position: 'fixed',
+            left: `${popupPosition.x}px`,
+            top: `${popupPosition.y}px`,
+            transform: 'translateX(-50%) translateY(-100%)',
+            zIndex: 10000
+          }}
+        >
+          <div className="popup-content">
+            <h3 className="popup-title">{getFeaturePopupContent(hoveredFeature)?.title}</h3>
+            <p className="popup-description">{getFeaturePopupContent(hoveredFeature)?.description}</p>
+            <div className="popup-access">
+              <span className="access-requirement">🔒 {getFeaturePopupContent(hoveredFeature)?.access}</span>
+              <span className="feature-status">📊 {getFeaturePopupContent(hoveredFeature)?.status}</span>
+            </div>
+          </div>
+          <div className="popup-arrow"></div>
+        </div>
+      )}
 
     </div>
   );
