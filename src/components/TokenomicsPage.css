@@ -1,3 +1,10 @@
+:root {
+  --c-accent: #00ffe0;
+  --c-accent-2: #9c27ff;
+  --c-text-dim: #cccccc;
+}
+
+/* Pagina tokenomics */
 .tokenomics-page {
   min-height: 100vh;
   background: transparent; /* Fundal complet transparent */
@@ -13,6 +20,7 @@
   background: transparent;
 }
 
+/* Secțiunea info */
 .tokenomics-info {
   margin-top: 2rem;
   text-align: center;
@@ -22,9 +30,9 @@
 
 .tokenomics-info h2 {
   font-size: 2.5rem;
-  color: #00ffe0;
+  color: var(--c-accent);
   margin-bottom: 1rem;
-  text-shadow: 0 0 10px #00ffe0, 0 0 20px #9c27ff;
+  text-shadow: 0 0 10px var(--c-accent), 0 0 20px var(--c-accent-2);
   font-weight: bold;
   background: transparent;
 }
@@ -33,10 +41,11 @@
   font-size: 1.2rem;
   line-height: 1.6;
   margin-bottom: 2rem;
-  color: #cccccc;
+  color: var(--c-text-dim);
   background: transparent;
 }
 
+/* Grid pentru detalii */
 .tokenomics-details {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -45,6 +54,7 @@
   background: transparent;
 }
 
+/* Cardurile cu detalii */
 .detail-item {
   background: rgba(0, 0, 0, 0.3);
   border: 2px solid rgba(0, 255, 224, 0.4);
@@ -54,6 +64,7 @@
   transition: all 0.4s ease;
   position: relative;
   overflow: hidden;
+  animation: fadeInUp 0.6s ease forwards;
 }
 
 .detail-item::before {
@@ -73,13 +84,13 @@
 
 .detail-item:hover {
   transform: translateY(-8px) scale(1.02);
-  border-color: #00ffe0;
+  border-color: var(--c-accent);
   box-shadow: 0 15px 40px rgba(0, 255, 224, 0.3), 0 0 20px rgba(0, 255, 224, 0.2);
   background: rgba(0, 0, 0, 0.5);
 }
 
 .detail-item h3 {
-  color: #00ffe0;
+  color: var(--c-accent);
   font-size: 1.4rem;
   margin-bottom: 0.8rem;
   font-weight: bold;
@@ -97,7 +108,7 @@
   z-index: 2;
 }
 
-/* Animație pentru carduri */
+/* Animație fade-in pentru carduri */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -109,13 +120,16 @@
   }
 }
 
-.detail-item {
-  animation: fadeInUp 0.6s ease forwards;
-}
-
 .detail-item:nth-child(1) { animation-delay: 0.1s; }
 .detail-item:nth-child(2) { animation-delay: 0.2s; }
 .detail-item:nth-child(3) { animation-delay: 0.3s; }
+
+/* Highlight coverage warning (când ≠ 100%) */
+.coverage-warning {
+  color: #ffb300;
+  text-shadow: 0 0 8px rgba(255,179,0,0.5);
+  font-weight: bold;
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -165,4 +179,12 @@
   .detail-item {
     padding: 1rem;
   }
-} 
+  
+  .detail-item h3 {
+    font-size: 1.1rem;
+  }
+  
+  .detail-item p {
+    font-size: 0.9rem;
+  }
+}

@@ -2,8 +2,9 @@
   display: flex;
   flex-direction: row;
   width: 100%;
-  background: black;
+  background: transparent;
   min-height: 100vh;
+  position: relative;
 }
 
 .staking-main {
@@ -11,12 +12,33 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 6rem 2rem 2rem 2rem; /* Extra padding-top pentru timer */
+  padding: 6rem 2rem 2rem 2rem;
   gap: 2rem;
   width: 100%;
 }
 
-/* TOP ROW - 2 coloane */
+/* AI Header - Calm & Discrete */
+.ai-staking-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.ai-staking-title {
+  font-size: 2.2rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.9);
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.ai-staking-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 200;
+  letter-spacing: 0.5px;
+}
+
+/* Layout - Clean & Simple */
 .staking-top-row {
   display: flex;
   flex-direction: row;
@@ -34,13 +56,27 @@
   gap: 1.5rem;
 }
 
-/* BOTTOM LIST - jos pe pagină */
+/* Discrete AI Container */
+.ai-container {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.ai-container:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Bottom Section - Clean */
 .staking-bottom {
   display: flex;
   flex-direction: column;
   width: 100%;
   max-width: 1400px;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 /* Responsive: pe mobil -> coloană */

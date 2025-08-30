@@ -1,25 +1,103 @@
-.staking-info-box-container {
-  margin-bottom: 2rem;
-  position: relative;
-}
-
-.refresh-button {
-  margin-top: 10px;
-  padding: 6px 12px;
-  font-size: 14px;
-  border-radius: 6px;
+/* Staking Info Container - Same styling as other components */
+.staking-info-container {
+  background: transparent;
+  padding: 0;
   border: none;
-  background-color: #007bff;
-  color: white;
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  margin: 0;
+}
+
+.info-title {
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+/* Info Grid Layout - Same as ai-stats-grid */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.info-item {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.info-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.info-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.3px;
+}
+
+.info-value {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Refresh Button - Same as other buttons */
+.info-refresh-btn {
+  width: 100%;
+  font-size: 0.9rem;
+  font-weight: 400;
+  padding: 0.8rem 1.5rem;
   cursor: pointer;
-  transition: 0.2s;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
 }
 
-.refresh-button:hover {
-  background-color: #0056b3;
+.info-refresh-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
-.refresh-button:disabled {
-  background-color: #999;
+.info-refresh-btn:disabled {
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.3);
   cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .info-item {
+    padding: 0.8rem;
+  }
+  
+  .info-value {
+    font-size: 1rem;
+  }
+  
+  .info-label {
+    font-size: 0.75rem;
+  }
+  
+  .info-refresh-btn {
+    font-size: 0.85rem;
+    padding: 0.7rem;
+  }
 }

@@ -32,7 +32,7 @@ const StakeForm = ({ signer, prefilledAmount, rewardsSource }) => {
         const raw = await token.balanceOf(walletAddress);
         setBalance(ethers.utils.formatUnits(raw, 18));
       } catch (err) {
-        console.error("Error fetching BITS balance:", err.message);
+        console.error("Error fetching $BITS balance:", err.message);
       }
     };
     fetchBalance();
@@ -123,50 +123,103 @@ console.log("🧪 Contract address:", contract.address);
 
   return (
     <div className="stake-form">
-      <h3>🔐 Stake $BITS</h3>
+      <h2 className="ai-form-title">Staking Protocol</h2>
       
       {rewardsSource && (
         <div style={{
-          background: "rgba(0, 255, 195, 0.1)",
-          border: "1px solid rgba(0, 255, 195, 0.3)",
-          borderRadius: "8px",
-          padding: "10px",
-          marginBottom: "15px",
-          fontSize: "0.9em"
+          background: "rgba(0, 255, 195, 0.2)",
+          border: "1px solid rgba(0, 255, 195, 0.5)",
+          borderRadius: "15px",
+          padding: "15px",
+          marginBottom: "20px",
+          backdropFilter: "blur(10px)"
         }}>
-          <p style={{ margin: "0", color: "#00ffc3" }}>
-            🎁 <strong>Staking Rewards:</strong> Pre-filled with your claimed rewards amount!
+          <p style={{ margin: "0", color: "rgba(255, 255, 255, 0.8)", fontSize: "1rem", textAlign: "center" }}>
+            🎁 <strong>Rewards Integration:</strong> Your rewards are ready for staking!
           </p>
         </div>
       )}
 
-      <p><strong>Wallet:</strong> {walletAddress?.slice(0, 6)}...{walletAddress?.slice(-4)}</p>
-      <p><strong>Available:</strong> {balance} BITS</p>
-      <p><strong>APR:</strong> {(parseFloat(apr) / 1e16).toFixed(2)}%</p>
+      {/* AI Stats Display */}
+      <div className="ai-stats-grid" style={{ marginBottom: "2rem", gridTemplateColumns: "1fr 1fr 1fr" }}>
+        <div className="ai-stat-item">
+          <div className="ai-stat-label">Wallet</div>
+          <div className="ai-stat-value" style={{ fontSize: "0.9rem" }}>
+            {walletAddress?.slice(0, 6)}...{walletAddress?.slice(-4)}
+          </div>
+        </div>
+        <div className="ai-stat-item">
+          <div className="ai-stat-label">Available</div>
+          <div className="ai-stat-value">{parseFloat(balance).toFixed(2)}</div>
+          <div className="ai-stat-label">$BITS</div>
+        </div>
+        <div className="ai-stat-item">
+          <div className="ai-stat-label">APR</div>
+          <div className="ai-stat-value">{(parseFloat(apr) / 1e16).toFixed(2)}%</div>
+          <div className="ai-stat-label">Rate</div>
+        </div>
+      </div>
 
-      <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+      {/* AI Input Section */}
+      <div className="ai-input-group">
+        <label className="ai-input-label">Stake Amount ($BITS)</label>
         <input
           type="number"
           min="0"
           step="any"
-          placeholder="Enter amount to stake"
+          placeholder="Enter staking amount..."
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           disabled={loading}
-          style={{ textAlign: "left", color: "#000", background: "#fff", padding: "8px" }}
         />
-        <button onClick={() => setAmount(balance)} disabled={loading}>Max</button>
-        <button onClick={() => setAmount("")} disabled={loading}>🧹 Clear</button>
+        
+        {/* AI Progress Bar */}
+        {amount && (
+          <div className="ai-progress-bar">
+            <div 
+              className="ai-progress-fill" 
+              style={{ width: `${Math.min((parseFloat(amount) / parseFloat(balance)) * 100, 100)}%` }}
+            ></div>
+          </div>
+        )}
       </div>
 
+      {/* AI Control Buttons */}
+      <div style={{ display: "flex", gap: "10px", marginBottom: "1.5rem" }}>
+        <button 
+          onClick={() => setAmount(balance)} 
+          disabled={loading}
+          style={{ 
+            flex: 1, 
+            background: "linear-gradient(45deg, #ff00ff, #00ff88)",
+            padding: "0.8rem"
+          }}
+        >
+          Max Stake
+        </button>
+        <button 
+          onClick={() => setAmount("")} 
+          disabled={loading}
+          style={{ 
+            flex: 1, 
+            background: "linear-gradient(45deg, #ff6b35, #f7931e)",
+            padding: "0.8rem"
+          }}
+        >
+          Clear
+        </button>
+      </div>
+
+      {/* Main Stake Button */}
       <button onClick={handleStake} disabled={loading || !amount}>
-        {loading ? "Processing..." : "📥 Stake"}
+        {loading ? "Processing..." : "Stake Tokens"}
       </button>
 
+      {/* Reward Estimation */}
       {amount && estimatedReward !== "0" && (
-        <p className="reward-estimate">
-          🔮 Estimated yearly reward: <strong>{estimatedReward}</strong> BITS
-        </p>
+        <div className="reward-estimate">
+          Estimated Yearly Reward: <strong>{estimatedReward}</strong> $BITS
+        </div>
       )}
 
       <ToastContainer position="top-right" autoClose={4000} pauseOnHover />

@@ -100,13 +100,13 @@ const ClaimStakes = ({ signer }) => {
   return (
     <div className="claim-stakes">
       <h3>📊 My Staked Positions</h3>
-      <p><strong>💰 Total Claimable:</strong> {totalClaimable} BITS</p>
+      <p><strong>💰 Total Claimable:</strong> {totalClaimable} $BITS</p>
       {stakes.length === 0 && <p>No stakes found.</p>}
       {stakes.map((s, i) => {
         const eligible = canWithdraw(s);
         return (
           <div key={i} className="stake-entry">
-            <p><strong>Amount:</strong> {formatUnits(s.locked, 18)} BITS</p>
+            <p><strong>Amount:</strong> {formatUnits(s.locked, 18)} $BITS</p>
             <p><strong>APR:</strong> {(s.apr / 1e16).toFixed(1)}%</p>
             <p><strong>Reward:</strong> {`${formatUnits(
               s.locked
@@ -115,7 +115,7 @@ const ClaimStakes = ({ signer }) => {
                 .div(365 * 24 * 3600)
                 .div(ethers.constants.WeiPerEther),
               18
-            )} BITS`}</p>
+            )} $BITS`}</p>
             <p><strong>Status:</strong> {s.withdrawn ? "✅ Claimed" : "🔒 Locked"}</p>
 
             {!eligible && renderCountdown(s)}

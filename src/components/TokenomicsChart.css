@@ -417,3 +417,86 @@
         height: 30px;
     }
 }
+/* ——— centru: text peste miezul de energie ——— */
+.energy-core {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.energy-core-inner {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
+  transform: translateY(0); /* păstrăm centrul perfect */
+}
+
+.energy-core-inner .core-line1 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.energy-core-inner .core-line2 {
+  margin-top: 2px;
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+/* info bar deasupra graficului (linie cu Total Supply / Price / Coverage) */
+.tokenomics-info {
+  text-align: center;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+/* dacă vrei un highlight când suma procentelor ≠ 100% */
+.coverage-warning {
+  color: #ffb300;
+  text-shadow: 0 0 8px rgba(255,179,0,0.5);
+}
+
+/* ușoare ajustări pentru centru */
+.chart-center {
+  max-width: 640px; /* puțin mai generos */
+  height: 520px;    /* potrivit pentru label-uri */
+}
+
+/* etichete explodate – vizibilitate mai bună */
+.exploded-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  paint-order: stroke;
+  -webkit-text-stroke: 3px rgba(0,0,0,0.35);
+  text-shadow: 0 0 8px rgba(0,0,0,0.4);
+}
+
+/* accesibilitate: reduce animațiile dacă utilizatorul preferă asta */
+@media (prefers-reduced-motion: reduce) {
+  .floating-card,
+  .chart-glow-effect,
+  .energy-core,
+  .floating-card.exploded .card-glow {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+@media (max-width: 768px) {
+  .energy-core-inner .core-line1 { font-size: 0.85rem; }
+  .energy-core-inner .core-line2 { font-size: 0.75rem; }
+  .chart-center { height: 460px; }
+}
+
+@media (max-width: 480px) {
+  .energy-core-inner .core-line1 { font-size: 0.8rem; }
+  .energy-core-inner .core-line2 { font-size: 0.7rem; }
+  .chart-center { height: 420px; }
+}

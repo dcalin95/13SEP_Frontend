@@ -16,10 +16,10 @@ const formatDate = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleString();
 };
 
-const StakingInfoBox = () => {
+const StakingInfoBox = ({ stakes = [] }) => {
   const { signer } = useContext(WalletContext);
   const [cooldownStatic, setCooldownStatic] = useState(null);
-  const [cooldownRemaining, setCooldownRemaining] = useState(null);
+  const [cooldownDisplay, setCooldownDisplay] = useState("Loading...");
   const [unstakeFee, setUnstakeFee] = useState(null);
   const [tgeDate, setTgeDate] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,6 @@ const StakingInfoBox = () => {
       console.log("📅 TGE Date (timestamp):", tge.toString());
 
       setCooldownStatic(cd.toNumber());
-      setCooldownRemaining(cd.toNumber());
       setUnstakeFee(Number(formatUnits(fee, 16)));
       setTgeDate(tge.toNumber());
     } catch (err) {
@@ -62,33 +61,109 @@ const StakingInfoBox = () => {
     fetchContractData();
   }, [signer]);
 
+  // Calculate cooldown display based on actual stakes
   useEffect(() => {
-    if (cooldownRemaining === null) return;
+    console.log("🔍 StakingInfoBox Debug:");
+    console.log("- cooldownStatic:", cooldownStatic);
+    console.log("- stakes:", stakes);
+    console.log("- stakes.length:", stakes?.length);
+
+    if (!cooldownStatic) {
+      setCooldownDisplay("Loading...");
+      return;
+    }
+
+    if (!stakes || stakes.length === 0) {
+      console.log("📝 No stakes found, showing general period");
+      setCooldownDisplay(`${formatTime(cooldownStatic)} (general period)`);
+      return;
+    }
 
     const interval = setInterval(() => {
-      setCooldownRemaining((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          return 0;
+      const now = Math.floor(Date.now() / 1000);
+      
+      // Find the stake with shortest remaining cooldown
+      let shortestCooldown = null;
+      let shortestTime = Infinity;
+      let activeStakesCount = 0;
+
+      stakes.forEach((stake, index) => {
+        console.log(`🔍 Stake ${index}:`, {
+          withdrawn: stake.withdrawn,
+          startTime: stake.startTime?.toNumber ? stake.startTime.toNumber() : stake.startTime,
+          locked: stake.locked?.toString ? stake.locked.toString() : stake.locked
+        });
+
+        if (!stake.withdrawn) {
+          activeStakesCount++;
+          const startTime = stake.startTime?.toNumber ? stake.startTime.toNumber() : stake.startTime;
+          const stakeEndTime = startTime + cooldownStatic;
+          const timeLeft = Math.max(0, stakeEndTime - now);
+          
+          console.log(`⏰ Stake ${index} cooldown: ${timeLeft} seconds`);
+          
+          if (timeLeft < shortestTime) {
+            shortestTime = timeLeft;
+            shortestCooldown = timeLeft;
+          }
         }
-        return prev - 1;
       });
+
+      console.log(`📊 Active stakes: ${activeStakesCount}, Shortest cooldown: ${shortestCooldown}`);
+
+      if (shortestCooldown !== null) {
+        if (shortestCooldown === 0) {
+          setCooldownDisplay("Ready to unstake!");
+        } else {
+          setCooldownDisplay(`${formatTime(shortestCooldown)} (next unlock)`);
+        }
+      } else {
+        setCooldownDisplay("No active stakes");
+      }
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [cooldownRemaining]);
+  }, [stakes, cooldownStatic]);
 
   return (
-    <div className="staking-info-box-container">
-      <ul className="staking-info-box">
-        <li>✅ Stake your $BITS to earn continuous rewards.</li>
-        <li>⏳ Cooldown: {cooldownRemaining !== null ? formatTime(cooldownRemaining) : "..."}</li>
-        <li>💰 Unstake Fee: {unstakeFee !== null ? `${unstakeFee.toFixed(2)}%` : "..."}</li>
-        <li>📅 TGE Date: {tgeDate !== null ? formatDate(tgeDate) : "..."}</li>
-        <li>🔒 100% non-custodial. Your funds, your control.</li>
-      </ul>
-      <button className="refresh-button" onClick={fetchContractData} disabled={loading}>
-        {loading ? "Updating..." : "🔄 Refresh"}
+    <div className="staking-info-container">
+      <h3 className="info-title">Staking Information</h3>
+      
+      <div className="info-grid">
+        <div className="info-item">
+          <span className="info-label">Rewards</span>
+          <span className="info-value">Continuous earning available</span>
+        </div>
+        
+        <div className="info-item">
+          <span className="info-label">Cooldown Period</span>
+          <span className="info-value">
+            {cooldownDisplay}
+          </span>
+        </div>
+        
+        <div className="info-item">
+          <span className="info-label">Unstake Fee</span>
+          <span className="info-value">
+            {unstakeFee !== null ? `${unstakeFee.toFixed(2)}%` : "Loading..."}
+          </span>
+        </div>
+        
+        <div className="info-item">
+          <span className="info-label">TGE Date</span>
+          <span className="info-value">
+            {tgeDate !== null ? formatDate(tgeDate) : "Loading..."}
+          </span>
+        </div>
+        
+        <div className="info-item">
+          <span className="info-label">Custody</span>
+          <span className="info-value">Non-custodial protocol</span>
+        </div>
+      </div>
+      
+      <button className="info-refresh-btn" onClick={fetchContractData} disabled={loading}>
+        {loading ? "Updating..." : "Refresh Data"}
       </button>
     </div>
   );

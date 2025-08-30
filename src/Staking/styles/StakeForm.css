@@ -1,57 +1,123 @@
-.stake-form input {
-  background: #ffffff;
-  color: #000000;
-  text-align: left;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-.stake-form button {
-  font-size: 14px;
-  padding: 6px 12px;
-}
-
-.feedback {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #00ffff;
-}
+/* Calm Stake Form */
 .stake-form {
-  margin-top: 1rem;
-  background: rgba(255, 255, 255, 0.03);
-  padding: 1rem;
-  border-radius: 10px;
+  background: transparent;
+  padding: 0;
+  border: none;
   color: #fff;
+  margin: 0;
+}
+
+/* Calm Form Title */
+.ai-form-title {
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+/* Calm Input Styling */
+.ai-input-group {
+  margin-bottom: 1.5rem;
+}
+
+.ai-input-label {
+  display: block;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.3px;
 }
 
 .stake-form input {
-  background: #ffffff;
-  color: #000000;
-  text-align: left;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  color: #ffffff;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 400;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.8rem;
+  transition: all 0.2s ease;
 }
 
+.stake-form input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.stake-form input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+  font-style: italic;
+}
+
+/* Calm Button Styling */
 .stake-form button {
-  font-size: 14px;
-  padding: 6px 12px;
+  width: 100%;
+  font-size: 0.9rem;
+  font-weight: 400;
+  padding: 0.8rem 1.5rem;
   cursor: pointer;
-  background: #222;
-  color: #0ff;
-  border: 1px solid #0ff;
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease;
 }
 
+.stake-form button:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.stake-form button:disabled {
+  background: rgba(255, 255, 255, 0.02);
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Calm Feedback Messages */
 .feedback {
-  margin-top: 10px;
-  font-size: 14px;
-  color: #0bf;
+  margin-top: 1rem;
+  padding: 0.8rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  text-align: center;
 }
 
 .reward-estimate {
-  margin-top: 10px;
-  font-size: 15px;
-  color: #0f0;
+  margin-top: 1rem;
+  padding: 0.8rem;
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Calm Progress Indicators */
+.ai-progress-bar {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 1px;
+  margin: 0.5rem 0;
+  overflow: hidden;
+}
+
+.ai-progress-fill {
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 1px;
+  transition: width 0.3s ease;
 }

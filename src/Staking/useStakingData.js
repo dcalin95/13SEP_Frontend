@@ -8,8 +8,16 @@ export const useStakingData = (signer, userAddress) => {
   const [totalReward, setTotalReward] = useState(ethers.BigNumber.from(0));
 
   useEffect(() => {
-    if (!signer || !userAddress) return;
+    console.log("🔍 useStakingData useEffect:");
+    console.log("- signer:", !!signer);
+    console.log("- userAddress:", userAddress);
+    
+    if (!signer || !userAddress) {
+      console.log("❌ useStakingData: Missing signer or userAddress, returning early");
+      return;
+    }
 
+    console.log("✅ useStakingData: Starting fetchStakes");
     const fetchStakes = async () => {
       try {
         const contract = getStakingContract(signer);
@@ -45,6 +53,11 @@ export const useStakingData = (signer, userAddress) => {
           };
         });
 
+        console.log("🔍 useStakingData Debug:");
+        console.log("- rawStakes:", rawStakes);
+        console.log("- formattedStakes:", formattedStakes);
+        console.log("- formattedStakes.length:", formattedStakes.length);
+        
         setStakes(formattedStakes);
         setTotalStaked(totalSt);
         setTotalReward(totalRw);
