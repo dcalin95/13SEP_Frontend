@@ -132,3 +132,4 @@ Toate componentele au fost refactorizate cu:
 - ✅ Performance optimizations
 
 **Rezultat**: O experiență de staking complet transformată cu estetica AI futuristă și funcționalitate avansată.
+

@@ -87,6 +87,7 @@
 
   .staking-top-row {
     flex-direction: column;
+    gap: 1.5rem;
   }
 
   .left-side,
@@ -97,10 +98,71 @@
   .staking-bottom {
     padding: 0 1rem;
   }
+
+  .ai-staking-title {
+    font-size: 1.8rem;
+  }
+
+  .ai-container {
+    padding: 1.2rem;
+  }
 }
 
 @media (max-width: 768px) {
   .staking-main {
-    padding: 4rem 1rem 2rem 1rem; /* Ajustat pentru mobile */
+    padding: 3rem 0.8rem 2rem 0.8rem; /* Ajustat pentru mobile */
+    gap: 1.5rem;
+  }
+
+  .staking-top-row {
+    gap: 1rem;
+  }
+
+  .left-side,
+  .right-side {
+    gap: 1rem;
+  }
+
+  .ai-staking-title {
+    font-size: 1.6rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .ai-staking-subtitle {
+    font-size: 0.9rem;
+  }
+
+  .ai-container {
+    padding: 1rem;
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .staking-main {
+    padding: 2.5rem 0.5rem 1.5rem 0.5rem; /* Extra compact pentru telefoane mici */
+    gap: 1rem;
+  }
+
+  .staking-top-row {
+    gap: 0.8rem;
+  }
+
+  .left-side,
+  .right-side {
+    gap: 0.8rem;
+  }
+
+  .ai-staking-title {
+    font-size: 1.4rem;
+  }
+
+  .ai-staking-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .ai-container {
+    padding: 0.8rem;
+    border-radius: 6px;
   }
 }

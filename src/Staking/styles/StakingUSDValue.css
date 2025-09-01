@@ -222,27 +222,43 @@
 }
 
 /* Mobile Responsive */
+@media (max-width: 1024px) {
+  .usd-title {
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .usd-total {
+    max-width: 300px;
+  }
+}
+
 @media (max-width: 768px) {
+  .usd-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
   .usd-grid {
     grid-template-columns: 1fr;
     gap: 0.8rem;
   }
   
   .usd-item {
-    padding: 1.2rem;
+    padding: 1rem;
   }
   
   .usd-value {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
   }
   
   .usd-total-value {
-    font-size: 2.2rem;
+    font-size: 2rem;
   }
   
   .usd-total {
     padding: 0.6rem 1rem;
-    max-width: 220px;
+    max-width: 240px;
   }
   
   .usd-total .usd-label {
@@ -252,5 +268,42 @@
   
   .usd-label {
     font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .usd-title {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .usd-grid {
+    gap: 0.6rem;
+  }
+  
+  .usd-item {
+    padding: 0.8rem;
+  }
+  
+  .usd-value {
+    font-size: 1.1rem;
+  }
+  
+  .usd-total-value {
+    font-size: 1.8rem;
+  }
+  
+  .usd-total {
+    padding: 0.5rem 0.8rem;
+    max-width: 200px;
+  }
+  
+  .usd-total .usd-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+  }
+  
+  .usd-label {
+    font-size: 0.7rem;
   }
 }

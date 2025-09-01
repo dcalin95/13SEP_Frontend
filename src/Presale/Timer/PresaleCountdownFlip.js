@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from "react";
 import styles from "./PresaleCountdownFlip.module.css";
 import { usePresaleState } from "./usePresaleState";
+import useCellManagerData from "../hooks/useCellManagerData";
 import TotalRaised from "./logic/TotalRaised";
 import bitsLogo from "../../assets/logo.png";
 
-const TOTAL_ROUNDS = 12;
+// Removed TOTAL_ROUNDS limit - rounds are managed dynamically
 
 const getTimeLeft = (endTime) => {
   const now = Date.now();
@@ -28,15 +29,18 @@ const TimeBox = ({ label, value }) => (
 );
 
 const PresaleCountdownFlip = () => {
+  // Get database data for sold/progress/endTime
   const {
     isLoaded,
-    roundNumber,
-    price,
     endTime,
     totalBoosted,
     sold,
+    supply,
     progress,
   } = usePresaleState();
+
+  // Get CellManager data for price and round
+  const cellManagerData = useCellManagerData();
 
   const [timeLeft, setTimeLeft] = useState({
     days: 0, hours: 0, minutes: 0, seconds: 0,
@@ -50,9 +54,13 @@ const PresaleCountdownFlip = () => {
     return () => clearInterval(interval);
   }, [endTime]);
 
-  const currentPrice = price ? price / 100 : 0;
+  // Use CellManager price or fallback
+  const currentPrice = cellManagerData.currentPrice || 0.06;
+  const roundNumber = cellManagerData.roundNumber || 9;
 
-  if (!isLoaded) return null;
+
+
+  if (!isLoaded || cellManagerData.loading) return null;
 
   return (
     <div className={styles.countdownFlip} translate="no">
@@ -64,7 +72,7 @@ const PresaleCountdownFlip = () => {
         <div className={styles.roundText} translate="no">
           {roundNumber ? (
             <>
-              $BITS Presale Round <span className={styles.currentRound}>{roundNumber}</span> ➜ <span className={styles.totalRounds}>{TOTAL_ROUNDS}</span>
+              $BITS Presale Round <span className={styles.currentRound}>{roundNumber}</span>
             </>
           ) : (
             "No round active"
@@ -72,24 +80,17 @@ const PresaleCountdownFlip = () => {
         </div>
 
         <div className={styles.remainingText} translate="no">
-          {progress >= 100 ? (
-            "🎯 All Tokens Sold - Round Complete!"
-          ) : (
-            `⏳ ${timeLeft.days}d ${timeLeft.hours}h ${timeLeft.minutes}m ${timeLeft.seconds}s`
-          )}
+          {/* Always show presale as active if supply exists */}
+          {"⏳ Presale Active"}
         </div>
 
-        {roundNumber && roundNumber >= TOTAL_ROUNDS && (
-          <div className={styles.finalRound} translate="no">
-            🎯 This is the final round. No further price increases.
-          </div>
-        )}
+
 
         <div className={styles.priceLine} translate="no">
           <span>
             <img src={bitsLogo} alt="BITS Logo" className={styles.priceLogo} />
           </span>
-          {price > 0 ? (
+          {currentPrice > 0 ? (
             <span className={styles.currentPriceDisplay}>${currentPrice.toFixed(3)}</span>
           ) : (
             <span className={styles.unavailablePrice}>Unavailable</span>

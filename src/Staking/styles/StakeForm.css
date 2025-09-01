@@ -121,3 +121,73 @@
   border-radius: 1px;
   transition: width 0.3s ease;
 }
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .ai-form-title {
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-form-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .stake-form input {
+    font-size: 0.9rem;
+    padding: 0.7rem;
+  }
+
+  .ai-input-group {
+    margin-bottom: 1.2rem;
+  }
+
+  .ai-input-label {
+    font-size: 0.75rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .ai-stake-button {
+    font-size: 0.9rem;
+    padding: 0.8rem 1.5rem;
+  }
+
+  .ai-balance-display {
+    font-size: 0.85rem;
+    padding: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-form-title {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .stake-form input {
+    font-size: 0.85rem;
+    padding: 0.6rem;
+  }
+
+  .ai-input-group {
+    margin-bottom: 1rem;
+  }
+
+  .ai-input-label {
+    font-size: 0.7rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .ai-stake-button {
+    font-size: 0.85rem;
+    padding: 0.7rem 1.2rem;
+  }
+
+  .ai-balance-display {
+    font-size: 0.8rem;
+    padding: 0.6rem;
+  }
+}

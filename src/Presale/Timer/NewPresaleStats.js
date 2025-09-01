@@ -88,19 +88,27 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
   const remainingTokens = supply;
   const currentRoundPercentage = ((sold / totalSupply) * 100);
   
-  // Debug logging
-  console.log('Round 7 Debug:', {
-    sold: sold,
-    supply: supply,
-    totalSupply: totalSupply,
-    currentRoundPercentage: currentRoundPercentage
-  });
-  
   // Total presale supply from tokenomics (30% of total supply)
   const TOTAL_PRESALE_SUPPLY = 3000000000; // 3 billion $BITS for presale
   
-  // Calculate total presale percentage (all rounds combined)
-  const totalPresaleSold = previousRoundData ? previousRoundData.totalSoldFromAllPreviousRounds + sold : sold;
+  // Debug logging
+  console.log('🔍 [NewPresaleStats] Debug:', {
+    sold: sold,
+    supply: supply,
+    totalSupply: totalSupply,
+    currentRoundPercentage: currentRoundPercentage,
+    roundNumber: roundNumber,
+    previousRoundData: previousRoundData,
+    previousRoundDataType: typeof previousRoundData,
+    totalSoldFromAllPreviousRounds: previousRoundData?.totalSoldFromAllPreviousRounds,
+    calculation: previousRoundData ? `${previousRoundData.totalSoldFromAllPreviousRounds} + ${sold}` : `just ${sold}`,
+    totalPresaleSold: previousRoundData ? previousRoundData.totalSoldFromAllPreviousRounds + sold : sold,
+    totalPresalePercentage: ((previousRoundData ? previousRoundData.totalSoldFromAllPreviousRounds + sold : sold) / TOTAL_PRESALE_SUPPLY) * 100
+  });
+  
+  // Calculate total presale percentage (all rounds combined) - fix NaN
+  const safePreviousTotal = previousRoundData?.totalSoldFromAllPreviousRounds;
+  const totalPresaleSold = (safePreviousTotal && !isNaN(safePreviousTotal)) ? safePreviousTotal + sold : sold;
   const totalPresalePercentage = ((totalPresaleSold / TOTAL_PRESALE_SUPPLY) * 100);
 
   // Fetch all previous rounds data

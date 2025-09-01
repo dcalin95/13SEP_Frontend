@@ -72,7 +72,7 @@ export const usePresaleState = () => {
             price: data.price || 0.01,
             progress: data.progress || 0,
             totalBoosted: data.totalBoosted || 0,
-            roundActive: true,
+            roundActive: true, // Always active - no round limit
             roundNumber: data.roundNumber || 1,
             totalRounds: 12,
             serverTimeOffset, // ✅ adăugat

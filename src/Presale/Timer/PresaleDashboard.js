@@ -4,19 +4,25 @@ import styles from "./PresaleDashboard.module.css";
 import PresaleCountdownFlip from "./PresaleCountdownFlip";
 import NewPresaleStats from "./NewPresaleStats";
 import { usePresaleState } from "./usePresaleState";
+import useCellManagerData from "../hooks/useCellManagerData";
 
 const PresaleDashboard = () => {
   const {
     endTime,
     sold,
     supply,
-    price,
     progress,
     isLoaded,
     error,
-    roundActive,
-    roundNumber
+    roundActive
   } = usePresaleState();
+
+  // Get CellManager data for price and round
+  const cellManagerData = useCellManagerData();
+  
+  // Use CellManager data or fallbacks
+  const price = cellManagerData.currentPrice ? Math.round(cellManagerData.currentPrice * 100) : 6;
+  const roundNumber = cellManagerData.roundNumber || 9;
 
   if (error) {
     return (
