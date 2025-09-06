@@ -69,7 +69,7 @@ export const WalletProvider = ({ children }) => {
         clientId: "BES8kujJeBgfBvVa1a9TLtNGuKUqVFTIXGfgOlEyB4sJv51AxncNougD4ImDK6qYVWVjGYtrRBO5MKteOzmdA8",
         chainConfig: {
           chainNamespace: CHAIN_NAMESPACES.EIP155,
-          chainId: "0x38", // BSC Mainnet
+          chainId: "0x61", // BSC Testnet
           rpcTarget: "https://bsc-dataseed.binance.org/",
         },
       });

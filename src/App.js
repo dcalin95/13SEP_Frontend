@@ -65,6 +65,7 @@ const BitcoinAcademy = lazy(() => import("./components/BitcoinAcademy"));
 const ProofOfTransferPage = lazy(() => import("./components/BitcoinAcademy/pages/ProofOfTransferPage"));
 const EducationPage = lazy(() => import("./components/EducationPageModern"));
 const AIPortfolioPage = lazy(() => import("./components/AIPortfolioPage"));
+const AIPortfolioPageRefactored = lazy(() => import("./components/AIPortfolioPageRefactored"));
 const PaperTradingPage = lazy(() => import("./papertrade/PaperTradingPage"));
 const STXPaperTrade = lazy(() => import("./papertrade/STXPaperTrade"));
 const TokenPaperTrade = lazy(() => import("./papertrade/TokenPaperTrade"));
@@ -146,6 +147,7 @@ const App = () => {
                       <Route path="/roadmap" element={<Roadmap />} />
                       <Route path="/scheme-test" element={<Scheme />} />
                       <Route path="/ai-portfolio" element={<AIPortfolioPage />} />
+                      <Route path="/ai-portfolio-v2" element={<AIPortfolioPageRefactored />} />
                       <Route path="/paper-trading" element={<PaperTradingPage />} />
                       <Route path="/paper-trade/stx" element={<STXPaperTrade />} />
                       <Route path="/paper-trade/:symbol" element={<TokenPaperTrade />} />

@@ -15,7 +15,7 @@ export const initWeb3Auth = async () => {
     clientId,
     chainConfig: {
       chainNamespace: "eip155",
-      chainId: "0x38", // BSC Mainnet (sau ce vrei tu)
+      chainId: "0x61", // BSC Testnet
       rpcTarget: "https://bsc-dataseed.binance.org/",
     },
   });

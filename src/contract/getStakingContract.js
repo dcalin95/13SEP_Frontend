@@ -1,7 +1,9 @@
 import { ethers } from "ethers";
 import stakingABI from "../abi/stakingABI"; // asigură-te că acest path este corect
 
-const STAKING_ADDRESS = "0xF6737b6671f9aD9B24557af6ea5340639BDcED53"; // adresa reală
+// DEPRECATED: Use contractMap.js instead
+// Updated with new BSC Testnet address  
+const STAKING_ADDRESS = "0x11328DAFe3F5d23bEA051fBe4D7fc97c1055Bad3";
 
 /**
  * Returnează o instanță de contract staking, conectată la provider sau signer

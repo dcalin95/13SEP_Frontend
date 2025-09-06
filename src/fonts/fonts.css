@@ -1,0 +1,294 @@
+/**
+ * 🔤 ROG CRYSTAL FONT IMPLEMENTATION
+ * 
+ * Complete @font-face implementation for ROG Crystal font
+ * with fallbacks and performance optimizations
+ */
+
+/* ========== ROG Crystal Font Family ========== */
+
+/* ROG Crystal Regular */
+@font-face {
+    font-family: 'ROG Crystal';
+    src: url('./rog-crystal/rog-crystal-regular.eot'); /* IE9 Compat Modes */
+    src: url('./rog-crystal/rog-crystal-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('./rog-crystal/rog-crystal-regular.woff2') format('woff2'), /* Modern Browsers */
+         url('./rog-crystal/rog-crystal-regular.woff') format('woff'), /* Pretty Modern Browsers */
+         url('./rog-crystal/rog-crystal-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('./rog-crystal/rog-crystal-regular.svg#ROGCrystal') format('svg'); /* Legacy iOS */
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap; /* Performance: show fallback immediately, swap when loaded */
+    unicode-range: U+0020-007F, U+00A0-00FF; /* Basic Latin + Latin-1 Supplement */
+}
+
+/* ROG Crystal Bold */
+@font-face {
+    font-family: 'ROG Crystal';
+    src: url('./rog-crystal/rog-crystal-bold.woff2') format('woff2'),
+         url('./rog-crystal/rog-crystal-bold.woff') format('woff'),
+         url('./rog-crystal/rog-crystal-bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+0020-007F, U+00A0-00FF;
+}
+
+/* ROG Crystal Light */
+@font-face {
+    font-family: 'ROG Crystal';
+    src: url('./rog-crystal/rog-crystal-light.woff2') format('woff2'),
+         url('./rog-crystal/rog-crystal-light.woff') format('woff'),
+         url('./rog-crystal/rog-crystal-light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+0020-007F, U+00A0-00FF;
+}
+
+/* ========== Alternative: Google Fonts ROG-Style ========== */
+
+/* Orbitron - ROG Crystal Alternative */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+/* Exo 2 - Gaming Alternative */
+@import url('https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;700;900&display=swap');
+
+/* Rajdhani - Sharp Tech Alternative */
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;600;700&display=swap');
+
+/* ========== Font Classes ========== */
+
+/* Primary ROG Crystal Text */
+.rog-text {
+    font-family: 'ROG Crystal', 'Orbitron', 'Arial Black', sans-serif;
+    font-weight: 400;
+    letter-spacing: 1px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ROG Crystal Bold */
+.rog-text-bold {
+    font-family: 'ROG Crystal', 'Orbitron', 'Arial Black', sans-serif;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ROG Crystal Light */
+.rog-text-light {
+    font-family: 'ROG Crystal', 'Orbitron', 'Arial', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========== ROG-Style Effects ========== */
+
+/* Crystal Glow Effect */
+.rog-glow {
+    text-shadow: 
+        0 0 5px rgba(0, 212, 255, 0.5),
+        0 0 10px rgba(0, 212, 255, 0.3),
+        0 0 15px rgba(0, 212, 255, 0.2),
+        0 0 20px rgba(0, 212, 255, 0.1);
+}
+
+/* Gaming Gradient Text */
+.rog-gradient {
+    background: linear-gradient(90deg, #00D4FF, #7B68EE, #FF6B9D, #FFD700);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: rog-gradient-shift 3s ease-in-out infinite;
+}
+
+@keyframes rog-gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Crystal Cut Effect */
+.rog-crystal-cut {
+    position: relative;
+    overflow: hidden;
+}
+
+.rog-crystal-cut::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        rgba(255, 255, 255, 0.1) 49%, 
+        rgba(255, 255, 255, 0.2) 50%, 
+        rgba(255, 255, 255, 0.1) 51%, 
+        transparent 70%);
+    transform: rotate(45deg);
+    animation: rog-crystal-sweep 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes rog-crystal-sweep {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    50% { transform: translateX(0%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* ROG Neon Effect */
+.rog-neon {
+    color: #00D4FF;
+    text-shadow: 
+        0 0 5px #00D4FF,
+        0 0 10px #00D4FF,
+        0 0 15px #00D4FF,
+        0 0 20px #00D4FF,
+        0 0 35px #00D4FF,
+        0 0 40px #00D4FF;
+    animation: rog-neon-flicker 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes rog-neon-flicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        text-shadow: 
+            0 0 5px #00D4FF,
+            0 0 10px #00D4FF,
+            0 0 15px #00D4FF,
+            0 0 20px #00D4FF,
+            0 0 35px #00D4FF,
+            0 0 40px #00D4FF;
+    }
+    20%, 24%, 55% {
+        text-shadow: none;
+    }
+}
+
+/* ========== Responsive Font Sizes ========== */
+
+/* Mobile First */
+.rog-title {
+    font-size: 1.8rem;
+    line-height: 1.2;
+}
+
+.rog-subtitle {
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.rog-body {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+    .rog-title {
+        font-size: 2.5rem;
+    }
+    
+    .rog-subtitle {
+        font-size: 1.3rem;
+    }
+    
+    .rog-body {
+        font-size: 1.1rem;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    .rog-title {
+        font-size: 3.5rem;
+    }
+    
+    .rog-subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .rog-body {
+        font-size: 1.2rem;
+    }
+}
+
+/* Large Desktop */
+@media (min-width: 1440px) {
+    .rog-title {
+        font-size: 4rem;
+    }
+    
+    .rog-subtitle {
+        font-size: 1.8rem;
+    }
+}
+
+/* ========== Performance Optimizations ========== */
+
+/* Preload Critical Fonts */
+/*
+Add to HTML <head>:
+<link rel="preload" href="./fonts/rog-crystal/rog-crystal-regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./fonts/rog-crystal/rog-crystal-bold.woff2" as="font" type="font/woff2" crossorigin>
+*/
+
+/* Font Loading Strategy */
+.font-loading .rog-text {
+    font-family: 'Arial Black', sans-serif; /* Fallback during loading */
+}
+
+.font-loaded .rog-text {
+    font-family: 'ROG Crystal', 'Orbitron', 'Arial Black', sans-serif;
+}
+
+/* ========== Accessibility ========== */
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .rog-text {
+        text-shadow: none;
+        color: #ffffff;
+    }
+    
+    .rog-gradient {
+        background: none;
+        -webkit-text-fill-color: #ffffff;
+        color: #ffffff;
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    .rog-gradient,
+    .rog-crystal-cut::before,
+    .rog-neon {
+        animation: none;
+    }
+    
+    .rog-text {
+        text-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+    }
+}
+
+/* ========== Print Styles ========== */
+
+@media print {
+    .rog-text,
+    .rog-text-bold,
+    .rog-text-light {
+        font-family: 'Arial Black', Arial, sans-serif;
+        color: #000000 !important;
+        text-shadow: none !important;
+        background: none !important;
+        -webkit-text-fill-color: #000000 !important;
+    }
+}

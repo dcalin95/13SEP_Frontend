@@ -1,6 +1,27 @@
 export default 
 [
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "treasury_",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "signer_",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "marketingWallet_",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
 		"inputs": [],
 		"name": "AccessControlBadConfirmation",
 		"type": "error"
@@ -19,6 +40,16 @@ export default
 			}
 		],
 		"name": "AccessControlUnauthorizedAccount",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "ArrayLengthMismatch",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "CellNotOpen",
 		"type": "error"
 	},
 	{
@@ -60,12 +91,27 @@ export default
 	},
 	{
 		"inputs": [],
+		"name": "HashAlreadyUsed",
+		"type": "error"
+	},
+	{
+		"inputs": [],
 		"name": "HashAlreadyUsedError",
 		"type": "error"
 	},
 	{
 		"inputs": [],
+		"name": "InsufficientBalance",
+		"type": "error"
+	},
+	{
+		"inputs": [],
 		"name": "InvalidAdditionalRewardArraysValue",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidAmount",
 		"type": "error"
 	},
 	{
@@ -80,12 +126,27 @@ export default
 	},
 	{
 		"inputs": [],
+		"name": "InvalidPriceData",
+		"type": "error"
+	},
+	{
+		"inputs": [],
 		"name": "InvalidShortString",
 		"type": "error"
 	},
 	{
 		"inputs": [],
+		"name": "InvalidSigner",
+		"type": "error"
+	},
+	{
+		"inputs": [],
 		"name": "InvalidSignerError",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "InvalidTokenAddress",
 		"type": "error"
 	},
 	{
@@ -100,7 +161,17 @@ export default
 	},
 	{
 		"inputs": [],
+		"name": "NoRewardAvailable",
+		"type": "error"
+	},
+	{
+		"inputs": [],
 		"name": "ParamsInvalidError",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "PaymentFailed",
 		"type": "error"
 	},
 	{
@@ -152,7 +223,17 @@ export default
 	},
 	{
 		"inputs": [],
+		"name": "TransactionExpired",
+		"type": "error"
+	},
+	{
+		"inputs": [],
 		"name": "TransactionExpiredError",
+		"type": "error"
+	},
+	{
+		"inputs": [],
+		"name": "Unauthorized",
 		"type": "error"
 	},
 	{
@@ -186,7 +267,7 @@ export default
 				"type": "address"
 			}
 		],
-		"name": "AdditionalRewardContractUpdated",
+		"name": "AddRewardUp",
 		"type": "event"
 	},
 	{
@@ -200,6 +281,19 @@ export default
 			}
 		],
 		"name": "AutoStakeRewardsUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "status",
+				"type": "bool"
+			}
+		],
+		"name": "AutoStakeUpdate",
 		"type": "event"
 	},
 	{
@@ -271,6 +365,25 @@ export default
 			{
 				"indexed": true,
 				"internalType": "address",
+				"name": "stakingContract",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "BitsToStaking",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
 				"name": "previousToken",
 				"type": "address"
 			},
@@ -281,7 +394,7 @@ export default
 				"type": "address"
 			}
 		],
-		"name": "BitsTokenUpdated",
+		"name": "BitsTokenUp",
 		"type": "event"
 	},
 	{
@@ -300,7 +413,7 @@ export default
 				"type": "address"
 			}
 		],
-		"name": "CellManagerUpdated",
+		"name": "CellMgrUp",
 		"type": "event"
 	},
 	{
@@ -376,6 +489,19 @@ export default
 				"type": "uint256"
 			}
 		],
+		"name": "CoinRecovered",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
 		"name": "CoinRefRecovered",
 		"type": "event"
 	},
@@ -433,7 +559,7 @@ export default
 				"type": "uint256"
 			}
 		],
-		"name": "DirectPayExecuted",
+		"name": "DirectPayExec",
 		"type": "event"
 	},
 	{
@@ -496,7 +622,7 @@ export default
 				"type": "address"
 			}
 		],
-		"name": "EthReceiverUpdated",
+		"name": "EthReceiverUp",
 		"type": "event"
 	},
 	{
@@ -509,7 +635,7 @@ export default
 				"type": "bool"
 			}
 		],
-		"name": "GlobalStatusUpdated",
+		"name": "GlobalStatus",
 		"type": "event"
 	},
 	{
@@ -528,7 +654,7 @@ export default
 				"type": "address"
 			}
 		],
-		"name": "MarketingWalletUpdated",
+		"name": "MarketingUp",
 		"type": "event"
 	},
 	{
@@ -554,7 +680,71 @@ export default
 				"type": "uint256"
 			}
 		],
+		"name": "MaxAmountUp",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
 		"name": "MinAmountInUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "MinAmountUp",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "reason",
+				"type": "string"
+			}
+		],
+		"name": "PriceFeedFallback",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "string",
+				"name": "referralCode",
+				"type": "string"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "token",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "RefClaimed",
 		"type": "event"
 	},
 	{
@@ -650,6 +840,95 @@ export default
 			}
 		],
 		"name": "RefDataSetup",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "referralCode",
+				"type": "string"
+			}
+		],
+		"name": "RefDisabled",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "referralCode",
+				"type": "string"
+			}
+		],
+		"name": "RefEnabled",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "firstRate",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "secondRate",
+				"type": "uint256"
+			}
+		],
+		"name": "RefRateSetup",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "referralCode",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "firstRate",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "secondRate",
+				"type": "uint256"
+			}
+		],
+		"name": "RefSetup",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "RewardDistrib",
 		"type": "event"
 	},
 	{
@@ -794,7 +1073,7 @@ export default
 				"type": "address"
 			}
 		],
-		"name": "SolanaPaymentContractUpdated",
+		"name": "SolanaPayUp",
 		"type": "event"
 	},
 	{
@@ -822,6 +1101,25 @@ export default
 			{
 				"indexed": true,
 				"internalType": "address",
+				"name": "previousContract",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newContract",
+				"type": "address"
+			}
+		],
+		"name": "StakingUp",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
 				"name": "previous",
 				"type": "address"
 			},
@@ -832,7 +1130,7 @@ export default
 				"type": "address"
 			}
 		],
-		"name": "TelegramRewardContractUpdated",
+		"name": "TelRewardUp",
 		"type": "event"
 	},
 	{
@@ -860,11 +1158,43 @@ export default
 			{
 				"indexed": true,
 				"internalType": "address",
+				"name": "newTreasury",
+				"type": "address"
+			}
+		],
+		"name": "TreasuryUp",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
 				"name": "treasury",
 				"type": "address"
 			}
 		],
 		"name": "TreasuryUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "status",
+				"type": "bool"
+			}
+		],
+		"name": "UserVerified",
 		"type": "event"
 	},
 	{
@@ -900,6 +1230,71 @@ export default
 		"type": "event"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "newLimit",
+				"type": "uint256"
+			}
+		],
+		"name": "VerifyLimitUp",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "DEFAULT_ADMIN_ROLE",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "NODE_OPERATOR_ROLE",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "NODE_RUNNER_ROLE",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "RECEIVER_ROLE",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -933,6 +1328,45 @@ export default
 		"name": "addValidatedBatch",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "additionalReward",
+		"outputs": [
+			{
+				"internalType": "contract AdditionalReward",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "bitsToken",
+		"outputs": [
+			{
+				"internalType": "contract IERC20",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "bnbPriceFeed",
+		"outputs": [
+			{
+				"internalType": "contract AggregatorV3Interface",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -974,6 +1408,19 @@ export default
 		"name": "buyBitsWithPaymentToken",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "cellManager",
+		"outputs": [
+			{
+				"internalType": "contract ICellManager",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -1019,6 +1466,30 @@ export default
 		"name": "claimReward",
 		"outputs": [],
 		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "token_",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "code_",
+				"type": "string"
+			}
+		],
+		"name": "codeBalanceOf",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -1071,572 +1542,6 @@ export default
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "code_",
-				"type": "string"
-			}
-		],
-		"name": "enableRefData",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "fundWithBITS",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "role",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
-			}
-		],
-		"name": "grantRole",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "user",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "cellId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amountUSD",
-				"type": "uint256"
-			}
-		],
-		"name": "handleSolanaPayment",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "token_",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount_",
-				"type": "uint256"
-			}
-		],
-		"name": "recoverERC20",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "recoverETH",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "role",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "address",
-				"name": "callerConfirmation",
-				"type": "address"
-			}
-		],
-		"name": "renounceRole",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "role",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
-			}
-		],
-		"name": "revokeRole",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "percents_",
-				"type": "uint256[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "limits_",
-				"type": "uint256[]"
-			}
-		],
-		"name": "setAdditionalInfo",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "addr",
-				"type": "address"
-			}
-		],
-		"name": "setAdditionalRewardContract",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bool",
-				"name": "status",
-				"type": "bool"
-			}
-		],
-		"name": "setAutoStakeRewards",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newToken",
-				"type": "address"
-			}
-		],
-		"name": "setBitsToken",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "feed",
-				"type": "address"
-			}
-		],
-		"name": "setBNBPriceFeed",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "cellManagerAddress",
-				"type": "address"
-			}
-		],
-		"name": "setCellManager",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "feed",
-				"type": "address"
-			}
-		],
-		"name": "setETHPriceFeed",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "receiver_",
-				"type": "address"
-			}
-		],
-		"name": "setEthReceiver",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "newPrice",
-				"type": "uint256"
-			}
-		],
-		"name": "setFallbackBNBPrice",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bool",
-				"name": "status",
-				"type": "bool"
-			}
-		],
-		"name": "setGlobalStatus",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "wallet_",
-				"type": "address"
-			}
-		],
-		"name": "setMarketingWallet",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "amount_",
-				"type": "uint256"
-			}
-		],
-		"name": "setMaxAmountIn",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "amount_",
-				"type": "uint256"
-			}
-		],
-		"name": "setMinAmountIn",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "signer_",
-				"type": "address"
-			}
-		],
-		"name": "setSigner",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "addr",
-				"type": "address"
-			}
-		],
-		"name": "setSolanaPaymentContract",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newContract",
-				"type": "address"
-			}
-		],
-		"name": "setStakingContract",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "contractAddress",
-				"type": "address"
-			}
-		],
-		"name": "setTelegramRewardContract",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "treasury_",
-				"type": "address"
-			}
-		],
-		"name": "setTreasury",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bool",
-				"name": "value",
-				"type": "bool"
-			}
-		],
-		"name": "setTrustRefData",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "firstRefCodeRate_",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "secondRefCodeRate_",
-				"type": "uint256"
-			}
-		],
-		"name": "setupRefCodeRate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string[]",
-				"name": "refs_",
-				"type": "string[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "firstRefCodeRate_",
-				"type": "uint256[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "secondRefCodeFunds_",
-				"type": "uint256[]"
-			}
-		],
-		"name": "setupRefData",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "amount_",
-				"type": "uint256"
-			}
-		],
-		"name": "setValidatedLimit",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "user",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "stakeReward",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"stateMutability": "payable",
-		"type": "receive"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "treasury_",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "signer_",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "marketingWallet_",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"inputs": [],
-		"name": "additionalReward",
-		"outputs": [
-			{
-				"internalType": "contract AdditionalReward",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "bitsToken",
-		"outputs": [
-			{
-				"internalType": "contract IERC20",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "bnbPriceFeed",
-		"outputs": [
-			{
-				"internalType": "contract AggregatorV3Interface",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "cellManager",
-		"outputs": [
-			{
-				"internalType": "contract CellManager",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "token_",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "code_",
-				"type": "string"
-			}
-		],
-		"name": "codeBalanceOf",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "DEFAULT_ADMIN_ROLE",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "eip712Domain",
 		"outputs": [
@@ -1680,6 +1585,19 @@ export default
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "code_",
+				"type": "string"
+			}
+		],
+		"name": "enableRefData",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "ethPriceFeed",
 		"outputs": [
@@ -1716,6 +1634,19 @@ export default
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "fundWithBITS",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -2018,25 +1949,6 @@ export default
 				"type": "address"
 			}
 		],
-		"name": "getUserRewardBalance",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "user",
-				"type": "address"
-			}
-		],
 		"name": "getUserTransactionCount",
 		"outputs": [
 			{
@@ -2059,6 +1971,47 @@ export default
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "role",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "grantRole",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "cellId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amountUSD",
+				"type": "uint256"
+			}
+		],
+		"name": "handleSolanaPayment",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -2153,7 +2106,7 @@ export default
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "user_",
+				"name": "",
 				"type": "address"
 			}
 		],
@@ -2169,42 +2122,370 @@ export default
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "NODE_OPERATOR_ROLE",
-		"outputs": [
+		"inputs": [
 			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
+				"internalType": "address",
+				"name": "token_",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount_",
+				"type": "uint256"
 			}
 		],
-		"stateMutability": "view",
+		"name": "recoverERC20",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [],
-		"name": "NODE_RUNNER_ROLE",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"stateMutability": "view",
+		"name": "recoverETH",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "RECEIVER_ROLE",
-		"outputs": [
+		"inputs": [
 			{
 				"internalType": "bytes32",
-				"name": "",
+				"name": "role",
 				"type": "bytes32"
+			},
+			{
+				"internalType": "address",
+				"name": "callerConfirmation",
+				"type": "address"
 			}
 		],
-		"stateMutability": "view",
+		"name": "renounceRole",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "role",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "revokeRole",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "percents_",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "limits_",
+				"type": "uint256[]"
+			}
+		],
+		"name": "setAdditionalInfo",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "setAdditionalRewardContract",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "status",
+				"type": "bool"
+			}
+		],
+		"name": "setAutoStakeRewards",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "feed",
+				"type": "address"
+			}
+		],
+		"name": "setBNBPriceFeed",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newToken",
+				"type": "address"
+			}
+		],
+		"name": "setBitsToken",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "cellManagerAddress",
+				"type": "address"
+			}
+		],
+		"name": "setCellManager",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "feed",
+				"type": "address"
+			}
+		],
+		"name": "setETHPriceFeed",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "receiver_",
+				"type": "address"
+			}
+		],
+		"name": "setEthReceiver",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "newPrice",
+				"type": "uint256"
+			}
+		],
+		"name": "setFallbackBNBPrice",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "status",
+				"type": "bool"
+			}
+		],
+		"name": "setGlobalStatus",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "wallet_",
+				"type": "address"
+			}
+		],
+		"name": "setMarketingWallet",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "amount_",
+				"type": "uint256"
+			}
+		],
+		"name": "setMaxAmountIn",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "amount_",
+				"type": "uint256"
+			}
+		],
+		"name": "setMinAmountIn",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "signer_",
+				"type": "address"
+			}
+		],
+		"name": "setSigner",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "setSolanaPaymentContract",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newContract",
+				"type": "address"
+			}
+		],
+		"name": "setStakingContract",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "contractAddress",
+				"type": "address"
+			}
+		],
+		"name": "setTelegramRewardContract",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "treasury_",
+				"type": "address"
+			}
+		],
+		"name": "setTreasury",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bool",
+				"name": "value",
+				"type": "bool"
+			}
+		],
+		"name": "setTrustRefData",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "amount_",
+				"type": "uint256"
+			}
+		],
+		"name": "setValidatedLimit",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "firstRefCodeRate_",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "secondRefCodeRate_",
+				"type": "uint256"
+			}
+		],
+		"name": "setupRefCodeRate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string[]",
+				"name": "refs_",
+				"type": "string[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "firstRefCodeRate_",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "secondRefCodeFunds_",
+				"type": "uint256[]"
+			}
+		],
+		"name": "setupRefData",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -2218,6 +2499,24 @@ export default
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "user",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "stakeReward",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -2277,5 +2576,9 @@ export default
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"stateMutability": "payable",
+		"type": "receive"
 	}
 ]

@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import styles from "./AdminPanel.module.css";
 import { toast } from "react-toastify";
 import PresaleHistory from "../PresaleHistory";
+import RoundEndDisplay from "../RoundEndDisplay";
 import useCellManagerData from "../../hooks/useCellManagerData";
 import { CONTRACTS } from "../../../contract/contracts";
 
@@ -20,6 +21,8 @@ const AdminPanel = () => {
   // Round management states  
   const [supplyInput, setSupplyInput] = useState("");
   const [presaleInfo, setPresaleInfo] = useState(null);
+  const [showRoundEndStats, setShowRoundEndStats] = useState(false);
+  const [roundEndData, setRoundEndData] = useState(null);
   
   // Get data directly from CellManager contract
   const cellManagerData = useCellManagerData();
@@ -107,8 +110,36 @@ const AdminPanel = () => {
       setPresaleInfo(response.data);
       console.log("📊 Current presale state:", response.data);
       console.log("🔍 [DATABASE DEBUG] tokensAvailable:", response.data?.tokensAvailable);
+      console.log("🔍 [DATABASE DEBUG] sold:", response.data?.sold);
+      console.log("🔍 [DATABASE DEBUG] totalSupply:", response.data?.totalSupply);
       console.log("🔍 [DATABASE DEBUG] price:", response.data?.price);
       console.log("🔍 [DATABASE DEBUG] round:", response.data?.round);
+      console.log("🔍 [CALCULATION DEBUG] Should be:", (response.data?.totalSupply || 0) - (response.data?.sold || 0));
+      
+      // Check if round has ended (14 days = 1,209,600 seconds)
+      const now = Math.floor(Date.now() / 1000);
+      const roundDuration = 14 * 24 * 60 * 60; // 14 days in seconds
+      const roundEndTime = response.data?.startTime + roundDuration;
+      
+      if (now >= roundEndTime && !showRoundEndStats) {
+        // Round has ended, prepare stats
+        const endStats = {
+          roundNumber: response.data?.roundNumber || 1,
+          totalSold: response.data?.sold || 0,
+          totalRaised: response.data?.totalRaised || 0,
+          duration: roundDuration,
+          startTime: response.data?.startTime,
+          endTime: roundEndTime,
+          averagePrice: (response.data?.totalRaised || 0) / (response.data?.sold || 1),
+          participantCount: Math.floor((response.data?.sold || 0) / 1000), // Estimate
+          topSale: {
+            amount: Math.floor((response.data?.sold || 0) * 0.1),
+            value: Math.floor((response.data?.totalRaised || 0) * 0.1)
+          }
+        };
+        setRoundEndData(endStats);
+        setShowRoundEndStats(true);
+      }
       
       // Check AutoSim blocking conditions
       if (!response.data) {
@@ -135,19 +166,31 @@ const AdminPanel = () => {
       return;
     }
 
-    if (!cellManagerData.currentPrice) {
-      toast.error("❌ Cannot read price from CellManager");
-      return;
+    if (!cellManagerData.currentPrice || cellManagerData.currentPrice <= 0) {
+      toast.error("❌ Cannot read price from CellManager. Using fallback price $0.055");
+      console.warn("⚠️ Using fallback price because cellManagerData.currentPrice is:", cellManagerData.currentPrice);
+      // Don't return - continue with fallback price
     }
 
     try {
+      // Use fallback price if currentPrice is invalid
+      const fallbackPrice = 0.055;
+      const priceToUse = (cellManagerData.currentPrice && cellManagerData.currentPrice > 0) 
+        ? cellManagerData.currentPrice 
+        : fallbackPrice;
+      
+      console.log("🔍 [DEBUG] Price calculation:");
+      console.log("- cellManagerData.currentPrice:", cellManagerData.currentPrice);
+      console.log("- priceToUse:", priceToUse);
+      
       // Price is already in correct format (e.g., 0.055), convert to millicents
-      const standardPrice = Math.round(cellManagerData.currentPrice * 1000);
+      const standardPrice = Math.round(priceToUse * 1000);
       const privilegedPrice = Math.round(standardPrice * 0.9); // 10% discount
       const supplyWei = ethers.utils.parseUnits(supply.toString(), 18);
       
       console.log("🔍 [DEBUG] AddCell values:");
       console.log("- currentPrice:", cellManagerData.currentPrice);
+      console.log("- priceToUse:", priceToUse);
       console.log("- standardPrice (millicents):", standardPrice);
       console.log("- privilegedPrice (millicents):", privilegedPrice);
       console.log("- supply:", supply);
@@ -211,7 +254,12 @@ const AdminPanel = () => {
 
       toast.success(response.data.message || `✅ Supply set for Round ${round}!`);
       setSupplyInput("");
-      fetchPresaleState(); // Refresh state
+      
+      // 🔄 Force refresh both states
+      await fetchPresaleState(); // Refresh AdminPanel data
+      setTimeout(() => {
+        fetchPresaleState(); // Double refresh to ensure update
+      }, 1000);
     } catch (err) {
       console.error("❌ Error setting supply:", err);
       toast.error("❌ Error setting supply: " + (err.response?.data?.error || err.message));
@@ -233,9 +281,37 @@ const AdminPanel = () => {
     }
   };
 
-  // Reset presale data
+  // Reset tokens to 0
+  const handleResetTokens = async () => {
+    if (!window.confirm("🔥 Are you sure you want to reset tokensavailable to 0? This will remove all BITS from database!")) {
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${API_URL}/api/presale/reset-tokens`, {
+        password: ADMIN_PASS
+      });
+
+      toast.success(response.data.message || "✅ Tokens reset to 0!");
+      fetchPresaleState(); // Refresh state
+    } catch (err) {
+      console.error("❌ Error resetting tokens:", err);
+      toast.error("❌ Error resetting tokens: " + (err.response?.data?.error || err.message));
+    }
+  };
+
+  // Reset presale data - PRODUCTION SAFETY
   const handleResetPresale = async () => {
-    if (!window.confirm("⚠️ Are you sure you want to reset ALL presale data? This cannot be undone!")) {
+    // 🚨 TRIPLE CONFIRMATION FOR PRODUCTION SAFETY
+    const firstConfirm = window.confirm("🚨 DANGER: Reset ALL presale data?\n\nThis will DELETE:\n- All sales data\n- All round history\n- All user transactions\n- Timer will restart\n\nThis CANNOT be undone!\n\nAre you absolutely sure?");
+    if (!firstConfirm) return;
+    
+    const secondConfirm = window.confirm("🚨 FINAL WARNING!\n\nYou are about to PERMANENTLY DELETE all presale data!\n\nThis action is IRREVERSIBLE and will:\n- Lose all user trust\n- Delete all sales history\n- Reset everything to zero\n\nType 'DELETE ALL DATA' in the next prompt to confirm.");
+    if (!secondConfirm) return;
+    
+    const finalConfirmation = prompt("🚨 Type exactly: DELETE ALL DATA");
+    if (finalConfirmation !== "DELETE ALL DATA") {
+      toast.error("❌ Reset cancelled - incorrect confirmation text");
       return;
     }
 
@@ -252,7 +328,36 @@ const AdminPanel = () => {
     }
   };
 
+  // Start new round after current round ends
+  const handleStartNewRound = async () => {
+    if (!cellManagerData.roundNumber || cellManagerData.roundNumber <= 0) {
+      toast.error("❌ Please configure a new cell in CellManager first!");
+      return;
+    }
 
+    const newSupply = prompt("🎯 Enter BITS supply for the new round:", "20000000");
+    if (!newSupply || isNaN(newSupply) || parseInt(newSupply) <= 0) {
+      toast.error("❌ Invalid supply amount");
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${API_URL}/api/presale/start-round`, {
+        password: ADMIN_PASS,
+        round: cellManagerData.roundNumber,
+        price: Math.round(cellManagerData.currentPrice * 100),
+        tokensAvailable: parseInt(newSupply)
+      });
+
+      toast.success(`🎉 Round ${cellManagerData.roundNumber} started successfully!`);
+      setShowRoundEndStats(false);
+      setRoundEndData(null);
+      fetchPresaleState();
+    } catch (err) {
+      console.error("❌ Error starting new round:", err);
+      toast.error("❌ Error starting new round: " + (err.response?.data?.error || err.message));
+    }
+  };
 
   const exportToTelegram = async () => {
     try {
@@ -502,6 +607,10 @@ const AdminPanel = () => {
                   <span style={{color: '#ff6b35'}}>0 BITS (⚠️ Cell not configured)</span> :
                   `${(cellManagerData.availableBits || 0).toLocaleString()} BITS`
               }</div>
+              <div><strong>Sold:</strong> {cellManagerData.loading ? "⏳ Loading..." : `${(cellManagerData.soldBits || 0).toLocaleString()} BITS`}</div>
+              <div><strong>USD Value:</strong> {cellManagerData.loading ? "⏳ Loading..." : `$${(cellManagerData.totalUsdValue || 0).toFixed(2)}`}</div>
+              <div><strong>Transactions:</strong> {cellManagerData.loading ? "⏳ Loading..." : (cellManagerData.totalTransactions || 0)}</div>
+              <div><strong>Unique Wallets:</strong> {cellManagerData.loading ? "⏳ Loading..." : (cellManagerData.uniqueWallets || 0)}</div>
               {!cellManagerData.loading && (cellManagerData.availableBits || 0) === 0 && (
                 <div style={{ fontSize: '11px', color: '#ff6b35', marginTop: '4px' }}>
                   💡 Cell {cellManagerData.cellId} needs BITS supply set in CellManager contract
@@ -527,7 +636,7 @@ const AdminPanel = () => {
                 </div>
                 <div><strong>Simulation Supply:</strong> {(presaleInfo.totalSupply || 0).toLocaleString()} BITS</div>
                 <div><strong>Simulated Sold:</strong> {(presaleInfo.sold || 0).toLocaleString()} BITS</div>
-                <div><strong>Simulation Available:</strong> {((presaleInfo.totalSupply || 0) - (presaleInfo.sold || 0)).toLocaleString()} BITS</div>
+                <div><strong>Simulation Available:</strong> {Math.max(0, (presaleInfo.totalSupply || 0) - (presaleInfo.sold || 0)).toLocaleString()} BITS</div>
               </div>
             )}
 
@@ -548,9 +657,47 @@ const AdminPanel = () => {
               }}
             />
             
-            {/* Conditional buttons based on cell configuration */}
-            {!cellManagerData.loading && (cellManagerData.availableBits || 0) === 0 ? (
-              // Show "Add Cell" button if cell is not configured
+            {/* Always show Database Supply button */}
+            <button 
+              onClick={handleSetSupply}
+              disabled={!supplyInput || cellManagerData.loading}
+              style={{
+                width: '100%',
+                padding: '10px',
+                borderRadius: '4px',
+                border: 'none',
+                background: cellManagerData.loading ? '#666' : '#00aa00',
+                color: '#fff',
+                cursor: cellManagerData.loading ? 'not-allowed' : 'pointer',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                marginBottom: '8px'
+              }}
+            >
+              {cellManagerData.loading ? "⏳ Loading CellManager..." : "💾 Set BITS Supply for Database Simulation"}
+            </button>
+
+            {/* Reset Tokens to 0 button */}
+            <button 
+              onClick={handleResetTokens}
+              style={{
+                width: '100%',
+                padding: '10px',
+                borderRadius: '4px',
+                border: 'none',
+                background: '#ff4444',
+                color: '#fff',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                marginBottom: '8px'
+              }}
+            >
+              🔥 Reset Tokens to 0
+            </button>
+            
+            {/* Optional: Add Cell to CellManager button (for blockchain) */}
+            {!cellManagerData.loading && (cellManagerData.availableBits || 0) === 0 && (
               <button 
                 onClick={handleAddCell}
                 disabled={!supplyInput}
@@ -567,27 +714,7 @@ const AdminPanel = () => {
                   marginBottom: '8px'
                 }}
               >
-                🏗️ Add Cell to CellManager
-              </button>
-            ) : (
-              // Show "Set Supply" button if cell is configured
-              <button 
-                onClick={handleSetSupply}
-                disabled={!supplyInput || cellManagerData.loading}
-                style={{
-                  width: '100%',
-                  padding: '10px',
-                  borderRadius: '4px',
-                  border: 'none',
-                  background: cellManagerData.loading ? '#666' : '#00aa00',
-                  color: '#fff',
-                  cursor: cellManagerData.loading ? 'not-allowed' : 'pointer',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
-                  marginBottom: '8px'
-                }}
-              >
-                {cellManagerData.loading ? "⏳ Loading CellManager..." : "🎯 Set Supply for Simulations"}
+                🏗️ Add Cell to CellManager (Blockchain)
               </button>
             )}
             
@@ -613,13 +740,17 @@ const AdminPanel = () => {
               ⏹️ End Current Round
             </button>
             
-            <button 
-              onClick={handleResetPresale}
-              className={styles.button}
-              style={{ background: '#dc3545' }}
-            >
-              🗑️ Reset All Data
-            </button>
+            
+            {/* New Round Button - Only show when CellManager is configured */}
+            {cellManagerData && !cellManagerData.loading && cellManagerData.roundNumber > 0 && (
+              <button 
+                onClick={handleStartNewRound}
+                className={styles.button}
+                style={{ background: '#28a745' }}
+              >
+                🚀 Start New Round {cellManagerData.roundNumber}
+              </button>
+            )}
           </div>
 
           <div className={styles["section"]}>
@@ -658,6 +789,17 @@ const AdminPanel = () => {
               ▶️ Start AutoSim
             </button>
             
+            <button 
+              onClick={handleStopAutoSim}
+              disabled={!autoSimRunning}
+              style={{
+                background: '#ffa500',
+                opacity: !autoSimRunning ? 0.5 : 1,
+                cursor: !autoSimRunning ? 'not-allowed' : 'pointer'
+              }}
+            >
+              ⏸️ Pause Simulation
+            </button>
 
             
             {/* Info message when all tokens are sold */}
@@ -687,21 +829,21 @@ const AdminPanel = () => {
   <h3>💰 Manual Simulation</h3>
   
   {/* BITS Availability Info */}
-  <div style={{ 
-    background: '#2a2a2a', 
-    border: '1px solid #555',
-    borderRadius: '6px',
-    padding: '8px',
-    marginBottom: '12px',
-    fontSize: '13px',
-    color: '#cccccc'
-  }}>
-    <strong>Available BITS:</strong> {
-      presaleInfo 
-        ? `${((presaleInfo.totalSupply || 0) - (presaleInfo.sold || 0)).toLocaleString()} BITS`
-        : "No active round"
-    }
-  </div>
+      <div style={{ 
+      background: '#2a2a2a', 
+      border: '1px solid #555',
+      borderRadius: '6px',
+      padding: '8px',
+      marginBottom: '12px',
+      fontSize: '13px',
+      color: '#cccccc'
+    }}>
+      <strong>Available BITS:</strong> {
+        presaleInfo 
+          ? `${Math.max(0, (presaleInfo.totalSupply || 20000000) - (presaleInfo.sold || 0)).toLocaleString()} BITS`
+          : "No active round"
+      }
+    </div>
 
  <input
   type="number"
@@ -869,6 +1011,14 @@ const AdminPanel = () => {
             </div>
           </div>
         </div>
+      )}
+      
+      {/* Round End Statistics Display */}
+      {showRoundEndStats && roundEndData && (
+        <RoundEndDisplay 
+          roundData={roundEndData}
+          onStartNewRound={handleStartNewRound}
+        />
       )}
     </>
   );

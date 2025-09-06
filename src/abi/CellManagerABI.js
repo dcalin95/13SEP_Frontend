@@ -42,6 +42,19 @@ export default
 		"anonymous": false,
 		"inputs": [
 			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "feed",
+				"type": "address"
+			}
+		],
+		"name": "BnbFeedUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
 				"indexed": true,
 				"internalType": "uint256",
 				"name": "cellId",
@@ -105,12 +118,57 @@ export default
 			},
 			{
 				"indexed": false,
-				"internalType": "enum INode.CellState",
+				"internalType": "enum ICellManagerCompat.CellState",
 				"name": "newState",
 				"type": "uint8"
 			}
 		],
 		"name": "CellStateUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price1e18",
+				"type": "uint256"
+			}
+		],
+		"name": "FallbackBNBPriceUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "token",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price1e18",
+				"type": "uint256"
+			}
+		],
+		"name": "FallbackTokenPriceUpdated",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "seconds_",
+				"type": "uint256"
+			}
+		],
+		"name": "FeedStalenessThresholdUpdated",
 		"type": "event"
 	},
 	{
@@ -137,6 +195,19 @@ export default
 		"inputs": [
 			{
 				"indexed": false,
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "Paused",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
 				"internalType": "string",
 				"name": "reason",
 				"type": "string"
@@ -149,31 +220,19 @@ export default
 		"anonymous": false,
 		"inputs": [
 			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "cellId",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "priceWei",
-				"type": "uint256"
-			},
-			{
 				"indexed": true,
 				"internalType": "address",
 				"name": "user",
 				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amountBits",
+				"type": "uint256"
 			}
 		],
-		"name": "PriceQueried",
+		"name": "RewardTokensDistributed",
 		"type": "event"
 	},
 	{
@@ -182,17 +241,36 @@ export default
 			{
 				"indexed": true,
 				"internalType": "address",
-				"name": "sender",
+				"name": "user",
 				"type": "address"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "amountBits",
 				"type": "uint256"
 			}
 		],
-		"name": "RewardTokensReceived",
+		"name": "RewardTokensQueued",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "token",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "feed",
+				"type": "address"
+			}
+		],
+		"name": "TokenFeedUpdated",
 		"type": "event"
 	},
 	{
@@ -213,20 +291,26 @@ export default
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "amountBits",
 				"type": "uint256"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "priceWei",
+				"name": "pricePaidWei",
 				"type": "uint256"
 			},
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "priceUSD",
+				"name": "priceUSDmilli",
 				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "paymentToken",
+				"type": "address"
 			}
 		],
 		"name": "TokenPurchased",
@@ -244,11 +328,24 @@ export default
 			{
 				"indexed": false,
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "amountBits",
 				"type": "uint256"
 			}
 		],
 		"name": "TokensClaimed",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "Unpaused",
 		"type": "event"
 	},
 	{
@@ -295,19 +392,6 @@ export default
 	},
 	{
 		"inputs": [],
-		"name": "autoDistributeTokens",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
 		"name": "bitsToken",
 		"outputs": [
 			{
@@ -321,7 +405,7 @@ export default
 	},
 	{
 		"inputs": [],
-		"name": "bnbPriceFeed",
+		"name": "bnbUsdFeed",
 		"outputs": [
 			{
 				"internalType": "contract AggregatorV3Interface",
@@ -338,14 +422,9 @@ export default
 				"internalType": "uint256",
 				"name": "cellId",
 				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
 			}
 		],
-		"name": "buyTokens",
+		"name": "buyTokensWithBNB",
 		"outputs": [],
 		"stateMutability": "payable",
 		"type": "function"
@@ -356,24 +435,21 @@ export default
 				"internalType": "uint256",
 				"name": "cellId",
 				"type": "uint256"
-			}
-		],
-		"name": "buyTokensWithBNB",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "checkBNBPrice",
-		"outputs": [
+			},
+			{
+				"internalType": "address",
+				"name": "paymentToken",
+				"type": "address"
+			},
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "amountToken",
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "view",
+		"name": "buyTokensWithToken",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -392,7 +468,7 @@ export default
 			},
 			{
 				"internalType": "uint256",
-				"name": "usdAmount",
+				"name": "usd1e18",
 				"type": "uint256"
 			},
 			{
@@ -406,50 +482,6 @@ export default
 			{
 				"internalType": "uint256",
 				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "cellId",
-				"type": "uint256"
-			}
-		],
-		"name": "debugCellState",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "defined",
-				"type": "bool"
-			},
-			{
-				"internalType": "enum INode.CellState",
-				"name": "state",
-				"type": "uint8"
-			},
-			{
-				"internalType": "uint256",
-				"name": "standardPrice",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "privilegedPrice",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "sold",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "supply",
 				"type": "uint256"
 			}
 		],
@@ -472,6 +504,38 @@ export default
 	{
 		"inputs": [],
 		"name": "fallbackBNBPrice",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "fallbackTokenPrice",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "feedStalenessThreshold",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -554,7 +618,7 @@ export default
 						"type": "bool"
 					},
 					{
-						"internalType": "enum INode.CellState",
+						"internalType": "enum ICellManagerCompat.CellState",
 						"name": "cellState",
 						"type": "uint8"
 					},
@@ -598,28 +662,9 @@ export default
 		"name": "getCellStatus",
 		"outputs": [
 			{
-				"internalType": "enum INode.CellState",
+				"internalType": "enum ICellManagerCompat.CellState",
 				"name": "",
 				"type": "uint8"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "wallet",
-				"type": "address"
-			}
-		],
-		"name": "getCurrentBitsPriceUSD",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -694,35 +739,6 @@ export default
 				"type": "uint256"
 			},
 			{
-				"internalType": "uint256",
-				"name": "bnbAmountWei",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "wallet",
-				"type": "address"
-			}
-		],
-		"name": "getExpectedBITSFromBNBWithLog",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "cellId",
-				"type": "uint256"
-			},
-			{
 				"internalType": "address",
 				"name": "paymentToken",
 				"type": "address"
@@ -771,7 +787,7 @@ export default
 			},
 			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "amountToken",
 				"type": "uint256"
 			}
 		],
@@ -784,78 +800,6 @@ export default
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "cellId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "getPriceForAmountInBNB",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "cellId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "getPriceForAmountInBNBWithLog",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "cellId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "getPriceForAmountWithLog",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -882,7 +826,7 @@ export default
 					},
 					{
 						"internalType": "uint256",
-						"name": "pricePaid",
+						"name": "pricePaidWei",
 						"type": "uint256"
 					},
 					{
@@ -995,12 +939,19 @@ export default
 	},
 	{
 		"inputs": [],
-		"name": "priceFeed",
+		"name": "pause",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "paused",
 		"outputs": [
 			{
-				"internalType": "contract AggregatorV3Interface",
+				"internalType": "bool",
 				"name": "",
-				"type": "address"
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -1015,7 +966,7 @@ export default
 			},
 			{
 				"internalType": "uint256",
-				"name": "amount",
+				"name": "amountBits",
 				"type": "uint256"
 			}
 		],
@@ -1059,25 +1010,12 @@ export default
 	{
 		"inputs": [
 			{
-				"internalType": "bool",
-				"name": "status",
-				"type": "bool"
-			}
-		],
-		"name": "setAutoDistributeTokens",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
 				"internalType": "address",
 				"name": "feed",
 				"type": "address"
 			}
 		],
-		"name": "setBNBPriceFeed",
+		"name": "setBNBUsdFeed",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -1111,12 +1049,30 @@ export default
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "feed",
-				"type": "address"
+				"internalType": "uint256",
+				"name": "price1e18",
+				"type": "uint256"
 			}
 		],
-		"name": "setETHPriceFeed",
+		"name": "setFallbackBNBPrice",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "token",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "price1e18",
+				"type": "uint256"
+			}
+		],
+		"name": "setFallbackTokenPrice",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -1125,11 +1081,11 @@ export default
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "newPrice",
+				"name": "seconds_",
 				"type": "uint256"
 			}
 		],
-		"name": "setFallbackBNBPrice",
+		"name": "setFeedStalenessThreshold",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -1147,7 +1103,7 @@ export default
 				"type": "address"
 			}
 		],
-		"name": "setTokenFeed",
+		"name": "setTokenUsdFeed",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -1178,6 +1134,25 @@ export default
 				"type": "address"
 			}
 		],
+		"name": "tokenUsdFeed",
+		"outputs": [
+			{
+				"internalType": "contract AggregatorV3Interface",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "token",
+				"type": "address"
+			}
+		],
 		"name": "tokenUsdFeeds",
 		"outputs": [
 			{
@@ -1198,6 +1173,13 @@ export default
 			}
 		],
 		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "unpause",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -1233,7 +1215,7 @@ export default
 				"type": "uint256"
 			},
 			{
-				"internalType": "enum INode.CellState",
+				"internalType": "enum ICellManagerCompat.CellState",
 				"name": "newState",
 				"type": "uint8"
 			}

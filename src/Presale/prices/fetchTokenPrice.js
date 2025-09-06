@@ -8,7 +8,8 @@ const coingeckoMap = {
   USDT: "tether",
   USDC: "usd-coin",
   MATIC: "polygon",
-  SHIB: "shiba-inu",
+  LINK: "chainlink",
+  BTCB: "bitcoin",
   SOL: "solana",
 };
 

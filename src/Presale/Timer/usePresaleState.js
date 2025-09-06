@@ -10,8 +10,8 @@ export const usePresaleState = () => {
     endTime: null,
     startTime: null,
     sold: 0,
-    supply: 20000000,
-    totalSupply: 20000000,
+    supply: 0,
+    totalSupply: 0,
     price: 1,
     progress: 0,
     totalBoosted: 0,
@@ -67,8 +67,8 @@ export const usePresaleState = () => {
             endTime: serverEndTime,
             startTime: serverStartTime,
             sold: data.sold || 0,
-            supply: (data.totalSupply || 20000000) - (data.sold || 0),
-            totalSupply: data.totalSupply || 20000000,
+            supply: (data.totalSupply || 0) - (data.sold || 0),
+            totalSupply: data.totalSupply || 0,
             price: data.price || 0.01,
             progress: data.progress || 0,
             totalBoosted: data.totalBoosted || 0,
@@ -97,7 +97,10 @@ export const usePresaleState = () => {
             },
 
             // 🎯 DATE DIN CONTRACT
-            contractData: data.contractData || null
+            contractData: data.contractData || null,
+            
+            // 🚨 TIMER STATUS
+            timerExpired: data.timerExpired || false
           };
 
           console.log('📊 New State:', newState);

@@ -5,64 +5,33 @@ import { getContractInstance } from "../../contract/getContractInstance";
 import { ethers } from "ethers";
 import WalletContext from "../../context/WalletContext";
 
-const PaymentSummary = ({ amountPay, usdValue, pureBits, bonusAmount, selectedToken }) => {
+const PaymentSummary = ({ amountPay, usdValue, pureBits, bonusAmount, selectedToken, bonus }) => {
   const { walletAddress } = useContext(WalletContext);
   const [bonusPercentage, setBonusPercentage] = useState("No Bonus");
   const [totalInvestment, setTotalInvestment] = useState(0);
 
   useEffect(() => {
-    const calculateTotalInvestment = async (address) => {
-      try {
-        const nodeContract = await getContractInstance("NODE");
-        const rewardContract = await getContractInstance("ADDITIONAL_REWARD");
+    console.log("🎁 [PaymentSummary] Bonus calculation:", {
+      bonus,
+      bonusAmount,
+      pureBits,
+      walletAddress
+    });
 
-        const userPurchases = await nodeContract.getUserPurchases(address);
-        let totalInvestmentUSD = 0n;
-
-        userPurchases.forEach((purchase) => {
-          const parsedUSD = ethers.utils.parseUnits(purchase.usdAmount.toString(), 18);
-          totalInvestmentUSD = totalInvestmentUSD.add(parsedUSD);
-        });
-
-        const adjustedInvestment = await rewardContract.getTotalInvestment(address);
-        totalInvestmentUSD = totalInvestmentUSD.add(adjustedInvestment);
-
-        const totalInvestmentEther = ethers.utils.formatUnits(totalInvestmentUSD, 18);
-        setTotalInvestment(totalInvestmentEther);
-
-        const percentageBN = await rewardContract.getRewardRate(totalInvestmentUSD);
-        const percentage = Number(percentageBN.toString());
-
-        // 🔍 DEBUG LOGS
-        console.log("🧮 totalInvestmentUSD (wei):", totalInvestmentUSD.toString());
-        console.log("💸 totalInvestmentUSD (ether):", totalInvestmentEther);
-        console.log("📨 getRewardRate input (BN):", totalInvestmentUSD.toString());
-        console.log("📊 getRewardRate return:", percentage);
-
-        if ([5, 7, 10, 15].includes(percentage)) {
-          setBonusPercentage(`${percentage}%`);
-        } else {
-          setBonusPercentage("No Bonus");
-        }
-
-      } catch (error) {
-        console.error("❌ Error calculating total investment and bonus percentage:", error);
-        setBonusPercentage("No Bonus");
-      }
-    };
-
-    if (!walletAddress) {
-      if (parseFloat(pureBits) > 0 && parseFloat(bonusAmount) > 0) {
-        const estimatedPercent = (parseFloat(bonusAmount) / parseFloat(pureBits)) * 100;
-        setBonusPercentage(`${estimatedPercent.toFixed(0)}% (est.)`);
-      } else {
-        setBonusPercentage("No Bonus");
-      }
-      return;
+    // 🎯 FIX: Use bonus parameter directly from useBitsEstimate
+    if (bonus && bonus > 0) {
+      setBonusPercentage(`${bonus}%`);
+      console.log("✅ [PaymentSummary] Using bonus from useBitsEstimate:", bonus);
+    } else if (parseFloat(bonusAmount) > 0 && parseFloat(pureBits) > 0) {
+      // Fallback: calculate from amounts
+      const estimatedPercent = (parseFloat(bonusAmount) / parseFloat(pureBits)) * 100;
+      setBonusPercentage(`${estimatedPercent.toFixed(0)}%`);
+      console.log("🔄 [PaymentSummary] Calculated bonus from amounts:", estimatedPercent);
+    } else {
+      setBonusPercentage("No Bonus");
+      console.log("❌ [PaymentSummary] No bonus available");
     }
-
-    calculateTotalInvestment(walletAddress);
-  }, [walletAddress, pureBits, bonusAmount]);
+  }, [bonus, bonusAmount, pureBits, walletAddress]);
 
   const formattedAmountPay = parseFloat(amountPay).toFixed(2);
   const formattedUsdValue = parseFloat(usdValue).toFixed(2);

@@ -12,8 +12,9 @@ import handleUSDCPayment from "./handleUSDCPayment";
 import handleMATICPayment from "./handleMATICPayment";
 import handleSHIBPayment from "./handleSHIBPayment";
 import handleSOLPayment from "./handleSOLPayment";
-import handleUSDCOnSolanaPayment from "./handleUSDCOnSolanaPayment";
-import handleSolanaPayment from "./handleSolanaPayment";
+// DEPRECATED: Solana payment handlers removed due to inactive contracts
+// import handleUSDCOnSolanaPayment from "./handleUSDCOnSolanaPayment";
+// import handleSolanaPayment from "./handleSolanaPayment";
 // Coming Soon - waiting for Seychelles company registration
 import handleMoonPayPayment from "./handleMoonPayPayment";
 import handleTransakPayment from "./handleTransakPayment";
@@ -35,8 +36,9 @@ export const handlePayment = (tokenSymbol) => {
     MATIC: handleMATICPayment,
     SHIB: handleSHIBPayment,
     SOL: handleSOLPayment, // SOL pe Solana
-    "USDC-Solana": handleUSDCOnSolanaPayment,
-    SOLANA: handleSolanaPayment,
+    // DEPRECATED: Solana payment handlers removed due to inactive contracts
+    // "USDC-Solana": handleUSDCOnSolanaPayment,
+    // SOLANA: handleSolanaPayment,
     NOWPAY: handleNowPayments,
     // Coming Soon - waiting for Seychelles company registration
     MOONPAY: handleMoonPayPayment,

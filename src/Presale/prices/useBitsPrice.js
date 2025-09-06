@@ -42,6 +42,12 @@ const provider = new ethers.providers.JsonRpcProvider(
         const standardPriceRaw = cell[2];
         const standardPrice = parseFloat((standardPriceRaw / 1000).toFixed(3));
 
+        console.log("🚨 [PRICE DEBUG] === BITS PRICE ANALYSIS ===");
+        console.log("🚨 [PRICE] Cell ID:", cellId.toString());
+        console.log("🚨 [PRICE] Raw standard price:", standardPriceRaw.toString());
+        console.log("🚨 [PRICE] Raw price / 1000:", standardPriceRaw / 1000);
+        console.log("🚨 [PRICE] Final standard price:", standardPrice);
+        console.log("🚨 [PRICE] Cell data full:", cell);
         console.log("✅ Standard BITS price:", standardPrice);
         setBitsPrice(standardPrice);
       } catch (err) {

@@ -2,19 +2,15 @@ const fs = require("fs");
 const path = require("path");
 
 // ====================
-// 🔗 Lista contractelor
+// 🔗 Lista contractelor ACTIVE pe BSC Testnet
 // ====================
 const contracts = [
-  { name: "BITS", address: "0xEe7E161585F80392D725f559F6EEFC763b8ac6C3", abi: "BitsABI" },
-  { name: "Staking", address: "0xF6737b6671f9aD9B24557af6ea5340639BDcED53", abi: "stakingABI" },
-  { name: "Node", address: "0x2f4ab05e775bD16959F0A7eBD20B8157D336324A", abi: "nodeABI" },
-  { name: "ETHReceiver", address: "0x950a2cDADceB2df2f0336c3511bE5F57f81a8523", abi: "ETHReceiverABI" },
-  { name: "USDReceiver", address: "0xe74D8E4badd91d8d65225156b0B42a1ADB361A50", abi: "USDReceiverABI" },
-  { name: "TokenReceiver", address: "0xeB84453C4c473052e4184A2b5c450Bce946Ffba8", abi: "TokenReceiverABI" },
-  { name: "AdditionalReward", address: "0x09a047810986583513e09055364C7Eb94D7Ac3E9", abi: "AdditionalRewardABI" },
-  { name: "CellManager", address: "0x3bA5978621E8Afe9938562fdCEA3a6C6f3a4F2F6", abi: "CellManagerABI" },
-  { name: "SolanaPaymentWithRewards", address: "0xc683854D407c6310E7Db03f6bc35E0196c9da340", abi: "SolanaPaymentWithRewardsABI" },
-  { name: "TelegramRewardContract", address: "0x9d8c6ba5dB5B5CFfD65f01AbA6cd37D3De19B29c", abi: "TelegramRewardContractABI" },
+  { name: "BITS", address: "0x19e32912f9074F20F904dFe6007cA8e632F23348", abi: "BitsABI" },
+  { name: "Staking", address: "0x11328DAFe3F5d23bEA051fBe4D7fc97c1055Bad3", abi: "stakingABI" },
+  { name: "Node", address: "0x0CaFA9578eE5bf8956Cf28c6a9aF7c16C21C5A46", abi: "nodeABI" },
+  { name: "AdditionalReward", address: "0xCc8682f1E989A81E0a131840fcc7dB79c9C1B9C6", abi: "AdditionalRewardABI" },
+  { name: "CellManager", address: "0x45db857B57667fd3A6a767431152b7fDe647C6Ea", abi: "CellManagerABI" },
+  { name: "TelegramRewardContract", address: "0x305741BBCBABD377E18d2bD43B2e879341006464", abi: "TelegramRewardContractABI" },
 ];
 
 // 📁 Unde salvăm fișierele

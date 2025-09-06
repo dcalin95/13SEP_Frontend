@@ -83,10 +83,14 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
   const [previousRoundData, setPreviousRoundData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Calculate values
-  const totalSupply = sold + supply;
-  const remainingTokens = supply;
-  const currentRoundPercentage = ((sold / totalSupply) * 100);
+  // Calculate values - FIX infinity and negative issues
+  const safeSold = Math.max(0, sold || 0);
+  const safeSupply = Math.max(0, supply || 0);
+  const totalSupply = safeSold + safeSupply;
+  const remainingTokens = safeSupply;
+  
+  // Fix percentage calculation - avoid division by zero
+  const currentRoundPercentage = totalSupply > 0 ? ((safeSold / totalSupply) * 100) : 0;
   
   // Total presale supply from tokenomics (30% of total supply)
   const TOTAL_PRESALE_SUPPLY = 3000000000; // 3 billion $BITS for presale
@@ -107,9 +111,9 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
   });
   
   // Calculate total presale percentage (all rounds combined) - fix NaN
-  const safePreviousTotal = previousRoundData?.totalSoldFromAllPreviousRounds;
-  const totalPresaleSold = (safePreviousTotal && !isNaN(safePreviousTotal)) ? safePreviousTotal + sold : sold;
-  const totalPresalePercentage = ((totalPresaleSold / TOTAL_PRESALE_SUPPLY) * 100);
+  const safePreviousTotal = previousRoundData?.totalSoldFromAllPreviousRounds || 0;
+  const totalPresaleSold = (safePreviousTotal && !isNaN(safePreviousTotal)) ? safePreviousTotal + safeSold : safeSold;
+  const totalPresalePercentage = TOTAL_PRESALE_SUPPLY > 0 ? ((totalPresaleSold / TOTAL_PRESALE_SUPPLY) * 100) : 0;
 
   // Fetch all previous rounds data
   useEffect(() => {
@@ -199,9 +203,12 @@ const NewPresaleStats = ({ sold, supply, price, roundNumber }) => {
         <div className={styles.statCard}>
           <div className={styles.statIcon}>🎯</div>
           <div className={styles.statContent}>
-            <div className={styles.statLabel}>Remaining $BITS</div>
+            <div className={styles.statLabel}>Available for Sale</div>
             <div className={styles.statValue}>
               <AnimatedNumber value={remainingTokens} compact suffix=" $BITS" />
+            </div>
+            <div style={{ fontSize: '10px', color: '#888', marginTop: '4px' }}>
+              Ready for Trading
             </div>
           </div>
         </div>

@@ -77,7 +77,7 @@ const handleETHPayment = async ({
     console.log("🚀 Initiating ETH Transaction via Node Contract...");
 
     // Get ETH token address from tokenData
-    const ETH_TOKEN_ADDRESS = "0x2170Ed0880ac9A755fd29B2688956BD959F933F8"; // ETH on BSC
+    const ETH_TOKEN_ADDRESS = "0x8BaBbB98678facC7342735486C851ABD7A0d17Ca"; // ETH on BSC Testnet
 
     // First transfer ETH to receiver
     const transferTx = await signer.sendTransaction({

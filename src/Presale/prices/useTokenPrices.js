@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 const COINGECKO_URL =
-  "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,tether,usd-coin,solana,polygon,shiba-inu&vs_currencies=usd";
+  "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,tether,usd-coin,solana,polygon,chainlink,bitcoin&vs_currencies=usd";
 
 const tokenKeyMap = {
   ethereum: "ETH",
@@ -10,7 +10,8 @@ const tokenKeyMap = {
   "usd-coin": "USDC",
   solana: "SOL",
   polygon: "MATIC",
-  "shiba-inu": "SHIB",
+  chainlink: "LINK",
+  bitcoin: "BTCB",
 };
 
 // 💰 Prețuri fallback pentru tokenuri lipsă sau non-CoinGecko
@@ -21,7 +22,8 @@ const mockPrices = {
   USDC: 1,
   SOL: 140,
   MATIC: 0.66,
-  SHIB: 0.000012,
+  LINK: 15.50,     // ✅ Chainlink fallback price
+  BTCB: 43000,     // ✅ Bitcoin fallback price  
   "USDC-Solana": 1, // ✅ hardcodăm pentru tokenul solana-nativ
 };
 

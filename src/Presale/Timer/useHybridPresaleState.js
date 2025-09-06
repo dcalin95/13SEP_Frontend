@@ -75,7 +75,7 @@ export const useHybridPresaleState = () => {
            6, // Fallback to $0.06 if CellManager not configured
     roundNumber: cellManagerData.roundNumber && !cellManagerData.loading && cellManagerData.roundNumber > 0 ? 
                  cellManagerData.roundNumber : 
-                 9, // Use CellManager round or fallback to round 9
+                 2, // 🎯 FIX: Use current CellManager round (Cell ID 1 = Round 2)
     
     // 💾 FROM DATABASE (Simulations)
     sold: databaseState.sold,
@@ -107,6 +107,13 @@ export const useHybridPresaleState = () => {
     supply: hybridState.supply,
     totalSupply: hybridState.totalSupply,
     roundActive: hybridState.roundActive
+  });
+  
+  console.log('🚨 [HYBRID FIX] Round number source:', {
+    fromCellManager: cellManagerData.roundNumber,
+    cellManagerLoading: cellManagerData.loading,
+    finalUsed: hybridState.roundNumber,
+    shouldUseFromCellManager: cellManagerData.roundNumber && !cellManagerData.loading && cellManagerData.roundNumber > 0
   });
 
   return {

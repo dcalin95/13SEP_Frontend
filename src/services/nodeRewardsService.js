@@ -14,7 +14,7 @@ import { ethers } from "ethers";
 import nodeABI from "../abi/nodeABI.js";
 
 // 🔧 Configuration
-const NODE_CONTRACT_ADDRESS = process.env.REACT_APP_NODE_CONTRACT_ADDRESS || "0x2f4ab05e775bD16959F0A7eBD20B8157D336324A";
+const NODE_CONTRACT_ADDRESS = process.env.REACT_APP_NODE_ADDRESS || "0x0CaFA9578eE5bf8956Cf28c6a9aF7c16C21C5A46";
 const BITS_TOKEN_ADDRESS = process.env.REACT_APP_BITS_TOKEN || process.env.REACT_APP_TOKEN_CONTRACT_ADDRESS;
 const BSC_TESTNET_RPC = "https://data-seed-prebsc-1-s1.binance.org:8545";
 

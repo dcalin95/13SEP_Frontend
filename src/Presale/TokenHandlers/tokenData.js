@@ -5,7 +5,8 @@ import usdt from "../../assets/icons/tether-usdt-logo.png";
 import usdc from "../../assets/icons/usdc-solana-logo.png";
 import sol from "../../assets/icons/solana-logo.png";
 import matic from "../../assets/icons/polygon-matic-logo.png";
-import shib from "../../assets/icons/shiba-logo.png";
+import link from "../../assets/icons/chainlink-logo.png";
+import btcb from "../../assets/icons/btcb-logo.png";
 import usdcSolana from "../../assets/icons/usdc-solana-logo.png";
 import cardIcon from "../../assets/icons/card-logo.jpg";
 
@@ -26,7 +27,7 @@ export const tokenList = [
     icon: eth,
     color: "#627eea",
     chain: "evm",
-    address: "0x2170Ed0880ac9A755fd29B2688956BD959F933F8", // ETH on BSC
+    address: "0x8BaBbB98678facC7342735486C851ABD7A0d17Ca", // ETH on BSC Testnet
   },
   {
     name: "USDT",
@@ -34,7 +35,7 @@ export const tokenList = [
     icon: usdt,
     color: "#26a17b",
     chain: "evm",
-    address: "0x55d398326f99059fF775485246999027B3197955", // USDT on BSC
+    address: "0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684", // USDT on BSC Testnet
   },
   {
     name: "USDC",
@@ -42,7 +43,7 @@ export const tokenList = [
     icon: usdc,
     color: "#2775ca",
     chain: "evm",
-    address: "0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d", // USDC on BSC
+    address: "0x64544969ed7EBf5f083679233325356EbE738930", // USDC on BSC Testnet
   },
   {
     name: "SOL",
@@ -58,15 +59,25 @@ export const tokenList = [
     icon: matic,
     color: "#8247e5",
     chain: "evm",
-    address: "0xcc42724c6683b7e57334c4e856f4c9965ed682bd", // MATIC on BSC
+    address: "0x9C21123D94b93361a29B2C2EFB3d5CD8B17e0A9e", // MATIC on BSC Testnet
   },
   {
-    name: "SHIB",
-    key: "SHIB",
-    icon: shib,
-    color: "#f4551e",
+    name: "LINK",
+    key: "LINK",
+    icon: link,
+    color: "#2a5ada",
     chain: "evm",
-    address: "0x285A5B8B5A94B052A26ecA7BdA54e8F345d1ab32", // SHIB on BSC (example)
+    address: "0xF8A0BF9cF54Bb92F17374d9e9A321E6a111a51bD", // LINK on BSC
+    decimals: 18,
+  },
+  {
+    name: "BTCB",
+    key: "BTCB",
+    icon: btcb,
+    color: "#f7931a",
+    chain: "evm",
+    address: "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c", // BTCB (Wrapped BTC) on BSC
+    decimals: 18,
   },
   {
     name: "USDC-Solana",

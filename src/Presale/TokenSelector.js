@@ -3,7 +3,7 @@ import "./TokenSelector.css";
 
 // poți importa imagini dacă vrei: import BNBLogo from "../assets/icons/bnb.logo.png";
 
-const supportedTokens = ["BNB", "ETH", "USDT", "USDC", "SOL", "MATIC", "SHIB", "USDC-Solana"];
+const supportedTokens = ["BNB", "ETH", "USDT", "USDC", "SOL", "MATIC", "LINK", "BTCB", "USDC-Solana"];
 
 const TokenSelector = ({ selectedToken, setSelectedToken }) => {
   return (

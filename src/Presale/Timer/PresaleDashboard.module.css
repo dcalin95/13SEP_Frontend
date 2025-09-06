@@ -35,6 +35,257 @@
   text-shadow: 0 0 8px #00f0ffaa;
 }
 
+/* === DUAL DATA CONTAINER === */
+.dualDataContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.05), rgba(255, 0, 255, 0.05));
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+}
+
+.blockchainSection, .databaseSection {
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.blockchainSection {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 240, 255, 0.1));
+  border-color: rgba(0, 255, 136, 0.3);
+}
+
+.databaseSection {
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 0, 255, 0.1));
+  border-color: rgba(255, 107, 53, 0.3);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.sectionHeader h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.chainIcon, .dbIcon {
+  font-size: 1.2rem;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: auto;
+}
+
+.statusDot.online {
+  background: #00ff88;
+  box-shadow: 0 0 8px #00ff88;
+  animation: pulse 2s infinite;
+}
+
+.statusDot.offline {
+  background: #ff6b35;
+  box-shadow: 0 0 8px #ff6b35;
+  animation: pulse 2s infinite;
+}
+
+.dataGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.dataCard, .fallbackCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.cardIcon {
+  font-size: 1.5rem;
+  opacity: 0.8;
+}
+
+.cardContent {
+  flex: 1;
+}
+
+.cardLabel {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.25rem;
+}
+
+.cardValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.errorMessage {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 107, 53, 0.1);
+  border: 1px solid rgba(255, 107, 53, 0.3);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.errorIcon {
+  font-size: 1.5rem;
+  color: #ff6b35;
+}
+
+.errorText h4 {
+  margin: 0 0 0.5rem 0;
+  color: #ff6b35;
+  font-size: 1rem;
+}
+
+.errorText p {
+  margin: 0 0 0.5rem 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+}
+
+.errorDetails {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: monospace;
+}
+
+.fallbackData {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.reconnectionStatus {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(0, 240, 255, 0.05);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 8px;
+}
+
+.statusIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #00f0ff;
+}
+
+.pulsingDot {
+  width: 8px;
+  height: 8px;
+  background: #00f0ff;
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.statusNote {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* === DEBUG INFO === */
+.debugInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: rgba(0, 240, 255, 0.05);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.debugSection h5 {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #00f0ff;
+  font-weight: 500;
+}
+
+/* === DUAL DATA SUCCESS STATE === */
+.dualDataSuccess {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.blockchainCard, .simulationCard {
+  padding: 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.blockchainCard {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 240, 255, 0.1));
+  border-color: rgba(0, 255, 136, 0.3);
+}
+
+.simulationCard {
+  background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(255, 0, 255, 0.1));
+  border-color: rgba(0, 240, 255, 0.3);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.cardHeader h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.blockchainStats, .simulationStats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.statLabel {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.statValue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
 /* === AI Error Container === */
 .aiErrorContainer {
   display: flex;

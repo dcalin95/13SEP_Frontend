@@ -1,8 +1,5 @@
-import { ethers } from "ethers";
-import nodeABI from "../abi/nodeABI.js";
+// DEPRECATED: Use contractMap.js instead
+export { getNodeContract } from './contractMap.js';
 
-const NODE_ADDRESS = "0x2f4ab05e775bD16959F0A7eBD20B8157D336324A";
-
-export const getContract = (signerOrProvider) => {
-  return new ethers.Contract(NODE_ADDRESS, nodeABI, signerOrProvider);
-};
+// Backward compatibility for the old function name
+export { getNodeContract as getContract } from './contractMap.js';

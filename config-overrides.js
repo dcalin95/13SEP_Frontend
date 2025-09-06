@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 
 module.exports = function override(config) {
+  // ====== FALLBACKS (rămân ca la tine)
   config.resolve = {
     ...config.resolve,
     fallback: {
@@ -16,27 +17,59 @@ module.exports = function override(config) {
       path: require.resolve("path-browserify"),
       url: require.resolve("url/"),
       zlib: require.resolve("browserify-zlib"),
-      fs: false
+      fs: false,
     },
   };
 
-  // Add module rules for .mjs files
+  // ====== .mjs rules (rămâne)
   config.module.rules.push({
     test: /\.m?js$/,
-    resolve: {
-      fullySpecified: false
-    }
+    resolve: { fullySpecified: false },
   });
 
+  // ====== Oprește source-map-loader pentru pachetele care lipsesc sourcemaps
+  // (CRA adaugă source-map-loader ca rule "pre"; îl găsim și îi setăm exclude)
+  const smRule = config.module.rules.find(
+    (rule) =>
+      rule.enforce === "pre" &&
+      rule.use &&
+      rule.use.some(
+        (u) =>
+          (typeof u === "string" && u.includes("source-map-loader")) ||
+          (u.loader && u.loader.includes("source-map-loader"))
+      )
+  );
+
+  if (smRule) {
+    const extraExcludes = [
+      /node_modules\/@walletconnect/,
+      /node_modules\/superstruct/,
+      /node_modules\/json-rpc-engine/,
+      /node_modules\/xhr2-cookies/,
+      /node_modules\/enc-utils/,
+      /node_modules\/ethereumjs-abi/,
+      /node_modules\/ethereumjs-util/,
+    ];
+    smRule.exclude = Array.isArray(smRule.exclude)
+      ? [...smRule.exclude, ...extraExcludes]
+      : smRule.exclude
+      ? [smRule.exclude, ...extraExcludes]
+      : extraExcludes;
+  }
+
+  // ====== ProvidePlugin (ok) – NU mai definim process.env aici
   config.plugins = [
     ...(config.plugins || []),
     new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"],
-      process: "process/browser"
+      process: "process/browser",
     }),
-    new webpack.DefinePlugin({
-      'process.env': JSON.stringify(process.env)
-    })
+  ];
+
+  // ====== (Opțional) ascunde mesajele „Failed to parse source map” rămase
+  config.ignoreWarnings = [
+    ...(config.ignoreWarnings || []),
+    /Failed to parse source map/i,
   ];
 
   return config;

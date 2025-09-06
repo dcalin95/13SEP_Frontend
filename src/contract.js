@@ -1,8 +1,9 @@
 import { ethers } from 'ethers';
 import contractABI from '../src/abi/nodeABI.js';
 
-// Adresa contractului Node.sol
-const contractAddress = "0x2f4ab05e775bD16959F0A7eBD20B8157D336324A";
+// DEPRECATED: Use contractMap.js instead
+// Updated BSC Testnet Node contract address
+const contractAddress = "0x0CaFA9578eE5bf8956Cf28c6a9aF7c16C21C5A46";
 
 export const getContract = async () => {
   if (window.ethereum) {

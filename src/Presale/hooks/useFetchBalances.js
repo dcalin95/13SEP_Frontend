@@ -145,7 +145,7 @@ const useFetchBalances = (walletAddress, selectedToken) => {
           }));
         } else if (selectedToken === "ETH") {
           // ETH on BSC is a wrapped token, not native
-          const ETH_BSC_ADDRESS = "0x2170Ed0880ac9A755fd29B2688956BD959F933F8";
+          const ETH_BSC_ADDRESS = "0x8BaBbB98678facC7342735486C851ABD7A0d17Ca"; // ETH on BSC Testnet
           const tokenContract = new ethers.Contract(ETH_BSC_ADDRESS, ERC20ABI, provider);
           const balance = await tokenContract.balanceOf(walletAddress);
           setBalances(prev => ({
