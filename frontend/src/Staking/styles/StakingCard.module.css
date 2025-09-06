@@ -1,0 +1,112 @@
+.stakingCard {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2.5rem;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  margin: 20px auto;
+  transition: all 0.4s ease-in-out;
+}
+
+.stakingCard:hover {
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+  transform: translateY(-5px) scale(1.02);
+}
+
+/* Cooldown progress SVG */
+.cooldownProgress {
+  margin: 20px auto;
+  width: 120px;
+  height: 120px;
+  position: relative;
+}
+
+.cooldownProgress svg {
+  transform: rotate(-90deg);
+}
+
+.cooldownProgress text {
+  transform: rotate(90deg);
+  font-size: 14px;
+  fill: white;
+}
+
+/* Detalii staking */
+.stakingDetails {
+  margin-top: 20px;
+  font-size: 1rem;
+  color: #eee;
+  text-align: left;
+}
+
+.stakingDetails p {
+  margin: 0.5rem 0;
+}
+
+/* Butonul de Claim */
+.claimButton {
+  background: linear-gradient(90deg, #00ffff, #ff00ff);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 24px;
+  margin-top: 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.7);
+  animation: pulseButton 1.5s infinite alternate;
+}
+
+.claimButton:hover {
+  background: linear-gradient(90deg, #00ff99, #ff00ff);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 1);
+}
+
+.claimButton:disabled {
+  background: gray;
+  color: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  animation: none;
+}
+
+/* Feedback text */
+.feedback {
+  margin-top: 12px;
+  font-size: 0.95rem;
+  color: #00ff99;
+  text-align: center;
+  animation: pulseText 1s infinite alternate;
+}
+
+/* Animations */
+@keyframes pulseText {
+  from { opacity: 1; }
+  to { opacity: 0.6; }
+}
+
+@keyframes pulseButton {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+
+/* Responsive pentru telefoane */
+@media (max-width: 600px) {
+  .stakingCard {
+    padding: 1.5rem;
+    max-width: 90%;
+  }
+
+  .stakingDetails {
+    font-size: 0.95rem;
+  }
+
+  .claimButton {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+}

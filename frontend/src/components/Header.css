@@ -1,0 +1,309 @@
+/* === HEADER === */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 1rem 2rem;
+  height: 80px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000; /* 🔧 CHROME FIX - Increased z-index */
+  border-bottom: 1px solid rgba(0, 255, 200, 0.2);
+  backdrop-filter: blur(10px); /* 🔧 CHROME FIX - Better rendering */
+  -webkit-backdrop-filter: blur(10px); /* 🔧 CHROME FIX - Webkit support */
+}
+
+/* === LOGO === */
+.logo-container .logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.7);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 40px rgba(0, 255, 0, 1);
+}
+
+/* === NAVIGATION === */
+.navigation {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Desktop navigation open styles - only apply above mobile breakpoint */
+@media (min-width: 769px) {
+  .navigation.open {
+    flex-direction: column;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 1rem;
+    z-index: 200;
+  }
+}
+
+/* === BUTTONS === */
+.navigation a,
+.navigation button {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 14px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 30px;
+  background: transparent;
+  border: 2px solid transparent;
+  position: relative;
+  text-decoration: none;
+  white-space: nowrap;
+  color: transparent;
+  background-image: linear-gradient(90deg, #00ffff, #ff00ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: all 0.6s ease;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.15);
+  background-size: 200% auto;
+  animation: shine 14s linear infinite;
+
+}
+
+.navigation a::before,
+.navigation button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  padding: 1px;
+  background: linear-gradient(90deg, #00ffff, #8a2be2);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+  opacity: 1;
+  transition: opacity 0.3s ease-in-out;
+
+}
+
+.navigation a:hover,
+.navigation button:hover {
+  transform: translateY(-2px) scale(1.03);
+  background-image: linear-gradient(90deg, #ffe066, #ff66cc);
+  -webkit-text-fill-color: transparent;
+  box-shadow: 0 0 20px rgba(255, 224, 102, 0.4);
+  background-color: #111;
+}
+
+.navigation a:hover i,
+.navigation button:hover i {
+  color: #ffe066;
+  transform: scale(1.2) rotate(10deg);
+}
+
+/* === ICON COLORS === */
+.navigation .btn-home i        { color: #69db7c; }
+.navigation .btn-buy i         { color: #ffd43b; }
+.navigation .btn-tokenomics i  { color: #4dabf7; }
+.navigation .btn-audit i       { color: #9775fa; }
+.navigation .btn-leaderboard i { color: #74c0fc; }
+.navigation .btn-bitcoin-academy i { color: #f7931e; }
+.navigation .btn-education i   { color: #4ecdc4; }
+.navigation .btn-pox i         { color: #00ff88; }
+.navigation .btn-how-it-works i { color: #38d9a9; }
+.navigation .btn-invite i      { color: #f783ac; }
+.navigation .btn-go-main i     { color: #f3722c; }
+
+/* === BORDERS TO MATCH === */
+.btn-home        { border-color: #69db7c; }
+.btn-buy         { border-color: #ffd43b; }
+.btn-tokenomics  { border-color: #4dabf7; }
+.btn-audit       { border-color: #9775fa; }
+.btn-leaderboard { border-color: #74c0fc; }
+.btn-bitcoin-academy { border-color: #f7931e; }
+.btn-education   { border-color: #4ecdc4; }
+.btn-pox         { border-color: #00ff88; }
+.btn-how-it-works{ border-color: #38d9a9; }
+.btn-invite      { border-color: #f783ac; }
+.btn-go-main     { border-color: #f3722c; color: #00ffff; }
+
+/* === POX BUTTON SPECIAL EFFECTS === */
+.btn-pox {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%);
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+  animation: pox-glow 2s ease-in-out infinite alternate;
+}
+
+.btn-pox::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.3), transparent);
+  transition: all 0.5s ease;
+}
+
+.btn-pox:hover::before {
+  left: 100%;
+}
+
+.btn-pox:hover {
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+  transform: translateY(-2px);
+}
+
+@keyframes pox-glow {
+  0% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); }
+  100% { box-shadow: 0 0 25px rgba(0, 255, 136, 0.5); }
+}
+
+/* === AI BUTTON === */
+.ai-button {
+  font-size: 0.9rem;
+  padding: 8px 14px;
+  background-color: #5a20ff;
+  color: white;
+  border-radius: 18px;
+  font-weight: bold;
+  margin-left: 10px;
+  border: 2px solid #7a40ff;
+  box-shadow: 0 0 8px rgba(90, 32, 255, 0.4);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.ai-button:hover {
+  background-color: #7a40ff;
+  transform: scale(1.05);
+}
+
+/* === TIMER === */
+.header-mini-timer {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #00ffff;
+  animation: glow 2.5s infinite ease-in-out;
+  text-align: center;
+}
+
+@keyframes glow {
+  0% { text-shadow: 0 0 5px #00ffff; }
+  50% { text-shadow: 0 0 15px #00ffff, 0 0 30px #00ffff; }
+  100% { text-shadow: 0 0 5px #00ffff; }
+}
+
+/* === SOCIAL === */
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.social {
+  display: flex;
+  gap: 12px;
+}
+
+.social-link {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.social-link img {
+  width: 24px;
+  height: 24px;
+}
+
+.social-link:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+}
+
+/* === MOBILE HAMBURGER - ASCUNDE PE DESKTOP === */
+.mobile-hamburger-container {
+  display: none;
+}
+
+/* === HAMBURGER === */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  width: 30px;
+  height: 25px;
+  cursor: pointer;
+  z-index: 1100;
+  background: linear-gradient(135deg, #00ffff, #ff00ff, #00ff88);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 6px;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.hamburger:hover {
+  box-shadow: 0 0 25px rgba(0, 255, 255, 0.7);
+  transform: scale(1.05);
+}
+
+.hamburger-line {
+  height: 3px;
+  background: linear-gradient(90deg, #ffffff, #00ffff);
+  border-radius: 2px;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+/* === RESPONSIVE === */
+/* Mobile styles moved to Header.mobile.css */
+
+/* === CLASE UTILE === */
+.desktop-only {
+  display: flex;
+}
+.mobile-only {
+  display: none;
+}
+
+/* === HEADER SPACER === */
+.header-spacer {
+  height: 80px;
+  width: 100%;
+}
+
+@keyframes shine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+/* === DEVICE VISIBILITY CLASSES === */
+.desktop-only {
+  display: flex;
+}
+
+.mobile-only {
+  display: none;
+}
+
+/* Mobile visibility handled in Header.mobile.css */

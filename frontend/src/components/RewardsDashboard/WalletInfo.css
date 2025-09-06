@@ -1,0 +1,98 @@
+/* ===== CARD PRINCIPAL ===== */
+.wallet-info-card {
+  background-color: #29293d; /* Fundal gri închis */
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 1px #0a3dd5;
+  text-align: left;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: auto; /* Dimensiune automată */
+  max-width: 500px; /* Lățime maximă */
+  margin: auto; /* Centrează cardul */
+}
+
+/* Efect hover pe card */
+.wallet-info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px #42f590; /* Glow verde mai intens */
+}
+
+/* ===== TITLU WALLET INFO ===== */
+.wallet-title {
+  color: #61dafb; /* Albastru deschis */
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-shadow: 0 0 10px #61dafb;
+}
+
+/* ===== DETALII TEXT WALLET ===== */
+.wallet-info-details p {
+  font-size: 1rem;
+  color: #ddd; /* Gri deschis */
+  margin: 5px 0;
+}
+
+/* Stilizare adresă wallet */
+.wallet-address {
+  font-size: 1.2rem;
+  color: #aaa;
+  font-weight: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: rgba(255, 255, 255, 0.1); /* Fundal subtil */
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* ===== BALANCES ===== */
+.wallet-balances h4 {
+  margin-top: 10px;
+  color: #ffa500; /* Portocaliu */
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.wallet-balances ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.wallet-balances li {
+  font-size: 1.1rem;
+  color: #fff;
+  margin: 5px 0;
+}
+
+/* Evidențiere pentru token balances */
+.token-name {
+  font-weight: bold;
+  color: #ffcc00; /* Galben */
+}
+
+.token-value {
+  color: #00ffcc; /* Verde neon */
+}
+
+/* ===== BUTOANE ===== */
+.disconnect-button {
+  padding: 10px 20px;
+  margin-top: 15px;
+  background: linear-gradient(90deg, #ffa500, #ffcc00); /* Portocaliu-Galben */
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.disconnect-button:hover {
+  background: linear-gradient(90deg, #ffcc00, #ffa500); /* Galben-Portocaliu */
+  transform: scale(1.05);
+}

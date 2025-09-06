@@ -1,0 +1,165 @@
+/* ===== Containerul Principal - Investment Rewards ===== */
+.investment-rewards-container {
+  padding: 20px;
+  background: linear-gradient(145deg, rgba(25, 25, 50, 0.95), rgba(10, 10, 30, 0.95));
+  border-radius: 15px;
+  color: #ffffff;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(8, 253, 216, 0.5);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  max-width: 380px;
+  margin: 0 auto;
+  font-family: 'system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif', sans-serif;
+}
+
+/* Hover: efect de ridicare și glow mai intens */
+.investment-rewards-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 30px rgba(8, 253, 216, 0.7);
+}
+
+/* ===== Titlul Secțiunii ===== */
+.section-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #08fdd8;
+  text-shadow: 0 0 15px rgba(8, 253, 216, 0.8);
+  margin-bottom: 15px;
+}
+
+/* ===== Stil pentru Wallet Address ===== */
+.wallet-label {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #00ff99;
+  text-shadow: 0 0 10px rgba(0, 255, 153, 0.7);
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Wallet Address - Trunchiere și Hover */
+.wallet-address {
+  font-size: 1.1rem;
+  color: #ffffff;
+  background: rgba(8, 253, 216, 0.1);
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: inline-block;
+  max-width: 230px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Hover: Afișează întreaga adresă */
+.wallet-address:hover {
+  max-width: none;
+  white-space: normal;
+  word-wrap: break-word;
+  background: rgba(8, 253, 216, 0.2);
+  box-shadow: 0 0 15px rgba(8, 253, 216, 0.5);
+  color: #00ff99;
+}
+
+/* ===== Paragrafele din Secțiune ===== */
+.investment-rewards-container p {
+  margin: 8px 0;
+  font-size: 1.4rem;
+  line-height: 1.5;
+  font-family: 'Rajdhani', sans-serif;
+  color: #ffffff;
+}
+
+/* Evidențiere valori importante */
+.investment-rewards-container strong {
+  color: #00ff99;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-shadow: 0 0 12px rgba(0, 255, 153, 0.8);
+}
+
+/* ===== Sume Returnate - Stil Special ===== */
+.amount {
+  font-size: 1.6rem;
+  font-weight: bold;
+  display: inline-block;
+  margin-left: 5px;
+}
+
+/* Stil special pentru $BITS */
+.bits {
+  color: #00ff99;
+  text-shadow: 0 0 15px rgba(0, 255, 153, 0.9);
+  font-size: 1.8rem;
+}
+
+/* Stil special pentru USD */
+.usd {
+  color: #ff4b5c;
+  text-shadow: 0 0 12px rgba(255, 75, 92, 0.8);
+}
+
+/* Stil special pentru ETH */
+.eth {
+  color: #08fdd8;
+  text-shadow: 0 0 12px rgba(8, 253, 216, 0.8);
+}
+
+/* ===== Buton de Refresh ===== */
+.investment-rewards-container button {
+  padding: 12px 22px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  box-shadow: 0 6px 12px rgba(76, 175, 80, 0.5);
+  transition: all 0.3s ease-in-out;
+  margin-top: 15px;
+}
+
+/* Hover pe buton */
+.investment-rewards-container button:hover {
+  transform: translateY(-3px) scale(1.08);
+  box-shadow: 0 10px 15px rgba(76, 175, 80, 0.7);
+}
+
+/* Efect la click */
+.investment-rewards-container button:active {
+  transform: scale(0.95);
+}
+
+/* ===== Responsivitate - Mobile ===== */
+@media (max-width: 768px) {
+  .investment-rewards-container {
+    padding: 15px;
+    max-width: 95%;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+  }
+
+  .wallet-label {
+    font-size: 1.2rem;
+  }
+
+  .wallet-address {
+    font-size: 1rem;
+    max-width: 200px;
+  }
+
+  .investment-rewards-container p {
+    font-size: 1.2rem;
+  }
+
+  .investment-rewards-container button {
+    font-size: 1.1rem;
+    padding: 10px 18px;
+  }
+}
