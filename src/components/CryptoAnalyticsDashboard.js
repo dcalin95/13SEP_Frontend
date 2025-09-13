@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import cryptoAnalyticsService from '../services/cryptoAnalyticsService';
 import './CryptoAnalyticsDashboard.css';
 
-const CryptoAnalyticsDashboard = () => {
-  const [isVisible, setIsVisible] = useState(false);
+const CryptoAnalyticsDashboard = ({ standalone = false }) => {
+  const [isVisible, setIsVisible] = useState(standalone); // Dacă e standalone, start ca vizibil
   const [analyticsData, setAnalyticsData] = useState({});
   const [userInsights, setUserInsights] = useState({});
   const [performanceMetrics, setPerformanceMetrics] = useState({});

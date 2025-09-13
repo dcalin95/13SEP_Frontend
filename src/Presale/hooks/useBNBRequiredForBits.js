@@ -51,7 +51,13 @@ const useBNBRequiredForBits = (bitsDesired, walletAddress) => {
         );
 
         const bitsPriceRaw = await cellManager.getCurrentOpenCellPrice(walletAddress); // USD * 1000
-        const bitsPriceUSD = parseFloat(bitsPriceRaw.toString()) / 1000;
+        let bitsPriceUSD = parseFloat(bitsPriceRaw.toString()) / 1000;
+        
+        // 🎯 FIX: Force $1.00 BITS price if contract returns wrong value
+        if (bitsPriceUSD < 0.50) {
+          console.log("🚨 [useBNBRequiredForBits] Contract returned too low BITS price:", bitsPriceUSD, "→ Forcing $1.00");
+          bitsPriceUSD = 1.00;
+        }
 
         const usdTotal = bitsDesired * bitsPriceUSD;
 

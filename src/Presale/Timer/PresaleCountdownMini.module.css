@@ -1,6 +1,6 @@
 .miniTimer {
   display: flex;
-  gap: 4px;
+  gap: 0px; /* separatori controlați separat pentru spacing uniform */
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.95rem;
   padding: 0.4rem 0.6rem;
@@ -15,6 +15,25 @@
 }
 
 .miniTimer span {
-  min-width: 30px;
   text-align: center;
+}
+
+.block {
+  min-width: 30px;
+  padding: 0 2px;
+}
+
+.sep {
+  display: inline-block;
+  width: 10px; /* fix width so colon spacing is consistent */
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .miniTimer {
+    font-size: 0.85rem; /* puțin mai mic pe mobile */
+    padding: 0.3rem 0.5rem;
+  }
+  .block { min-width: 24px; }
+  .sep { width: 8px; }
 }

@@ -119,6 +119,9 @@ const Header = () => {
         <Link to="/staking" className="btn-tokenomics laser-sharp">
           <i className="fas fa-coins"></i> Staking
         </Link>
+        <Link to="/smart-staking" className="btn-smart-staking laser-sharp">
+          <i className="fas fa-rocket"></i> Smart Staking
+        </Link>
         <Link to="/paper-trading" className="btn-paper-trading laser-sharp">
           <i className="fas fa-gamepad"></i> Paper Trading
         </Link>
@@ -127,6 +130,9 @@ const Header = () => {
         </Link>
         <Link to="/reward-dashboard" className="btn-leaderboard laser-sharp">
           <i className="fas fa-chart-line"></i> Rewards Dashboard
+        </Link>
+        <Link to="/bits-analytics" className="btn-bits-analytics laser-sharp">
+          <i className="fas fa-chart-bar"></i> BITS Analytics
         </Link>
         <Link to="/bitcoin-academy" className="btn-bitcoin-academy laser-sharp">
           <i className="fab fa-bitcoin"></i> Bitcoin Academy
@@ -139,6 +145,9 @@ const Header = () => {
         </Link>
         <Link to="/rewards-hub" className="btn-invite">
           <i className="fas fa-star"></i> Rewards Hub
+        </Link>
+        <Link to="/ai-portfolio-claude4" className="btn-claude4-ai laser-sharp">
+          <i className="fas fa-brain"></i> Neural Investment Optimizer
         </Link>
         <button className="btn-go-main" onClick={() => navigate("/ai-assistant")}>
           <i className="fas fa-robot"></i> AI BitSwapDEX
@@ -196,6 +205,9 @@ const Header = () => {
           <Link to="/staking" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
             <i className="fas fa-coins"></i> Staking
           </Link>
+          <Link to="/smart-staking" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+            <i className="fas fa-rocket"></i> Smart Staking
+          </Link>
           <Link to="/paper-trading" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
             <i className="fas fa-gamepad"></i> Paper Trading
           </Link>
@@ -204,6 +216,9 @@ const Header = () => {
           </Link>
           <Link to="/reward-dashboard" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
             <i className="fas fa-chart-line"></i> Rewards Dashboard
+          </Link>
+          <Link to="/bits-analytics" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+            <i className="fas fa-chart-bar"></i> BITS Analytics
           </Link>
           <Link to="/bitcoin-academy" onClick={() => setIsMenuOpen(false)}>
             <i className="fab fa-bitcoin"></i> Bitcoin Academy
@@ -216,6 +231,9 @@ const Header = () => {
           </Link>
           <Link to="/rewards-hub" onClick={() => setIsMenuOpen(false)}>
             <i className="fas fa-star"></i> Rewards Hub
+          </Link>
+          <Link to="/ai-portfolio-claude4" className="laser-sharp" onClick={() => setIsMenuOpen(false)}>
+            <i className="fas fa-brain"></i> Neural Investment Optimizer
           </Link>
           <button onClick={() => { setIsMenuOpen(false); navigate("/ai-assistant"); }}>
             <i className="fas fa-robot"></i> AI BitSwapDEX

@@ -15,7 +15,7 @@ import Footer from "./components/Footer";
 import BoostedBanner from "./components/BoostedBanner";
 import HeaderWalletInfo from "./context/HeaderWalletInfo";
 import StarfieldBackground from "./components/StarfieldBackground";
-import CustomCursor from "./components/CustomCursor";
+// import CustomCursor from "./components/CustomCursor"; // 🚫 DISABLED - Performance optimization
 import ErrorBoundary from "./components/ErrorBoundary";
 import SidebarMenu from "./SidebarMenu/SidebarMenu";
 import HamburgerButton from "./HamburgerButton/HamburgerButton";
@@ -28,9 +28,9 @@ import PWAInstallPrompt from "./components/PWAInstallPrompt";
 // 📱 Mobile
 import MobileUI from "./components/MobileUI";
 
-// 📊 Analytics
-import CryptoAnalyticsDashboard from "./components/CryptoAnalyticsDashboard";
-import MarketingDashboard from "./components/MarketingDashboard";
+// 📊 Analytics - Acum integrate în FloatingMenu Overlay System
+// import CryptoAnalyticsDashboard from "./components/CryptoAnalyticsDashboard";
+// import MarketingDashboard from "./components/MarketingDashboard";
 
 // 🎛 UI/UX Enhancements
 
@@ -48,6 +48,7 @@ const TokenomicsPage = lazy(() => import("./components/TokenomicsPage"));
 const HowItWorks = lazy(() => import("./components/HowItWorks"));
 const Roadmap = lazy(() => import("./components/Roadmap"));
 const StakingPage = lazy(() => import("./Staking/StakingPage"));
+const StakeWithNFTPreOrder = lazy(() => import("./components/Staking/StakeWithNFTPreOrder"));
 const Scheme = lazy(() => import("./components/Scheme/Scheme"));
 const AIBitSwapDEXAssistant = lazy(() => import("./openai/AIAssistantBox"));
 const PresaleDashboard = lazy(() => import("./Presale/Timer/PresaleDashboard"));
@@ -60,12 +61,14 @@ const PaymentBox = lazy(() => import("./Presale/PaymentBox/PaymentBox"));
 
 const RewardsHub = lazy(() => import("./components/RewardsHub"));
 const RewardDashboard = lazy(() => import("./components/RewardsDashboard/RewardsDashboard"));
+const BITSAnalytics = lazy(() => import("./Presale/BITSAnalytics/BITSAnalytics"));
 const InvitePage = lazy(() => import("./components/Invite/InvitePage"));
 const BitcoinAcademy = lazy(() => import("./components/BitcoinAcademy"));
 const ProofOfTransferPage = lazy(() => import("./components/BitcoinAcademy/pages/ProofOfTransferPage"));
 const EducationPage = lazy(() => import("./components/EducationPageModern"));
 const AIPortfolioPage = lazy(() => import("./components/AIPortfolioPage"));
 const AIPortfolioPageRefactored = lazy(() => import("./components/AIPortfolioPageRefactored"));
+const Claude4AIPortfolioDemo = lazy(() => import("./ai-portfolio/Claude4AIPortfolioDemo"));
 const PaperTradingPage = lazy(() => import("./papertrade/PaperTradingPage"));
 const STXPaperTrade = lazy(() => import("./papertrade/STXPaperTrade"));
 const TokenPaperTrade = lazy(() => import("./papertrade/TokenPaperTrade"));
@@ -77,6 +80,8 @@ const Privacy = lazy(() => import("./Legal/Privacy"));
 
 const WalletTestComponent = lazy(() => import("./context/wallet/WalletTestComponent"));
 const MindMirror = lazy(() => import("./mindmirror/MindMirrorDashboard"));
+const ThankYouPage = lazy(() => import("./components/ThankYouPage"));
+
 
 const App = () => {
   const [amountPay, setAmountPay] = useState(0);
@@ -114,33 +119,39 @@ const App = () => {
       <Router>
         <GoogleAnalyticsWrapper>
           <ErrorBoundary>
-            <MobileUI>
-              <div className="app-container">
-                <CustomCursor />
-                <StarfieldBackground />
-                <Header />
-                <BoostedBanner />
-                <div className="header-spacer"></div>
-                <HeaderWalletInfo />
-                <ThemeChecker />
+            <Suspense fallback={<LoadingSpinner />}>
+              <Routes>
+                {/* ===== TOATE RUTELE CU LAYOUT COMPLET (Header + Sidebar + Overlay System) ===== */}
+                <Route 
+                  path="/*" 
+                  element={
+                    <MobileUI>
+                      <div className="app-container">
+                        {/* <CustomCursor /> */} {/* 🚫 DISABLED - Caused slow mouse movement */}
+                        <StarfieldBackground />
+                        <Header />
+                        <BoostedBanner />
+                        <div className="header-spacer"></div>
+                        <HeaderWalletInfo />
+                        <ThemeChecker />
 
-                <SidebarMenu
-                  isMenuOpen={menuOpen}
-                  setCurrentSection={handleSidebarSelect}
-                  currentSection={currentSection}
-                />
-                <HamburgerButton
-                  isMenuOpen={menuOpen}
-                  toggleMenu={toggleMenu}
-                />
+                        <SidebarMenu
+                          isMenuOpen={menuOpen}
+                          setCurrentSection={handleSidebarSelect}
+                          currentSection={currentSection}
+                        />
+                        <HamburgerButton
+                          isMenuOpen={menuOpen}
+                          toggleMenu={toggleMenu}
+                        />
 
-                <div className="content-container">
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <Routes>
+                        <div className="content-container">
+                          <Routes>
                       <Route path="/" element={<Home />} />
                       <Route path="/whitepaper" element={<Whitepaper />} />
                       <Route path="/how-to-buy" element={<HowToBuy />} />
                       <Route path="/staking" element={<StakingPage />} />
+                      <Route path="/smart-staking" element={<StakeWithNFTPreOrder />} />
                       <Route path="/about" element={<About />} />
                       <Route path="/tokenomics" element={<TokenomicsPage />} />
                       <Route path="/how-it-works" element={<HowItWorks />} />
@@ -148,6 +159,7 @@ const App = () => {
                       <Route path="/scheme-test" element={<Scheme />} />
                       <Route path="/ai-portfolio" element={<AIPortfolioPage />} />
                       <Route path="/ai-portfolio-v2" element={<AIPortfolioPageRefactored />} />
+                      <Route path="/ai-portfolio-claude4" element={<Claude4AIPortfolioDemo />} />
                       <Route path="/paper-trading" element={<PaperTradingPage />} />
                       <Route path="/paper-trade/stx" element={<STXPaperTrade />} />
                       <Route path="/paper-trade/:symbol" element={<TokenPaperTrade />} />
@@ -155,6 +167,7 @@ const App = () => {
                       <Route path="/presale" element={<PresalePage />} />
                       <Route path="/rewards-hub" element={<RewardsHub />} />
                       <Route path="/reward-dashboard" element={<RewardDashboard />} />
+                      <Route path="/bits-analytics" element={<BITSAnalytics />} />
                       <Route path="/bitcoin-academy" element={<BitcoinAcademy />} />
                       <Route path="/proof-of-transfer" element={<ProofOfTransferPage />} />
                       <Route path="/education" element={<EducationPage />} />
@@ -176,6 +189,7 @@ const App = () => {
                       <Route path="/privacy-policy" element={<Privacy />} />
                       <Route path="/wallet-test" element={<WalletTestComponent />} />
                       <Route path="/mind-mirror" element={<MindMirror />} />
+                      <Route path="/thank-you" element={<ThankYouPage />} />
                       <Route
                         path="/test-payment"
                         element={
@@ -189,19 +203,20 @@ const App = () => {
                           />
                         }
                       />
-                    </Routes>
-                  </Suspense>
-                </div>
+                          </Routes>
+                        </div>
 
-                <Footer />
-                <PWAInstallPrompt />
-              </div>
-            </MobileUI>
-
-            {/* Dashboards & Floating UI */}
-            <CryptoAnalyticsDashboard />
-            <MarketingDashboard />
-            <FloatingMenu />
+                        <Footer />
+                        <PWAInstallPrompt />
+                      </div>
+                      
+                      {/* Floating UI cu Overlay System Integrat */}
+                      <FloatingMenu />
+                    </MobileUI>
+                  }
+                />
+              </Routes>
+            </Suspense>
           </ErrorBoundary>
         </GoogleAnalyticsWrapper>
       </Router>

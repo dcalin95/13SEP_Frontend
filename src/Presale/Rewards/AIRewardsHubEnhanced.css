@@ -849,3 +849,154 @@
     border: 1px solid #ffffff;
   }
 }
+
+/* ========== SPACE MONO INTEGRATION ========== */
+
+/* Subtitle with Space Mono */
+.rewards-header p {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: #00ffff;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+  font-size: 1.1rem;
+  margin-top: 10px;
+}
+
+/* Stats Numbers with Space Mono */
+.stats-grid .stat-value {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #00ff88;
+  text-shadow: 
+    0 0 3px #00ff88,
+    0 0 6px #00ff88,
+    0 0 9px #00ff88;
+  font-size: 1.8rem;
+}
+
+/* Reward Item Values with Space Mono */
+.reward-item .reward-value {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+}
+
+/* Analytics Labels with Space Mono */
+.analytics-section .metric-label {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #cccccc;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+/* Button Text with Space Mono */
+.action-button {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Loading Text with Space Mono Glitch Effect */
+.loading-text {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: #00ffff;
+  position: relative;
+}
+
+.loading-text::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #ff0040;
+  z-index: -1;
+  animation: space-mono-glitch-1 0.5s infinite linear alternate-reverse;
+}
+
+.loading-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #00ffff;
+  z-index: -2;
+  animation: space-mono-glitch-2 0.5s infinite linear alternate-reverse;
+}
+
+/* Total Amount Display with Space Mono Matrix Effect */
+.total-amount-display {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #00ff88;
+  text-shadow: 
+    0 0 3px #00ff88,
+    0 0 6px #00ff88,
+    0 0 9px #00ff88,
+    0 0 12px #00ff88;
+  animation: space-mono-matrix-flicker 3s linear infinite;
+  font-size: 2.2rem;
+}
+
+/* Chart Labels with Space Mono */
+.chart-label,
+.chart-axis-label {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  font-size: 0.8rem;
+}
+
+/* Notification Text with Space Mono */
+.notification-text {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+
+/* Success/Error Messages with Space Mono */
+.success-message {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #00ff88;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+}
+
+.error-message {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ff4444;
+  text-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
+}
+
+/* Responsive Space Mono Adjustments */
+@media (max-width: 768px) {
+  .rewards-header p {
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+  
+  .stats-grid .stat-value {
+    font-size: 1.4rem;
+  }
+  
+  .total-amount-display {
+    font-size: 1.8rem;
+    letter-spacing: 1px;
+  }
+  
+  .action-button {
+    letter-spacing: 0.5px;
+  }
+}

@@ -1063,6 +1063,29 @@
   cursor: not-allowed;
 }
 
+/* STANDALONE MODE - FULL SCREEN OVERRIDE */
+.dashboard-standalone-override .crypto-analytics-dashboard.ai-enhanced {
+  position: static !important;
+  bottom: auto !important;
+  right: auto !important;
+  left: auto !important;
+  top: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  border-radius: 0 !important;
+  border: none !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  z-index: 1 !important;
+  overflow: auto !important;
+}
+
+.dashboard-standalone-override .crypto-analytics-dashboard.ai-enhanced::before {
+  display: none !important;
+}
+
 /* Mobile Responsive Design */
 @media (max-width: 768px) {
   .crypto-analytics-toggle-btn.ai-enhanced {

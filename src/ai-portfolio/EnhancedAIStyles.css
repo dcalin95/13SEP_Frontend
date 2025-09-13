@@ -1616,3 +1616,192 @@
     background: white;
   }
 }
+
+/* ========== SPACE MONO INTEGRATION FOR AI PORTFOLIO ========== */
+
+/* Main Title with Space Mono */
+.ai-header h1,
+.ai-title {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #00ffff;
+  text-shadow: 
+    0 0 5px #00ffff,
+    0 0 10px #00ffff,
+    0 0 15px #00ffff;
+  animation: space-mono-pulse 2s ease-in-out infinite alternate;
+}
+
+/* Subtitle with Space Mono */
+.ai-subtitle,
+.ai-description {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: #00ff88;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.4);
+}
+
+/* Portfolio Values with Space Mono Matrix Effect */
+.ai-value,
+.ai-balance,
+.ai-total,
+.ai-metric-value {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #00ff88;
+  text-shadow: 
+    0 0 3px #00ff88,
+    0 0 6px #00ff88,
+    0 0 9px #00ff88,
+    0 0 12px #00ff88;
+  animation: space-mono-matrix-flicker 3s linear infinite;
+}
+
+/* AI Analysis Text with Space Mono */
+.ai-analysis,
+.ai-recommendation,
+.ai-insight {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 400;
+  letter-spacing: 1px;
+  line-height: 1.6;
+  color: #ffffff;
+}
+
+/* Metric Labels with Space Mono */
+.ai-label,
+.ai-metric-label,
+.ai-chart-label {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #cccccc;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+/* Button Text with Space Mono */
+.ai-btn,
+.ai-generate-btn,
+.ai-refresh-btn,
+.ai-action-btn {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Loading States with Space Mono Glitch */
+.ai-loading,
+.ai-processing {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 400;
+  letter-spacing: 2px;
+  color: #00ffff;
+  position: relative;
+}
+
+.ai-loading::before,
+.ai-processing::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #ff0040;
+  z-index: -1;
+  animation: space-mono-glitch-1 0.5s infinite linear alternate-reverse;
+}
+
+.ai-loading::after,
+.ai-processing::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #00ffff;
+  z-index: -2;
+  animation: space-mono-glitch-2 0.5s infinite linear alternate-reverse;
+}
+
+/* Error Messages with Space Mono */
+.ai-error {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ff4444;
+  text-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
+}
+
+/* Success Messages with Space Mono */
+.ai-success {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #00ff88;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+}
+
+/* Blockchain Data Labels with Space Mono */
+.ai-blockchain-label,
+.ai-contract-address,
+.ai-token-symbol {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #00ffff;
+  font-size: 0.85rem;
+}
+
+/* Performance Metrics with Space Mono */
+.ai-performance,
+.ai-percentage {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Status Indicators with Space Mono */
+.ai-status,
+.ai-connection-status {
+  font-family: 'Space Mono', 'Courier New', monospace !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Responsive Space Mono Adjustments for AI Portfolio */
+@media (max-width: 768px) {
+  .ai-header h1,
+  .ai-title {
+    font-size: 1.8rem;
+    letter-spacing: 2px;
+  }
+  
+  .ai-value,
+  .ai-balance,
+  .ai-total {
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+  }
+  
+  .ai-btn,
+  .ai-action-btn {
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+  }
+  
+  .ai-label,
+  .ai-metric-label {
+    font-size: 0.8rem;
+  }
+  
+  .ai-subtitle,
+  .ai-description {
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+  }
+}

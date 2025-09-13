@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { default as axios } from "axios";
 import { ethers } from "ethers";
 import styles from "./AdminPanel.module.css";
@@ -7,16 +8,19 @@ import PresaleHistory from "../PresaleHistory";
 import RoundEndDisplay from "../RoundEndDisplay";
 import useCellManagerData from "../../hooks/useCellManagerData";
 import { CONTRACTS } from "../../../contract/contracts";
+import SolanaRewardsManager from "../../../components/Admin/SolanaRewardsManager";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL || "https://backend-server-f82y.onrender.com";
 const ADMIN_PASS = process.env.REACT_APP_ADMIN_PASS || "fallback123";
 
 const AdminPanel = () => {
+  const navigate = useNavigate();
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [autoSimRunning, setAutoSimRunning] = useState(false);
   const [manualUsd, setManualUsd] = useState("");
   const [manualBits, setManualBits] = useState("");
   const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview"); // New state for tabs
   
   // Round management states  
   const [supplyInput, setSupplyInput] = useState("");
@@ -564,21 +568,63 @@ const AdminPanel = () => {
             🛑 Logout
           </button>
 
-          <div style={{ 
-            background: '#2a2a2a', 
-            border: '1px solid #555', 
-            borderRadius: '4px', 
-            padding: '10px', 
-            margin: '10px 0',
-            fontSize: '12px',
-            color: '#cccccc',
-            textAlign: 'left'
+          {/* Tab Navigation */}
+          <div className={styles["tab-navigation"]} style={{
+            display: 'flex',
+            gap: '10px',
+            margin: '20px 0',
+            borderBottom: '1px solid #555',
+            paddingBottom: '10px'
           }}>
-            ℹ️ <strong>Data Sources:</strong><br/>
-            • <span style={{color: '#00ff88'}}>Real Sales</span>: Blockchain transactions via CellManager.sol<br/>
-            • <span style={{color: '#ffaa00'}}>Simulated Sales</span>: Backend testing data (AdminPanel simulations)<br/>
-            • <span style={{color: '#00d4ff'}}>Total</span>: Combined real + simulated for complete overview
+            <button 
+              onClick={() => setActiveTab("overview")}
+              className={activeTab === "overview" ? styles["tab-active"] : styles["tab-inactive"]}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '6px 6px 0 0',
+                background: activeTab === "overview" ? '#14F195' : '#444',
+                color: activeTab === "overview" ? '#000' : '#fff',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              📊 Overview
+            </button>
+            <button 
+              onClick={() => setActiveTab("solana-rewards")}
+              className={activeTab === "solana-rewards" ? styles["tab-active"] : styles["tab-inactive"]}
+              style={{
+                padding: '10px 20px',
+                border: 'none',
+                borderRadius: '6px 6px 0 0',
+                background: activeTab === "solana-rewards" ? '#14F195' : '#444',
+                color: activeTab === "solana-rewards" ? '#000' : '#fff',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              🟣 Solana Rewards
+            </button>
           </div>
+
+          {activeTab === "overview" && (
+            <>
+              <div style={{ 
+                background: '#2a2a2a', 
+                border: '1px solid #555', 
+                borderRadius: '4px', 
+                padding: '10px', 
+                margin: '10px 0',
+                fontSize: '12px',
+                color: '#cccccc',
+                textAlign: 'left'
+              }}>
+                ℹ️ <strong>Data Sources:</strong><br/>
+                • <span style={{color: '#00ff88'}}>Real Sales</span>: Blockchain transactions via CellManager.sol<br/>
+                • <span style={{color: '#ffaa00'}}>Simulated Sales</span>: Backend testing data (AdminPanel simulations)<br/>
+                • <span style={{color: '#00d4ff'}}>Total</span>: Combined real + simulated for complete overview
+              </div>
 
 
 
@@ -905,7 +951,76 @@ const AdminPanel = () => {
             </button>
           </div>
 
+          {/* Smart Staking Quick Access */}
+          <div className={styles["section"]} style={{ marginTop: '15px' }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              background: 'rgba(255, 51, 102, 0.1)',
+              border: '1px solid rgba(255, 51, 102, 0.3)',
+              borderRadius: '8px',
+              padding: '12px 16px',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontSize: '16px' }}>🚀</span>
+                <div>
+                  <div style={{ 
+                    color: '#ff3366', 
+                    fontSize: '13px', 
+                    fontWeight: 'bold',
+                    marginBottom: '2px'
+                  }}>
+                    Smart Staking
+                  </div>
+                  <div style={{ 
+                    color: '#ccc', 
+                    fontSize: '11px'
+                  }}>
+                    Pre-authorize NFT purchases
+                  </div>
+                </div>
+              </div>
+              <button 
+                onClick={() => {
+                  navigate('/smart-staking');
+                  toast.success('🚀 Navigating to Smart Staking...', {
+                    position: "top-right",
+                    autoClose: 2000
+                  });
+                }}
+                style={{
+                  background: 'linear-gradient(135deg, #ff3366, #ff1a4d)',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '8px 14px',
+                  cursor: 'pointer',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  boxShadow: '0 2px 8px rgba(255, 51, 102, 0.3)',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 4px 12px rgba(255, 51, 102, 0.4)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 2px 8px rgba(255, 51, 102, 0.3)';
+                }}
+              >
+                Open 🎯
+              </button>
+            </div>
+          </div>
 
+            </>
+          )}
+
+          {activeTab === "solana-rewards" && (
+            <SolanaRewardsManager onBack={() => setActiveTab("overview")} />
+          )}
 
         </div>
       )}
@@ -1012,7 +1127,7 @@ const AdminPanel = () => {
           </div>
         </div>
       )}
-      
+
       {/* Round End Statistics Display */}
       {showRoundEndStats && roundEndData && (
         <RoundEndDisplay 

@@ -132,6 +132,7 @@
 .navigation .btn-home i        { color: #69db7c; }
 .navigation .btn-buy i         { color: #ffd43b; }
 .navigation .btn-tokenomics i  { color: #4dabf7; }
+.navigation .btn-smart-staking i { color: #ff3366; }
 .navigation .btn-paper-trading i { color: #ff6b35; }
 .navigation .btn-audit i       { color: #9775fa; }
 .navigation .btn-leaderboard i { color: #74c0fc; }
@@ -141,11 +142,13 @@
 .navigation .btn-how-it-works i { color: #38d9a9; }
 .navigation .btn-invite i      { color: #f783ac; }
 .navigation .btn-go-main i     { color: #f3722c; }
+.navigation .btn-claude4-ai i  { color: #00D4FF; }
 
 /* === BORDERS TO MATCH === */
 .btn-home        { border-color: #69db7c; }
 .btn-buy         { border-color: #ffd43b; }
 .btn-tokenomics  { border-color: #4dabf7; }
+.btn-smart-staking { border-color: #ff3366; }
 .btn-paper-trading { border-color: #ff6b35; }
 .btn-audit       { border-color: #9775fa; }
 .btn-leaderboard { border-color: #74c0fc; }
@@ -155,6 +158,47 @@
 .btn-how-it-works{ border-color: #38d9a9; }
 .btn-invite      { border-color: #f783ac; }
 .btn-go-main     { border-color: #f3722c; color: #00ffff; }
+.btn-claude4-ai  { border-color: #00D4FF; color: #00D4FF; }
+
+/* === CLAUDE 4 AI BUTTON SPECIAL NEURAL EFFECTS === */
+.btn-claude4-ai {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+  animation: claude4-neural-pulse 3s infinite;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+.btn-claude4-ai::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.2), transparent);
+  animation: claude4-neural-scan 4s infinite linear;
+  z-index: -1;
+}
+
+.btn-claude4-ai:hover {
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+  transform: translateY(-3px) scale(1.05);
+}
+
+@keyframes claude4-neural-pulse {
+  0%, 100% { 
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.6), 0 0 35px rgba(0, 212, 255, 0.3);
+  }
+}
+
+@keyframes claude4-neural-scan {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
+}
 
 /* === POX BUTTON SPECIAL EFFECTS === */
 .btn-pox {

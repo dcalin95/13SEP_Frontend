@@ -52,8 +52,8 @@ const usePaymentState = ({
     pricePerBitsUSD,
   });
 
-  // 🔧 Smart rounding for BITS - avoid 0 for small amounts
-  const pureBits = bits > 0 && bits < 1 ? Math.ceil(bits) : Math.floor(bits);
+  // 🔧 Contract sends INTEGER BITS only - always floor
+  const pureBits = Math.floor(bits);
 
   // 🔍 Debug BITS calculation results
   console.log("🔍 [usePaymentState] BITS Calculation Results for", selectedToken);

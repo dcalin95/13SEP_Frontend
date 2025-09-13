@@ -74,7 +74,7 @@ const StakingPage = () => {
         <div className="staking-top-row">
           <div className="left-side">
             <div className="ai-container">
-              <StakingSummary signer={signer} />
+              <StakingSummary signer={signer} stakes={stakes} />
             </div>
             <div className="ai-container">
               <StakingInfoBox stakes={stakes} />
@@ -93,9 +93,7 @@ const StakingPage = () => {
           </div>
         </div>
         <div className="staking-bottom">
-          <div className="ai-container">
-            <StakingBox stakes={stakes} signer={signer} />
-          </div>
+          <StakingBox stakes={stakes} signer={signer} />
         </div>
       </main>
     </div>

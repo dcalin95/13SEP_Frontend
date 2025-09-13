@@ -105,8 +105,14 @@ const handleUSDCOnSolanaPayment = async ({ amount, bitsToReceive, walletAddress 
 
     console.log("✅ USDC transfer TX:", signature);
 
-    // ⛳ Trimite detaliile în backend
+    // ⛳ Trimite detaliile în backend (INCLUDE USD FOR LOYALTY BONUS)
     const base = process.env.REACT_APP_BACKEND_URL || '';
+    
+    // 🎁 USDC is stablecoin, so amount IS the USD value
+    const usdInvested = amount; // USDC = 1:1 USD
+    
+    console.log("🎁 [USDC-Solana LOYALTY] USD investment for bonus:", usdInvested);
+    
     await fetch(`${base}/api/payments/record-solana`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -116,6 +122,10 @@ const handleUSDCOnSolanaPayment = async ({ amount, bitsToReceive, walletAddress 
         amount,
         bitsToReceive,
         wallet: walletAddress,
+        // 🎁 CRITICAL: Add USD investment for cross-chain loyalty bonus processing
+        usdInvested: usdInvested,
+        loyaltyEligible: true,
+        note: "USDC-Solana payment - requires backend cross-chain processing for AdditionalReward.sol",
       }),
     });
 

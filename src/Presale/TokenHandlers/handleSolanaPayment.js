@@ -13,7 +13,8 @@ import {
 } from "@solana/spl-token";
 
 // Devnet info
-const SOLANA_RPC = "https://api.devnet.solana.com";
+const SOLANA_RPC = process.env.REACT_APP_SOL_RPC_HTTP || "https://api.devnet.solana.com";
+const SOLANA_WS = process.env.REACT_APP_SOL_RPC_WS || "wss://api.devnet.solana.com";
 const USDC_MINT = new PublicKey("HBUpnm43PjQdWJoFFLeUWbG8raduosdkmz8tg1C4mvGT");
 const DESTINATION_WALLET = new PublicKey("63u6aWZJdFd1vh6VfCya5DJkXTUEmHBbs14SiqHNt4GQ");
 
@@ -29,7 +30,7 @@ const handleUSDCOnSolanaPayment = async ({
       throw new Error("Phantom wallet is not available.");
     }
 
-    const connection = new Connection(SOLANA_RPC, "confirmed");
+    const connection = new Connection(SOLANA_RPC, { commitment: "confirmed", wsEndpoint: SOLANA_WS });
     const { publicKey } = await window.solana.connect();
 
     const fromATA = await getAssociatedTokenAddress(
@@ -57,16 +58,35 @@ const handleUSDCOnSolanaPayment = async ({
     );
 
     tx.feePayer = publicKey;
-    tx.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+    tx.recentBlockhash = blockhash;
 
     const signed = await window.solana.signTransaction(tx);
-    const sig = await connection.sendRawTransaction(signed.serialize());
-    await connection.confirmTransaction(sig, "confirmed");
+    const raw = signed.serialize();
+    const sig = await connection.sendRawTransaction(raw, { skipPreflight: false, maxRetries: 5 });
+    try {
+      await connection.confirmTransaction({ signature: sig, blockhash, lastValidBlockHeight }, "confirmed");
+    } catch (e) {
+      const start = Date.now();
+      const timeoutMs = 90000;
+      while (Date.now() - start < timeoutMs) {
+        const st = await connection.getSignatureStatuses([sig]);
+        const status = st?.value?.[0];
+        if (status?.confirmationStatus === "confirmed" || status?.confirmationStatus === "finalized") break;
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    }
 
     console.log("✅ USDC Transfer TX:", sig);
 
-    // 🔁 Trimite la backend
+    // 🔁 Trimite la backend (INCLUDE USD FOR LOYALTY BONUS)
     const backendURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:4000";
+    
+    // 🎁 USDC is stablecoin, so amount IS the USD value  
+    const usdInvested = amount; // USDC = 1:1 USD
+    
+    console.log("🎁 [USDC-Solana LOYALTY] USD investment for bonus:", usdInvested);
+    
     await fetch(`${backendURL}/api/solana/payment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -78,6 +98,10 @@ const handleUSDCOnSolanaPayment = async ({
         bitsToReceive,
         type: "USDC-Solana",
         network: "Solana",
+        // 🎁 CRITICAL: Add USD investment for cross-chain loyalty bonus processing
+        usdInvested: usdInvested,
+        loyaltyEligible: true,
+        note: "USDC-Solana payment - requires backend cross-chain processing for AdditionalReward.sol",
       }),
     });
 

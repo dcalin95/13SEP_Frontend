@@ -6,10 +6,11 @@ body {
   overflow-x: hidden;
   margin: 0;
   padding: 0;
-  cursor: none; /* Hide default cursor */
+  /* cursor: none; */ /* 🚫 DISABLED - Restore default cursor for better UX */
 }
 
 /* 🎯 CUSTOM CURSOR - OPTIMIZAT */
+/* 🚫 DISABLED - Custom cursor caused slow mouse movement
 .custom-cursor {
   position: fixed;
   top: 0;
@@ -21,6 +22,7 @@ body {
   transition: transform 0.05s ease-out;
   will-change: transform;
 }
+*/
 
 .cursor-icon {
   width: 100%;
@@ -70,6 +72,7 @@ body {
 }
 
 /* 🎯 CURSOR EFFECTS FOR INTERACTIVE ELEMENTS - OPTIMIZAT */
+/* 🚫 DISABLED - Custom cursor hover effects
 button:hover ~ .custom-cursor,
 a:hover ~ .custom-cursor,
 .clickable:hover ~ .custom-cursor {
@@ -83,6 +86,7 @@ a:hover ~ .custom-cursor,
 .price-line:hover ~ .custom-cursor .cursor-icon {
   filter: drop-shadow(0px 0px 12px rgba(255, 69, 0, 0.8)) !important;
 }
+*/
 
 .payment-box {
   /* 🌌 COSMIC BACKGROUND - TOTAL TRANSPARENT */
@@ -355,16 +359,16 @@ a:hover ~ .custom-cursor,
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
-  /* 🌌 COSMIC GLASS EFFECT */
-  background: rgba(53, 53, 78, 0.3);
+  /* 🌌 CLEAN GLASS EFFECT - No orange */
+  background: rgba(53, 53, 78, 0.2);
   backdrop-filter: blur(15px);
   padding: 0.6rem 1rem;
   border-radius: 1rem;
-  /* 🌟 COSMIC GLOW */
+  /* 🌟 CYAN GLOW INSTEAD OF ORANGE */
   box-shadow: 
-    0px 4px 15px rgba(255, 170, 0, 0.1),
+    0px 4px 15px rgba(0, 255, 255, 0.1),
     inset 0px 1px 0px rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 170, 0, 0.2);
+  border: 1px solid rgba(0, 255, 255, 0.2);
   transition: all 0.3s ease;
   width: fit-content;
   min-width: 200px;
@@ -374,25 +378,30 @@ a:hover ~ .custom-cursor,
 .bonus-line:hover {
   transform: translateY(-2px);
   box-shadow: 
-    0px 0px 20px rgba(255, 170, 0, 0.4),
-    0px 0px 40px rgba(255, 170, 0, 0.2);
-  border-color: rgba(255, 170, 0, 0.6);
+    0px 0px 20px rgba(0, 255, 255, 0.4),
+    0px 0px 40px rgba(0, 255, 255, 0.2);
+  border-color: rgba(0, 255, 255, 0.6);
   animation: bonusGlow 2s ease-in-out infinite alternate;
 }
 
 .bonus-label {
-  color: #ffaa00;
+  color: #ffffff; /* Alb pentru contrast mai bun */
   font-weight: bold;
-  text-shadow: 0px 0px 8px rgba(255, 170, 0, 0.5);
+  text-shadow: 0px 0px 8px rgba(0, 255, 255, 0.5);
+  opacity: 0.9;
 }
 
 .bonus-value {
-  color: #ffaa00;
+  color: #00ffff; /* Cyan pentru vizibilitate mai bună */
   font-weight: bold;
-  text-shadow: 0px 0px 8px rgba(255, 170, 0, 0.5);
-  background: linear-gradient(90deg, #ffaa00, #ff6b35);
+  text-shadow: 0px 0px 8px rgba(0, 255, 255, 0.6);
+  /* background: linear-gradient(90deg, #ffaa00, #ff6b35); */ /* 🚫 REMOVED - Orange background */
   /* background-clip removed for crisp text */
   /* webkit-text-fill-color removed for crisp text */
+  padding: 0.3rem 0.8rem;
+  background: rgba(0, 255, 255, 0.1); /* Fundal subtil cyan */
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 255, 255, 0.3);
 }
 
 .bonus-note {
@@ -406,13 +415,13 @@ a:hover ~ .custom-cursor,
 @keyframes bonusGlow {
   0% {
     box-shadow: 
-      0px 0px 20px rgba(255, 170, 0, 0.4),
-      0px 0px 40px rgba(255, 170, 0, 0.2);
+      0px 0px 20px rgba(0, 255, 255, 0.4),
+      0px 0px 40px rgba(0, 255, 255, 0.2);
   }
   100% {
     box-shadow: 
-      0px 0px 30px rgba(255, 170, 0, 0.6),
-      0px 0px 60px rgba(255, 170, 0, 0.3);
+      0px 0px 30px rgba(0, 255, 255, 0.6),
+      0px 0px 60px rgba(0, 255, 255, 0.3);
   }
 }
 

@@ -35,9 +35,10 @@ const PaymentSummary = ({ amountPay, usdValue, pureBits, bonusAmount, selectedTo
 
   const formattedAmountPay = parseFloat(amountPay).toFixed(2);
   const formattedUsdValue = parseFloat(usdValue).toFixed(2);
-  const formattedPureBits = parseFloat(pureBits).toFixed(2);
-  const formattedBonusAmount = parseFloat(bonusAmount).toFixed(2);
-  const formattedTotalBits = (parseFloat(formattedPureBits) + parseFloat(formattedBonusAmount)).toFixed(2);
+  // 🎯 FIX: Contract sends INTEGER BITS only, no decimals
+  const formattedPureBits = Math.floor(parseFloat(pureBits)).toString();
+  const formattedBonusAmount = Math.floor(parseFloat(bonusAmount)).toString();
+  const formattedTotalBits = (Math.floor(parseFloat(pureBits)) + Math.floor(parseFloat(bonusAmount))).toString();
 
   return (
     <div className="payment-summary">

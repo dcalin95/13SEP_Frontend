@@ -5,9 +5,9 @@ import { getStakingContract } from "../../contract/getStakingContract";
 import { formatUnits } from "ethers/lib/utils";
 import "../styles/StakingUSDValue.css";
 
-// AI-style number formatting function
+// Clean number formatting function (NO K/M abbreviations)
 const formatAINumber = (number, decimals = 2, isPrice = false) => {
-  if (!number || isNaN(number)) return isPrice ? "$0.0000" : "0.00";
+  if (!number || isNaN(number)) return isPrice ? "$0.00" : "0.00";
   
   const num = parseFloat(number);
   
@@ -16,20 +16,11 @@ const formatAINumber = (number, decimals = 2, isPrice = false) => {
     return `$${num.toFixed(4)}`;
   }
   
-  if (num >= 1000000) {
-    // Millions: 1,234,567.89 → 1.23M
-    return `${isPrice ? '$' : ''}${(num / 1000000).toFixed(2)}M`;
-  } else if (num >= 1000) {
-    // Thousands: 11,664.00 → 11.66K
-    return `${isPrice ? '$' : ''}${(num / 1000).toFixed(2)}K`;
-  } else {
-    // Regular numbers with comma separators: 119.99 → 119.99
-    const formatted = num.toLocaleString('en-US', {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals
-    });
-    return `${isPrice ? '$' : ''}${formatted}`;
+  // Always show numbers with separators; keep two decimals for USD values
+  if (isPrice) {
+    return `$${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   }
+  return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
 const StakingUSDValue = ({ signer }) => {
@@ -48,8 +39,8 @@ const StakingUSDValue = ({ signer }) => {
       console.log("- walletAddress:", walletAddress);
       console.log("- priceLoading:", priceLoading);
 
-      if (!bitsPrice || !signer || !walletAddress) {
-        console.log("❌ Early return - missing bitsPrice, signer or walletAddress");
+      if (!bitsPrice || !walletAddress) {
+        console.log("❌ Early return - missing bitsPrice or walletAddress");
         setTotalStakedUSD(0);
         setTotalRewardsUSD(0);
         setTotalValueUSD(0);
@@ -57,20 +48,36 @@ const StakingUSDValue = ({ signer }) => {
       }
 
       try {
-        const contract = getStakingContract(signer);
+        const contract = await getStakingContract(null, true);
         console.log("📜 Contract address:", contract.address);
 
-        // Get total staked and rewards from contract (same as StakingSummary)
-        const [totalStakedRaw, totalRewardsRaw] = await Promise.all([
-          contract.total().then((v) => {
-            console.log("📊 Total staked (raw):", v.toString());
-            return v;
-          }),
-          contract.getTotalRewardForUser(walletAddress).then((v) => {
-            console.log("🏆 Total rewards (raw):", v.toString());
-            return v;
-          })
-        ]);
+        // Prefer USER staked/rewards, not global totals
+        let totalStakedRaw, totalRewardsRaw;
+        try {
+          totalStakedRaw = await contract.getUserTotalStaked(walletAddress);
+        } catch (e) {
+          console.warn("⚠️ getUserTotalStaked failed, fallback to summing stakes:", e?.message);
+          try {
+            const stakes = await contract.getStakeByUser(walletAddress);
+            totalStakedRaw = stakes.reduce((acc, s) => (!s.withdrawn ? acc.add(s.locked) : acc),
+              (typeof window !== 'undefined' && window.ethers ? window.ethers.BigNumber.from(0) : require('ethers').BigNumber.from(0))
+            );
+          } catch (e2) {
+            console.warn("⚠️ getStakeByUser failed:", e2?.message);
+            totalStakedRaw = require('ethers').BigNumber.from(0);
+          }
+        }
+        try {
+          totalRewardsRaw = await contract.getTotalCurrentEarnings(walletAddress);
+        } catch (e) {
+          console.warn("⚠️ getTotalCurrentEarnings failed, fallback to getTotalRewardForUser:", e?.message);
+          try {
+            totalRewardsRaw = await contract.getTotalRewardForUser(walletAddress);
+          } catch (e2) {
+            console.warn("⚠️ getTotalRewardForUser failed:", e2?.message);
+            totalRewardsRaw = require('ethers').BigNumber.from(0);
+          }
+        }
 
         // Convert to readable format
         const stakedBits = parseFloat(formatUnits(totalStakedRaw, 18));

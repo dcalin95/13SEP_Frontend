@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import styles from "./PresaleStatsCard.module.css";
 
-// 💡 Compact formatter
+// 💡 Full number formatter (no K/M abbreviations)
 const formatCompactNumber = (value) => {
-  if (value >= 1_000_000) return (value / 1_000_000).toFixed(1) + "M";
-  if (value >= 1_000) return (value / 1_000).toFixed(1) + "K";
-  return value.toLocaleString();
+  return Math.floor(value).toLocaleString();
 };
 
 // AnimatedNumber

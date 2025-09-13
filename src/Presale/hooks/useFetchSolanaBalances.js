@@ -9,7 +9,9 @@ const useFetchSolanaBalances = (solanaWalletAddress) => {
         const fetchSolanaBalances = async () => {
             if (!solanaWalletAddress) return;
             try {
-                const connection = new Connection("https://api.devnet.solana.com");
+                const RPC_HTTP = process.env.REACT_APP_SOL_RPC_HTTP || "https://api.devnet.solana.com";
+                const RPC_WS = process.env.REACT_APP_SOL_RPC_WS || "wss://api.devnet.solana.com";
+                const connection = new Connection(RPC_HTTP, { commitment: "confirmed", wsEndpoint: RPC_WS });
                 const walletPublicKey = new PublicKey(solanaWalletAddress);
 
                 const lamports = await connection.getBalance(walletPublicKey);

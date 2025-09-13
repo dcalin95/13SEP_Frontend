@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import "../styles/StakingInfoBox.css";
 import { getStakingContract } from "../../contract/getStakingContract";
+import { getContractInstance } from "../../contract/getContract";
 import WalletContext from "../../context/WalletContext";
 import { formatUnits } from "ethers/lib/utils";
 
@@ -25,19 +26,17 @@ const StakingInfoBox = ({ stakes = [] }) => {
   const [loading, setLoading] = useState(false);
 
   const fetchContractData = async () => {
-    if (!signer) {
-      console.warn("⚠️ Signer not available – wallet might not be connected.");
-      return;
-    }
 
     try {
       setLoading(true);
 
-      const network = await signer.provider.getNetwork();
-      console.log("🌐 Connected network:", network.name, "(chainId:", network.chainId, ")");
-
-      const contract = getStakingContract(signer);
-      console.log("📜 Staking contract address:", contract.address);
+      // Prefer robust read-only provider; fallback to signer if missing
+      let contract;
+      try {
+        contract = await getStakingContract(null, true);
+      } catch (_) {
+        contract = getStakingContract(signer);
+      }
 
       const cd = await contract.cooldown();
       const fee = await contract.unstakeFee();
@@ -46,6 +45,37 @@ const StakingInfoBox = ({ stakes = [] }) => {
       console.log("⏳ Cooldown (seconds):", cd.toString());
       console.log("💰 Unstake Fee (1e18):", fee.toString());
       console.log("📅 TGE Date (timestamp):", tge.toString());
+      
+      // 🔍 Debug: Check contract APR settings
+      try {
+        const currentAPR = await contract.currentAPR();
+        const currentAPRPercent = await contract.currentAPRPercent();
+        const precision = await contract.PRECISION();
+        
+        console.log("📊 CONTRACT APR DEBUG:");
+        console.log("- Current APR (raw):", currentAPR.toString());
+        console.log("- Current APR Percent:", currentAPRPercent.toString());  
+        console.log("- Precision:", precision.toString());
+        console.log("- Correct APR calculation:", (currentAPR.toNumber() / precision.toNumber() * 100).toFixed(2) + "%");
+      } catch (err) {
+        console.log("❌ Could not fetch contract APR details:", err.message);
+      }
+      
+      // 🔍 Debug: Check BITS token decimals
+      try {
+        const bitsToken = await getContractInstance("BITS");
+        const decimals = await bitsToken.decimals();
+        const name = await bitsToken.name();
+        const symbol = await bitsToken.symbol();
+        
+        console.log("💰 BITS TOKEN DEBUG:");
+        console.log("- Name:", name);
+        console.log("- Symbol:", symbol);
+        console.log("- Decimals:", decimals.toString());
+        console.log("- Address:", bitsToken.address);
+      } catch (err) {
+        console.log("❌ Could not fetch BITS token details:", err.message);
+      }
 
       setCooldownStatic(cd.toNumber());
       setUnstakeFee(Number(formatUnits(fee, 16)));
@@ -88,10 +118,23 @@ const StakingInfoBox = ({ stakes = [] }) => {
       let activeStakesCount = 0;
 
       stakes.forEach((stake, index) => {
+        const aprRaw = stake.apr?.toNumber ? stake.apr.toNumber() : 0;
+        
+        // ✅ APR calculation fixed: 2000/100 = 20%
+        
+        const aprCalculated = aprRaw / 100;  // ← CALCULUL CORECT!
+        const aprFormatted = aprCalculated.toFixed(2) + "%";
+        
         console.log(`🔍 Stake ${index}:`, {
           withdrawn: stake.withdrawn,
           startTime: stake.startTime?.toNumber ? stake.startTime.toNumber() : stake.startTime,
-          locked: stake.locked?.toString ? stake.locked.toString() : stake.locked
+          locked: stake.locked?.toString ? stake.locked.toString() : stake.locked,
+          apr: stake.apr?.toString ? stake.apr.toString() : stake.apr,
+          aprRaw: aprRaw,
+          aprCalculated: aprCalculated,
+          aprPercent: aprFormatted,
+          lockPeriod: stake.lockPeriod?.toString ? stake.lockPeriod.toString() : stake.lockPeriod,
+          autoCompound: stake.autoCompound !== undefined ? stake.autoCompound : "N/A"
         });
 
         if (!stake.withdrawn) {

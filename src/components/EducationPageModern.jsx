@@ -8,6 +8,19 @@ const EducationPageModern = () => {
   const [animationPhase, setAnimationPhase] = useState(0);
   const [isVisible, setIsVisible] = useState({});
   const [activeTooltip, setActiveTooltip] = useState(null);
+
+  // 🎯 GOOGLE ADS CONVERSION TRACKING - EDUCATION PAGE
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.gtag && !window.educationPageTracked) {
+      window.educationPageTracked = true;
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-952552862/jW1FCOKkrgQQnpubxgM',
+        value: 1.0,
+        currency: 'EUR'
+      });
+      console.log('🎯 Google Ads conversion tracked - Education Page Visit');
+    }
+  }, []);
   const [bitcoinPrice, setBitcoinPrice] = useState({
     price: 67542.31,
     change: 2.34,

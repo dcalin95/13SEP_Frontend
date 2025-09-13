@@ -66,12 +66,12 @@
 /* Efect de energie în centru */
 .energy-core {
     position: absolute;
-    width: 60px;
-    height: 60px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
-    background: radial-gradient(circle, #00ffe0, #9c27ff);
-    box-shadow: 0 0 30px #00ffe0, 0 0 60px #9c27ff;
-    animation: energyPulse 2s ease-in-out infinite;
+    background: transparent; /* eliminăm gradientul care putea deforma vizual */
+    box-shadow: none;        /* fără glow agresiv în centru */
+    animation: none;         /* oprim efectul de "dans" */
     z-index: 3;
 }
 
@@ -437,6 +437,14 @@
   transform: translateY(0); /* păstrăm centrul perfect */
 }
 
+/* faviconul din centru – scalare responsive */
+.bits-core-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;   /* prevenim deformarea */
+  display: block;
+}
+
 .energy-core-inner .core-line1 {
   font-size: 0.95rem;
   font-weight: 700;
@@ -493,10 +501,12 @@
   .energy-core-inner .core-line1 { font-size: 0.85rem; }
   .energy-core-inner .core-line2 { font-size: 0.75rem; }
   .chart-center { height: 460px; }
+  .energy-core { width: 56px; height: 56px; }
 }
 
 @media (max-width: 480px) {
   .energy-core-inner .core-line1 { font-size: 0.8rem; }
   .energy-core-inner .core-line2 { font-size: 0.7rem; }
   .chart-center { height: 420px; }
+  .energy-core { width: 44px; height: 44px; }
 }

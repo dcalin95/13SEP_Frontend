@@ -1,5 +1,6 @@
 // src/Presale/hooks/useCalculateSolanaBITS.js
 import { useEffect } from "react";
+import { toBitsInteger, logBITSConversion } from "../../utils/bitsUtils";
 
 const calculateBonus = (usd) => {
   if (usd >= 2500) return 15;
@@ -46,12 +47,16 @@ const useCalculateSolanaBITS = ({
         const usdAmount = parseFloat(amountPay) * solPrice;
         const baseBits = usdAmount / bitsPriceUSD;
         const bonus = calculateBonus(usdAmount);
-        const totalBits = baseBits * (1 + bonus / 100);
+        const totalBitsFloat = baseBits * (1 + bonus / 100);
+        
+        // Convert to integer BITS for node.sol compatibility
+        const totalBitsInteger = toBitsInteger(totalBitsFloat);
 
         console.log(`🧮 [SOL→BITS] ${amountPay} SOL × $${solPrice} = $${usdAmount}`);
-        console.log(`🎯 bits @ $${bitsPriceUSD}: ${baseBits.toFixed(3)} + ${bonus}% = ${totalBits.toFixed(3)} BITS`);
+        console.log(`🎯 bits @ $${bitsPriceUSD}: ${baseBits.toFixed(3)} + ${bonus}% = ${totalBitsFloat.toFixed(3)} BITS`);
+        logBITSConversion(totalBitsFloat, "SOL calculation");
 
-        setTokensReceive(parseFloat(totalBits.toFixed(3)));
+        setTokensReceive(totalBitsInteger); // Use integer value
         setBonusPercent(bonus);
         updateProgress(usdAmount);
       } catch (err) {

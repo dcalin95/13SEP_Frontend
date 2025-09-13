@@ -7,11 +7,38 @@ import TelegramRewardContractABI from '../abi/TelegramRewardContractABI.js';
 import erc20ABI from '../abi/erc20ABI.js';
 
 /**
- * Maparea centralizată a contractelor active pe BSC Testnet
- * Actualizată cu noile adrese de contracte
+ * Configurare pentru network și contracte
+ * Poate comuta între BSC Testnet și BSC Mainnet
+ */
+const NETWORK_CONFIG = {
+  TESTNET: {
+    chainId: 97,
+    name: "BSC Testnet",
+    rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545/"
+  },
+  MAINNET: {
+    chainId: 56,
+    name: "BSC Mainnet", 
+    rpcUrl: "https://bsc-dataseed1.binance.org/"
+  }
+};
+
+// Set active network (change to MAINNET for production)
+const ACTIVE_NETWORK = 'TESTNET';
+
+/**
+ * Maparea centralizată a contractelor active pe BSC
+ * Actualizată cu noile adrese de contracte pentru TESTNET
+ * TODO: Adăugați adresele pentru MAINNET când sunt deployate
  */
 export const CONTRACT_MAP = {
   BITS_TOKEN: {
+    name: "BitsToken",
+    address: "0x19e32912f9074F20F904dFe6007cA8e632F23348",
+    abi: BitsABI,
+  },
+  // Alias for backward compatibility
+  BITS: {
     name: "BitsToken",
     address: "0x19e32912f9074F20F904dFe6007cA8e632F23348",
     abi: BitsABI,
@@ -112,3 +139,25 @@ export const getCellManagerContract = (signerOrProvider) =>
 
 export const getTelegramRewardContract = (signerOrProvider) => 
   getContractInstance('TELEGRAM_REWARD', signerOrProvider);
+
+/**
+ * Export pentru configurarea network-ului
+ */
+export const getActiveNetwork = () => NETWORK_CONFIG[ACTIVE_NETWORK];
+export const getActiveNetworkName = () => ACTIVE_NETWORK;
+export const isTestnet = () => ACTIVE_NETWORK === 'TESTNET';
+export const isMainnet = () => ACTIVE_NETWORK === 'MAINNET';
+
+/**
+ * Funcție helper pentru debugging contracte
+ */
+export const getContractAddresses = () => {
+  return Object.entries(CONTRACT_MAP).reduce((acc, [key, contract]) => {
+    acc[key] = contract.address;
+    return acc;
+  }, {});
+};
+
+// Debug logging (can be removed in production)
+// console.log("🌐 Active Network:", ACTIVE_NETWORK, NETWORK_CONFIG[ACTIVE_NETWORK]);
+// console.log("📝 Contract Addresses:", getContractAddresses());

@@ -9,6 +9,19 @@ const BitcoinAcademyHome = () => {
   const [currentPage, setCurrentPage] = useState(null);
   const [progress, setProgress] = useState(0);
 
+  // 🎯 GOOGLE ADS CONVERSION TRACKING - BITCOIN ACADEMY PAGE
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.gtag && !window.bitcoinAcademyTracked) {
+      window.bitcoinAcademyTracked = true;
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-952552862/jW1FCOKkrgQQnpubxgM',
+        value: 1.0,
+        currency: 'EUR'
+      });
+      console.log('🎯 Google Ads conversion tracked - Bitcoin Academy Visit');
+    }
+  }, []);
+
   const bitcoinFundamentals = [
     {
       id: 'satoshi-nakamoto',

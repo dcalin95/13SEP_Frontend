@@ -296,22 +296,22 @@ const PresaleHistory = () => {
                   <td><strong>${parseFloat(round.price || 0).toFixed(4)}</strong></td>
                   <td style={{ color: '#00d4ff', fontWeight: 'bold' }}>
                     {round.total_sold_bits > 0 
-                      ? `${(Math.round(round.total_sold_bits) / 1000).toFixed(0)}K`
+                      ? `${Math.round(round.total_sold_bits).toLocaleString()}`
                       : '0 (No Sales)'
                     }
                   </td>
                   <td style={{ color: '#00d4ff', fontWeight: 'bold' }}>
                     {round.total_raised_usd > 0 
-                      ? `$${(Math.round(round.total_raised_usd) / 1000).toFixed(0)}K`
+                      ? `$${Math.round(round.total_raised_usd).toLocaleString()}`
                       : '$0 (No Sales)'
                     }
                   </td>
                   <td style={{ color: '#00ff88' }}>
-                    {(Math.round(round.real_available || 0) / 1000).toFixed(0)}K
+                    {Math.round(round.real_available || 0).toLocaleString()}
                     <br/><small>(CellManager)</small>
                   </td>
                   <td style={{ color: '#ffaa00' }}>
-                    {(Math.round(round.theoretical_available || 0) / 1000).toFixed(0)}K
+                    {Math.round(round.theoretical_available || 0).toLocaleString()}
                     <br/><small>(Real - Simulated)</small>
                   </td>
                 </tr>

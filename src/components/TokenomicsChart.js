@@ -107,10 +107,10 @@ const TokenomicsChart = ({
         BitSwapDEX AI Tokenomics
       </Typography>
 
-      {/* info suplimentară deasupra graficului */}
+      {/* info suplimentară deasupra graficului (fără Initial Price) */}
       <Box sx={{ textAlign: "center", marginBottom: "1rem", opacity: 0.9 }}>
         <Typography variant="body1">
-          Total Supply: <b>{formatNumber(totalSupply)}</b> $BITS &nbsp;•&nbsp; Initial Price: <b>${initialPrice}</b> per $BITS &nbsp;•&nbsp; Coverage: <b>{totalPercent}%</b>
+          Total Supply: <b>{formatNumber(totalSupply)}</b> $BITS &nbsp;•&nbsp; Coverage: <b>{totalPercent}%</b>
         </Typography>
       </Box>
 
@@ -187,11 +187,10 @@ const TokenomicsChart = ({
             </PieChart>
           </ResponsiveContainer>
 
-          {/* centru – info supply / preț */}
+          {/* centru – înlocuit textul cu faviconul BITS */}
           <div className="energy-core">
-            <div className="energy-core-inner">
-              <div className="core-line1">{formatNumber(totalSupply)} BITS</div>
-              <div className="core-line2">@ ${initialPrice}</div>
+            <div className="energy-core-inner" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <img src="/favicon.ico" alt="$BITS" className="bits-core-icon" />
             </div>
           </div>
         </Box>

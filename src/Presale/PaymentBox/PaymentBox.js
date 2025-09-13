@@ -259,8 +259,8 @@ const PaymentBox = ({
             <span className="button-text">BUY  $BITS  NOW</span>
           </button>
           
-          {/* 🚨 Debug Info - ALWAYS SHOW for debugging */}
-          {(true) && (
+          {/* 🚨 Debug Info - SHOW ONLY when button is disabled */}
+          {(!paymentState.canProceed || !termsAccepted) && (
             <div className="button-debug-info" style={{
               fontSize: '0.8rem',
               color: '#ff6b6b',
@@ -311,7 +311,7 @@ const PaymentBox = ({
         <span>Bonus tokens can be claimed later via the Rewards Dashboard</span>
       </div>
 
-      {/* 🎯 Success Message */}
+      {/* 🎯 Success Message - CLEAN VERSION WITHOUT GOOGLE ADS */}
       {confirmedBits && (
         <div className="confirmed-success">
           ✅ You received <strong>{confirmedBits}</strong> $BITS successfully!

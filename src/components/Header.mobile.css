@@ -121,6 +121,7 @@
   }
   .mobile-nav-menu a[href="/staking"] i { color: #4dabf7 !important; font-size: 0.7rem; }
   
+  
   .mobile-nav-menu a[href="/paper-trading"] { 
     border-color: #ff6b35 !important; 
     color: #ff6b35 !important;
@@ -393,8 +394,8 @@
     line-height: 1.1;
     color: #00ffff;
     animation: glow 2.5s infinite ease-in-out;
-    flex: 1; /* Ocupă spațiul disponibil */
-    min-width: 0; /* Permite shrink */
+    flex: 0 0 auto; /* NU mai întinde containerul pe toată lățimea */
+    min-width: auto; /* dimensiune după conținut */
     white-space: nowrap; /* Nu permite wrap */
     overflow: hidden; /* Ascunde textul care nu încap */
     text-overflow: ellipsis; /* Adaugă ... pentru text trunchiat */
@@ -465,6 +466,7 @@
 
     .header-mini-timer {
       font-size: 0.6rem;
+      max-width: 70%; /* asigură că pe ecrane foarte mici nu depășește zona */
     }
 
     .header-mini-timer .timer-label {

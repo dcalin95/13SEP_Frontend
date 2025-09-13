@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import marketingService from '../services/marketingService';
 import './MarketingDashboard.css';
 
-const MarketingDashboard = () => {
-  const [isVisible, setIsVisible] = useState(false);
+const MarketingDashboard = ({ standalone = false }) => {
+  const [isVisible, setIsVisible] = useState(standalone); // Dacă e standalone, start ca vizibil
   const [marketingData, setMarketingData] = useState({});
   const [activeTab, setActiveTab] = useState('overview');
   const [loading, setLoading] = useState(false);

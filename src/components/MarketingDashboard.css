@@ -804,6 +804,29 @@
   box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
 }
 
+/* STANDALONE MODE - FULL SCREEN OVERRIDE */
+.dashboard-standalone-override .marketing-dashboard.ai-enhanced {
+  position: static !important;
+  bottom: auto !important;
+  right: auto !important;
+  left: auto !important;
+  top: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: 100vh !important;
+  max-height: 100vh !important;
+  border-radius: 0 !important;
+  border: none !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  z-index: 1 !important;
+  overflow: auto !important;
+}
+
+.dashboard-standalone-override .marketing-dashboard.ai-enhanced::before {
+  display: none !important;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .marketing-dashboard.ai-enhanced {

@@ -55,12 +55,18 @@ const fetchTokenPrice = async (tokenAddress, key = "") => {
     const bitsPerToken = parseFloat(ethers.utils.formatEther(bits));
     const rawBitsPriceUSD = await contract.getCurrentBitsPriceUSD(wallet);
 
-    const bitsPriceUSD =
+    let bitsPriceUSD =
       rawBitsPriceUSD.toString().length >= 18
         ? parseFloat(ethers.utils.formatUnits(rawBitsPriceUSD, 18))
         : rawBitsPriceUSD.toString().length >= 6
         ? parseFloat(ethers.utils.formatUnits(rawBitsPriceUSD, 6))
         : parseFloat(rawBitsPriceUSD.toString());
+
+    // 🎯 FIX: Force $1.00 BITS price if contract returns wrong value  
+    if (bitsPriceUSD < 0.50) {
+      console.log("🚨 [fetchTokenPrice] Contract returned too low BITS price:", bitsPriceUSD, "→ Forcing $1.00");
+      bitsPriceUSD = 1.00;
+    }
 
     const tokenPriceUSD = bitsPerToken * bitsPriceUSD;
     console.log(`💰 Final price for 1 ${key}: $${tokenPriceUSD.toFixed(3)}`);

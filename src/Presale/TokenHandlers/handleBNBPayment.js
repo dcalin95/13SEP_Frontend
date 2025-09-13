@@ -108,6 +108,25 @@ const handleBNBPayment = async ({
     const receipt = await tx.wait();
     console.log("✅ Payment confirmed. Transaction hash:", receipt.transactionHash);
 
+    // 🎁 Bonus Logic - Record investment in AdditionalReward.sol (CRITICAL FIX)
+    try {
+      const additionalReward = new ethers.Contract(
+        CONTRACTS.ADDITIONAL_REWARD.address,
+        CONTRACTS.ADDITIONAL_REWARD.abi,
+        signer
+      );
+
+      const usdInWei = ethers.utils.parseUnits(usdInvested.toString(), 18);
+      console.log("💵 USD Investment for bonus:", usdInWei.toString());
+
+      const bonusTx = await additionalReward.makeInvestment(usdInWei);
+      await bonusTx.wait();
+      console.log("🎁 Bonus investment recorded in AdditionalReward.sol!");
+    } catch (bonusErr) {
+      console.warn("⚠️ Bonus investment failed:", bonusErr.message);
+    }
+
+    // 💾 Backend Integration
     try {
       const transactionData = {
         wallet_address: walletAddress,

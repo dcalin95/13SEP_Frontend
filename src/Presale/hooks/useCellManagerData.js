@@ -178,13 +178,11 @@ export default function useCellManagerData() {
         });
         
         // Convert price from millicents to USD (divide by 1000)
-        const standardPrice = parseFloat((standardPriceRaw / 1000).toFixed(6));
+        let standardPrice = parseFloat((standardPriceRaw / 1000).toFixed(6));
         
-        // Provide fallback price if standardPrice is 0 or invalid
-        const fallbackPrice = 0.055; // Default BITS price in USD
-        
+        // Provide no hardcoded fallback; use standardPrice if positive
         // Try to get current BITS price USD with a dummy wallet address
-        let currentBitsPriceUSD = standardPrice > 0 ? standardPrice : fallbackPrice;
+        let currentBitsPriceUSD = standardPrice > 0 ? standardPrice : 0;
         try {
           const dummyWallet = "0x0000000000000000000000000000000000000001";
           const bitsPriceRaw = await contract.getCurrentBitsPriceUSD(dummyWallet);
@@ -194,24 +192,22 @@ export default function useCellManagerData() {
           console.log("- standardPriceRaw (from debugCellState):", standardPriceRaw.toString());
           console.log("- standardPrice (after /1000):", standardPrice);
           
-          // Check if bitsPriceRaw needs different conversion
-          const priceFromContract = parseFloat((bitsPriceRaw / 1000).toFixed(6));
-          console.log("- priceFromContract (after /1000):", priceFromContract);
+          // Interpret getCurrentBitsPriceUSD as 18-decimal USD
+          const priceFromContract = parseFloat(ethers.utils.formatUnits(bitsPriceRaw, 18));
+          console.log("- priceFromContract (1e18 → USD):", priceFromContract);
           
-          // Use standardPrice if getCurrentBitsPriceUSD returns wrong format
-          if (priceFromContract > 1) {
-            console.warn("⚠️ getCurrentBitsPriceUSD returned large value, using standardPrice instead");
-            currentBitsPriceUSD = standardPrice;
-          } else if (priceFromContract > 0) {
+          if (priceFromContract > 0) {
             currentBitsPriceUSD = priceFromContract;
-          } else {
-            console.warn("⚠️ getCurrentBitsPriceUSD returned 0 or negative, using standardPrice instead");
+          } else if (standardPrice > 0) {
             currentBitsPriceUSD = standardPrice;
           }
           
           console.log("💰 Final Current BITS Price USD:", currentBitsPriceUSD);
         } catch (priceErr) {
-          console.warn("⚠️ Could not get getCurrentBitsPriceUSD, using standardPrice:", priceErr.message);
+          console.warn("⚠️ Could not get getCurrentBitsPriceUSD, using standardPrice if available:", priceErr.message);
+          if (standardPrice > 0) {
+            currentBitsPriceUSD = standardPrice;
+          }
         }
         
         // Calculate available BITS (supply - sold)
@@ -428,14 +424,13 @@ export default function useCellManagerData() {
           
           // Set error state to show helpful message in UI
           const finalRoundNumber = parseInt(cellId.toString()) + 1;
-          const finalPrice = currentBitsPriceUSD || fallbackPrice;
+          const finalPrice = currentBitsPriceUSD || 0;
           
           console.log("🔧 [DEBUG] Setting error state with:");
           console.log("- cellId:", cellId.toString());
           console.log("- finalRoundNumber:", finalRoundNumber);
           console.log("- finalPrice:", finalPrice);
           console.log("- currentBitsPriceUSD:", currentBitsPriceUSD);
-          console.log("- fallbackPrice:", fallbackPrice);
           
           setData(prev => ({
             ...prev,
@@ -488,7 +483,7 @@ export default function useCellManagerData() {
           ...prev,
           loading: false,
           error: errorMessage,
-          currentPrice: 0.055, // Fallback price for AdminPanel
+          currentPrice: 0,
           roundNumber: null,
           availableBits: 0,
           soldBits: 0,

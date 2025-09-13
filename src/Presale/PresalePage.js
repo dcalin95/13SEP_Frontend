@@ -15,7 +15,7 @@ import AdjustFontButton from "../components/AdjustFontButton";
 const PaymentBox = lazy(() => import("./PaymentBox/PaymentBox"));
 const PresaleDashboard = lazy(() => import("./Timer/PresaleDashboard"));
 const ReferralRewardBox = lazy(() => import("./Rewards/ReferralRewardBox"));
-const BoosterSummary = lazy(() => import("./BoosterSummary/BoosterSummary"));
+const BITSAnalytics = lazy(() => import("./BITSAnalytics/BITSAnalytics"));
 
 // Loading component for Presale
 const PresaleLoading = () => (
@@ -117,10 +117,10 @@ const PresalePage = () => {
             </Suspense>
           </div>
 
-          {/* Booster Summary */}
+          {/* BITS Analytics */}
           <div className="grid-summary card-box">
             <Suspense fallback={<PresaleLoading />}>
-              <BoosterSummary />
+              <BITSAnalytics />
             </Suspense>
           </div>
 

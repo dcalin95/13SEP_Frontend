@@ -6,6 +6,8 @@
   border-radius: 15px;
   transition: all 0.3s ease;
   box-shadow: none; /* Eliminăm umbrele */
+  z-index: 10000 !important; /* PESTE overlay-urile FloatingMenu */
+  position: relative;
 }
 
 .sidebar ul {
@@ -180,7 +182,7 @@
     transform: translateX(-100%);
     height: calc(100vh - 80px);
     width: 280px; /* Lățime fixă pentru mobil */
-    z-index: 90;
+    z-index: 10000 !important; /* PESTE overlay-urile FloatingMenu */
     background: transparent; /* Eliminat fundalul pentru a nu acoperi conținutul */
     transition: transform 0.3s ease;
     overflow-y: auto; /* Permite scroll vertical */
@@ -263,7 +265,7 @@
     left: 0;
     transform: none;
     height: auto;
-    z-index: 1000; /* Z-index pentru a fi deasupra conținutului */
+    z-index: 10000 !important; /* PESTE overlay-urile FloatingMenu */
     background: transparent;
   }
 }

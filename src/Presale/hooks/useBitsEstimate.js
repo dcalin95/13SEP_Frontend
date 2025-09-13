@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { CONTRACTS } from "../../contract/contracts";
 import nodeABI from "../../abi/nodeABI";
+import { toBitsInteger, logBITSConversion } from "../../utils/bitsUtils";
 
 const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddress, pricePerBitsUSD }) => {
   const [bits, setBits] = useState(0);
@@ -36,31 +37,33 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
         // 🌟 Special handling for Fiat tokens - treat amount as USD directly
         if (selectedToken === "NOWPAY" || selectedToken === "TRANSAK" || selectedToken === "MOONPAY") {
           const usdCalculated = parseFloat(amountPay); // Amount is already in USD for fiat
-          const bitsPrice = pricePerBitsUSD || 0.04; // Use actual BITS price or fallback
-          const bitsAmount = usdCalculated / bitsPrice;
+          const bitsAmount = usdCalculated / 1.00; // FORCED TO EXACTLY $1.00 PER BITS
           
           // Simple bonus calculation for fiat payments
           const bonusPercent = usdCalculated >= 100 ? 10 : usdCalculated >= 50 ? 5 : 0;
-          const bonusAmountCalc = Math.floor(bitsAmount * (bonusPercent / 100));
-          const finalBits = bitsAmount + bonusAmountCalc;
+          // 🎯 FIX: Contract sends only INTEGER BITS
+          const baseBitsInteger = toBitsInteger(bitsAmount);
+          const bonusAmountCalc = toBitsInteger(baseBitsInteger * (bonusPercent / 100));
+          // finalBits not needed - UI calculates total from baseBits + bonus separately
 
-          console.log(`💳 [${selectedToken} FIAT Calculation]`);
+          console.log(`🎯 [${selectedToken} FIAT - FORCED $1.00]`);
           console.log(`Amount USD:`, amountPay);
           console.log("USD Value:", usdCalculated);
-          console.log("BITS Price USD:", bitsPrice);
+          console.log("FORCED BITS Price: $1.00 (ignoring contract)");
           console.log("BITS Amount:", bitsAmount);
           console.log("Bonus %:", bonusPercent);
-          console.log("Final BITS:", finalBits);
+          console.log("BASE BITS (no bonus):", baseBitsInteger);
+          console.log("UI will show total:", baseBitsInteger + bonusAmountCalc);
 
           // Validation
-          if (isNaN(finalBits) || finalBits <= 0) {
+          if (isNaN(baseBitsInteger) || baseBitsInteger <= 0) {
             console.error("❌ Invalid BITS calculation for fiat");
             setError("Invalid BITS calculation");
             console.groupEnd();
             return;
           }
 
-          setBits(finalBits);
+          setBits(baseBitsInteger); // BASE BITS ONLY - UI adds bonus separately!
           setUsdValue(usdCalculated);
           setBonus(bonusPercent);
           setBonusAmount(bonusAmountCalc);
@@ -71,25 +74,27 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
         // 🌟 Special handling for Solana tokens - direct calculation without BSC contracts
         else if (selectedToken === "SOL" || selectedToken === "USDC-Solana") {
           const usdCalculated = parseFloat(amountPay) * tokenPriceUSD;
-          const bitsPrice = pricePerBitsUSD || 0.04; // Use actual BITS price or fallback
-          const bitsAmount = usdCalculated / bitsPrice;
+          const bitsAmount = usdCalculated / 1.00; // FORCED TO EXACTLY $1.00 PER BITS
           
           // Simple bonus calculation for Solana tokens
           const bonusPercent = usdCalculated >= 100 ? 10 : usdCalculated >= 50 ? 5 : 0;
-          const bonusAmountCalc = Math.floor(bitsAmount * (bonusPercent / 100));
-          const finalBits = bitsAmount + bonusAmountCalc;
+          // 🎯 FIX: Contract sends only INTEGER BITS
+          const baseBitsInteger = toBitsInteger(bitsAmount);
+          const bonusAmountCalc = toBitsInteger(baseBitsInteger * (bonusPercent / 100));
+          // finalBits not needed - UI calculates total from baseBits + bonus separately
 
-          console.log(`🟣 [${selectedToken} BITS Calculation]`);
+          console.log(`🎯 [${selectedToken} - FORCED $1.00]`);
           console.log(`Amount ${selectedToken}:`, amountPay);
           console.log(`${selectedToken} Price USD:`, tokenPriceUSD);
           console.log("USD Value:", usdCalculated);
-          console.log("BITS Price USD:", bitsPrice);
+          console.log("FORCED BITS Price: $1.00 (ignoring contract)");
           console.log("BITS Amount:", bitsAmount);
           console.log("Bonus %:", bonusPercent);
-          console.log("Final BITS:", finalBits);
+          console.log("BASE BITS (no bonus):", baseBitsInteger);
+          console.log("UI will show total:", baseBitsInteger + bonusAmountCalc);
 
           // Validation
-          if (isNaN(finalBits) || finalBits <= 0) {
+          if (isNaN(baseBitsInteger) || baseBitsInteger <= 0) {
             console.error(`❌ Invalid BITS calculation for ${selectedToken}`);
             setError("Invalid BITS calculation");
             return;
@@ -97,7 +102,7 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
 
           setUsdValue(usdCalculated);
           setBonus(bonusPercent);
-          setBits(Math.floor(finalBits));
+          setBits(baseBitsInteger); // BASE BITS ONLY - UI adds bonus separately! // Already integer
           setBonusAmount(bonusAmountCalc);
           console.groupEnd();
           return;
@@ -178,7 +183,7 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
           console.log("🚨 [BNB] Token price USD:", tokenPriceUSD);
           console.log("🚨 [BNB] Expected USD value:", parseFloat(amountPay) * tokenPriceUSD);
           console.log("🚨 [BNB] BITS price from hook:", pricePerBitsUSD);
-          console.log("🚨 [BNB] Expected BITS (simple calc):", (parseFloat(amountPay) * tokenPriceUSD) / (pricePerBitsUSD || 0.011));
+          console.log("🚨 [BNB] Expected BITS (simple calc):", (parseFloat(amountPay) * tokenPriceUSD) / (pricePerBitsUSD || 1.00));
           
           console.log("🟡 [BNB] Calling cellManager.getExpectedBITSFromBNB...");
           console.log("- cellId:", cellId.toString());
@@ -191,24 +196,18 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
           // 🎯 FIX: Use correct calculation instead of non-existent function
           console.log("🔧 [FIX] Using correct calculation instead of getExpectedBITSFromBNB");
           
-          // Calculate using the correct price from CellManager
-          const usdCalculated = parseFloat(amountPay) * tokenPriceUSD;
-          const correctBitsAmount = usdCalculated / (pricePerBitsUSD || 0.011);
+          // 🎯 FORCE EXACT CALCULATION: USD ÷ $1.00 BITS
+          usdCalculated = parseFloat(amountPay) * tokenPriceUSD;
+          bitsAmount = usdCalculated / 1.00; // FORCED TO EXACTLY $1.00 PER BITS
           
-          console.log("🔧 [CORRECT CALC] USD value:", usdCalculated);
-          console.log("🔧 [CORRECT CALC] BITS price:", pricePerBitsUSD || 0.011);
-          console.log("🔧 [CORRECT CALC] BITS amount:", correctBitsAmount);
-          
-          // Convert to wei format for consistency
-          const rawBits = ethers.utils.parseUnits(correctBitsAmount.toString(), 18);
-          console.log("🔧 [CORRECT CALC] Raw BITS (wei):", rawBits.toString());
-          
-          console.log("🟡 [BNB] Raw BITS result (wei):", rawBits.toString());
-          bitsAmount = parseFloat(ethers.utils.formatUnits(rawBits, 18));
-          console.log("🟡 [BNB] Formatted BITS amount:", bitsAmount);
+          console.log("🎯 [FORCED CALC] USD value:", usdCalculated);
+          console.log("🎯 [FORCED CALC] FORCED BITS price: $1.00 (ignoring contract)");
+          console.log("🎯 [FORCED CALC] Contract price was:", pricePerBitsUSD);
+          console.log("🎯 [FORCED CALC] BITS amount (before floor):", bitsAmount);
+          console.log("🎯 [FORCED CALC] BITS amount (after floor):", toBitsInteger(bitsAmount));
           
           // 🚨 COMPARISON WITH EXPECTED
-          const expectedBits = (parseFloat(amountPay) * tokenPriceUSD) / (pricePerBitsUSD || 0.011);
+          const expectedBits = (parseFloat(amountPay) * tokenPriceUSD) / (pricePerBitsUSD || 1.00);
           console.log("🚨 [COMPARISON]:");
           console.log("- Contract returned:", bitsAmount, "BITS");
           console.log("- Expected calculation:", expectedBits, "BITS");
@@ -218,19 +217,18 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
           // Check what price the contract is actually using
           const actualPricePerBits = (parseFloat(amountPay) * tokenPriceUSD) / bitsAmount;
           console.log("🚨 [ACTUAL PRICE] Contract is using:", actualPricePerBits.toFixed(6), "USD per BITS");
-          console.log("🚨 [PRICE DIFF] vs displayed $0.011:", ((actualPricePerBits / 0.011) * 100).toFixed(1), "% higher");
+          console.log("🚨 [PRICE DIFF] vs displayed $1.00:", ((actualPricePerBits / 1.00) * 100).toFixed(1), "% of expected");
         } else {
           console.log("🔧 [OTHER TOKENS] Using correct calculation for", selectedToken);
           
-          // Calculate USD value
+          // 🎯 FORCE EXACT CALCULATION: USD ÷ $1.00 BITS
           usdCalculated = parseFloat(amountPay) * tokenPriceUSD;
+          bitsAmount = usdCalculated / 1.00; // FORCED TO EXACTLY $1.00 PER BITS
           
-          // Calculate BITS using correct price
-          bitsAmount = usdCalculated / (pricePerBitsUSD || 0.011);
-          
-          console.log("🔧 [OTHER TOKENS] USD calculated:", usdCalculated);
-          console.log("🔧 [OTHER TOKENS] BITS price:", pricePerBitsUSD || 0.011);
-          console.log("🔧 [OTHER TOKENS] BITS amount:", bitsAmount);
+          console.log("🎯 [OTHER TOKENS] USD calculated:", usdCalculated);
+          console.log("🎯 [OTHER TOKENS] FORCED BITS price: $1.00 (ignoring contract)");
+          console.log("🎯 [OTHER TOKENS] Contract price was:", pricePerBitsUSD);
+          console.log("🎯 [OTHER TOKENS] BITS amount:", bitsAmount);
         }
 
         console.log("🎁 [BONUS DEBUG] === BONUS CALCULATION ANALYSIS ===");
@@ -262,18 +260,21 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
           console.log("- Is USD >= minimum?", usdCalculated >= Math.min(...rewardTiers.map(t => t.limit)));
         }
 
-        const rawBonusAmount = bitsAmount * (bonusPercent / 100);
-        const bonusAmountCalc = Math.floor(rawBonusAmount);
-        const finalBits = bitsAmount + bonusAmountCalc;
+        // 🎯 FIX: Contract sends only INTEGER BITS, no fractions  
+        const baseBitsInteger = toBitsInteger(bitsAmount); // Base BITS as integer
+        const rawBonusAmount = baseBitsInteger * (bonusPercent / 100);
+        const bonusAmountCalc = toBitsInteger(rawBonusAmount); // Bonus as integer
+        // 🚨 FIX: setBits should only contain BASE bits, bonus added separately in UI
         
         console.log("🟡 [FINAL] BITS amount:", bitsAmount);
+        console.log("🟡 [FINAL] BASE BITS (without bonus):", baseBitsInteger);
         console.log("🟡 [FINAL] Bonus amount calc:", bonusAmountCalc);
-        console.log("🟡 [FINAL] Final BITS:", finalBits);
+        console.log("🟡 [FINAL] UI will show:", baseBitsInteger, "+ bonus", bonusAmountCalc, "= total", baseBitsInteger + bonusAmountCalc);
 
         setUsdValue(usdCalculated);
         setBonus(bonusPercent);
-        setBits(Math.floor(finalBits));
-        setBonusAmount(bonusAmountCalc);
+        setBits(baseBitsInteger); // BASE BITS ONLY - UI adds bonus separately!
+        setBonusAmount(bonusAmountCalc); // Bonus amount separately
       } catch (err) {
         console.error("❌ [useBitsEstimate] BLOCKCHAIN ERROR Details:");
         console.error("- Error message:", err.message || err);
@@ -292,24 +293,26 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
         // 🚨 FALLBACK CALCULATION - Simple USD-based calculation
         try {
           const usdCalculated = parseFloat(amountPay) * tokenPriceUSD;
-          const bitsPrice = pricePerBitsUSD || 0.04; // Fallback BITS price
-          const bitsAmount = usdCalculated / bitsPrice;
+          const bitsAmount = usdCalculated / 1.00; // FORCED TO EXACTLY $1.00 PER BITS
           
           // Simple bonus calculation
           const bonusPercent = usdCalculated >= 100 ? 10 : usdCalculated >= 50 ? 5 : 0;
-          const bonusAmountCalc = Math.floor(bitsAmount * (bonusPercent / 100));
-          const finalBits = bitsAmount + bonusAmountCalc;
+          // 🎯 FIX: Contract sends only INTEGER BITS
+          const baseBitsInteger = toBitsInteger(bitsAmount);
+          const bonusAmountCalc = toBitsInteger(baseBitsInteger * (bonusPercent / 100));
+          // finalBits not needed - UI calculates total from baseBits + bonus separately
 
-          console.log(`🔄 [FALLBACK] ${selectedToken} Calculation:`);
+          console.log(`🎯 [FALLBACK ${selectedToken} - FORCED $1.00]:`);
           console.log("- Amount:", amountPay);
           console.log("- Token Price USD:", tokenPriceUSD);
           console.log("- USD Value:", usdCalculated);
-          console.log("- BITS Price:", bitsPrice);
+          console.log("- FORCED BITS Price: $1.00 (ignoring contract)");
           console.log("- BITS Amount:", bitsAmount);
           console.log("- Bonus %:", bonusPercent);
-          console.log("- Final BITS:", finalBits);
+          console.log("- BASE BITS (no bonus):", baseBitsInteger);
+          console.log("- UI will show total:", baseBitsInteger + bonusAmountCalc);
 
-          if (isNaN(finalBits) || finalBits <= 0) {
+          if (isNaN(baseBitsInteger) || baseBitsInteger <= 0) {
             console.error("❌ Fallback calculation also failed");
             setError("Failed to calculate BITS");
             setBits(0);
@@ -321,7 +324,7 @@ const useBitsEstimate = ({ amountPay, selectedToken, tokenPriceUSD, walletAddres
 
           setUsdValue(usdCalculated);
           setBonus(bonusPercent);
-          setBits(Math.floor(finalBits));
+          setBits(baseBitsInteger); // BASE BITS ONLY - UI adds bonus separately! // Already integer
           setBonusAmount(bonusAmountCalc);
           setError(null); // Clear error since fallback worked
           

@@ -1,112 +1,285 @@
+/* 🎨 COMPACT STAKING CARD */
 .stakingCard {
-  background: rgba(0, 0, 0, 0.7);
-  padding: 2.5rem;
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-  max-width: 500px;
-  width: 100%;
-  text-align: center;
-  margin: 20px auto;
-  transition: all 0.4s ease-in-out;
+  background: linear-gradient(135deg, rgba(0, 255, 200, 0.1), rgba(0, 170, 255, 0.1));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 0.7rem;
+  margin: 0.5rem;
+  max-width: 320px;
+  min-width: 300px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.stakingCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #00ff88, #00aaff, #ff00aa);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
 }
 
 .stakingCard:hover {
-  box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
-  transform: translateY(-5px) scale(1.02);
+  transform: translateY(-4px);
+  border-color: rgba(0, 255, 200, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 255, 200, 0.3);
 }
 
-/* Cooldown progress SVG */
-.cooldownProgress {
-  margin: 20px auto;
-  width: 120px;
-  height: 120px;
-  position: relative;
+/* 🚀 HERO SECTION */
+.heroSection {
+  text-align: center;
+  margin-bottom: 0.5rem;
 }
 
-.cooldownProgress svg {
-  transform: rotate(-90deg);
+.stakeTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
 }
 
-.cooldownProgress text {
-  transform: rotate(90deg);
-  font-size: 14px;
-  fill: white;
+.stakeDate {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
 }
 
-/* Detalii staking */
-.stakingDetails {
-  margin-top: 20px;
+.dateLabel {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dateValue {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(0, 255, 200, 0.9);
+  text-shadow: 0 0 8px rgba(0, 255, 200, 0.3);
+}
+
+.timeValue {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+}
+
+.statusIndicator {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.statusLocked {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+}
+
+.statusReady {
+  color: #00ff88;
+  background: rgba(0, 255, 136, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+}
+
+.statusClaimed {
+  color: #ffd700;
+  background: rgba(255, 215, 0, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+}
+
+/* 💰 MAIN AMOUNT */
+.mainAmount {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 0.3rem 0;
+}
+
+.amountValue {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: rgba(0, 255, 200, 0.9);
+  text-shadow: 0 0 10px rgba(0, 255, 200, 0.5);
+}
+
+.amountUnit {
   font-size: 1rem;
-  color: #eee;
-  text-align: left;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.stakingDetails p {
-  margin: 0.5rem 0;
+/* 📈 APR HIGHLIGHT */
+.aprHighlight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  background: rgba(255, 200, 0, 0.1);
+  border: 1px solid rgba(255, 200, 0, 0.3);
+  border-radius: 15px;
+  padding: 0.3rem 0.8rem;
+  margin: 0.3rem auto;
+  width: fit-content;
 }
 
-/* Butonul de Claim */
+.aprLabel {
+  font-size: 0.75rem;
+  color: rgba(255, 200, 0, 0.8);
+  font-weight: 500;
+}
+
+.aprValue {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffc800;
+  text-shadow: 0 0 8px rgba(255, 200, 0, 0.6);
+}
+
+.aprUnit {
+  font-size: 0.8rem;
+  color: rgba(255, 200, 0, 0.7);
+  font-weight: 500;
+}
+
+/* 📊 DETAILS SECTION */
+.detailsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.rewardBox {
+  background: rgba(0, 255, 100, 0.1);
+  border: 1px solid rgba(0, 255, 100, 0.2);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.rewardLabel {
+  font-size: 0.8rem;
+  color: rgba(0, 255, 100, 0.8);
+  font-weight: 500;
+}
+
+.rewardValue {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #00ff64;
+  text-shadow: 0 0 6px rgba(0, 255, 100, 0.5);
+}
+
+.countdownBox {
+  background: rgba(255, 100, 100, 0.1);
+  border: 1px solid rgba(255, 100, 100, 0.2);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.countdownLabel {
+  font-size: 0.8rem;
+  color: rgba(255, 100, 100, 0.8);
+  font-weight: 500;
+}
+
+.countdownValue {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ff6464;
+}
+
+/* 🎯 ACTION SECTION */
+.actionSection {
+  margin-top: auto;
+}
+
 .claimButton {
-  background: linear-gradient(90deg, #00ffff, #ff00ff);
+  background: linear-gradient(135deg, #00ff88, #00aaff);
   border: none;
-  border-radius: 10px;
-  padding: 12px 24px;
-  margin-top: 20px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: black;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
   cursor: pointer;
+  width: 100%;
   transition: all 0.3s ease;
-  box-shadow: 0 0 12px rgba(0, 255, 255, 0.7);
-  animation: pulseButton 1.5s infinite alternate;
+  box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
 }
 
 .claimButton:hover {
-  background: linear-gradient(90deg, #00ff99, #ff00ff);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 1);
+  background: linear-gradient(135deg, #00ffaa, #00ccff);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4);
 }
 
 .claimButton:disabled {
-  background: gray;
-  color: #ccc;
+  background: rgba(100, 100, 100, 0.6);
+  color: rgba(200, 200, 200, 0.7);
   cursor: not-allowed;
+  transform: none;
   box-shadow: none;
-  animation: none;
 }
 
-/* Feedback text */
-.feedback {
-  margin-top: 12px;
-  font-size: 0.95rem;
-  color: #00ff99;
+/* 💬 FEEDBACK SECTION */
+.feedbackSection {
+  margin-top: 1rem;
+  padding: 0.6rem;
+  background: rgba(0, 255, 136, 0.1);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: #00ff88;
   text-align: center;
-  animation: pulseText 1s infinite alternate;
+  border: 1px solid rgba(0, 255, 136, 0.2);
 }
 
-/* Animations */
-@keyframes pulseText {
-  from { opacity: 1; }
-  to { opacity: 0.6; }
-}
-
-@keyframes pulseButton {
-  from { transform: scale(1); }
-  to { transform: scale(1.05); }
-}
-
-/* Responsive pentru telefoane */
-@media (max-width: 600px) {
+/* 📱 RESPONSIVE */
+@media (max-width: 768px) {
   .stakingCard {
-    padding: 1.5rem;
-    max-width: 90%;
+    max-width: 280px;
+    min-width: 260px;
+    margin: 0.5rem;
+    padding: 1.2rem;
   }
-
-  .stakingDetails {
-    font-size: 0.95rem;
+  
+  .amountValue {
+    font-size: 1.6rem;
   }
-
-  .claimButton {
-    padding: 10px 20px;
+  
+  .aprValue {
     font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stakingCard {
+    max-width: calc(100% - 1rem);
+    min-width: unset;
+    margin: 0.5rem;
   }
 }

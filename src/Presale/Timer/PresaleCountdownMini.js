@@ -39,10 +39,13 @@ const PresaleCountdownMini = () => {
 
   return (
     <div className={styles.miniTimer} translate="no">
-      <span translate="no">{timeLeft.days}d</span> :
-      <span translate="no">{timeLeft.hours}h</span> :
-      <span translate="no">{timeLeft.minutes}m</span> :
-      <span translate="no">{timeLeft.seconds}s</span>
+      <span className={styles.block} translate="no">{timeLeft.days}d</span>
+      <span className={styles.sep} translate="no">:</span>
+      <span className={styles.block} translate="no">{timeLeft.hours}h</span>
+      <span className={styles.sep} translate="no">:</span>
+      <span className={styles.block} translate="no">{timeLeft.minutes}m</span>
+      <span className={styles.sep} translate="no">:</span>
+      <span className={styles.block} translate="no">{timeLeft.seconds}s</span>
     </div>
   );
 };

@@ -12,15 +12,16 @@ export const useStakingData = (signer, userAddress) => {
     console.log("- signer:", !!signer);
     console.log("- userAddress:", userAddress);
     
-    if (!signer || !userAddress) {
-      console.log("❌ useStakingData: Missing signer or userAddress, returning early");
+    if (!userAddress) {
+      console.log("❌ useStakingData: Missing userAddress, returning early");
       return;
     }
 
     console.log("✅ useStakingData: Starting fetchStakes");
     const fetchStakes = async () => {
       try {
-        const contract = getStakingContract(signer);
+        // Always use robust read-only provider for stable reads (avoid MetaMask/Firefox RPC issues)
+        const contract = await getStakingContract(null, true);
         const rawStakes = await contract.getStakeByUser(userAddress);
         const PRECISION = await contract.PRECISION();
         const SECONDS_IN_YEAR = await contract.SECONDS_IN_YEAR();

@@ -21,6 +21,11 @@ export default WalletContext;
 
 export const WalletProvider = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState(null);
+  
+  // DEBUG: Monitor wallet address changes
+  useEffect(() => {
+    console.log("🚨 [WalletContext] WALLET ADDRESS CHANGED:", walletAddress);
+  }, [walletAddress]);
   const [network, setNetwork] = useState(null);
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null); // ✅ adăugat
@@ -65,12 +70,12 @@ export const WalletProvider = ({ children }) => {
 
   const loginWithWeb3Auth = async () => {
     if (!web3authInstance) {
-      web3authInstance = new Web3Auth({
+        web3authInstance = new Web3Auth({
         clientId: "BES8kujJeBgfBvVa1a9TLtNGuKUqVFTIXGfgOlEyB4sJv51AxncNougD4ImDK6qYVWVjGYtrRBO5MKteOzmdA8",
         chainConfig: {
           chainNamespace: CHAIN_NAMESPACES.EIP155,
           chainId: "0x61", // BSC Testnet
-          rpcTarget: "https://bsc-dataseed.binance.org/",
+          rpcTarget: "https://data-seed-prebsc-1-s1.binance.org:8545/", // BSC TESTNET endpoint
         },
       });
       await web3authInstance.initModal();
@@ -112,17 +117,27 @@ export const WalletProvider = ({ children }) => {
 
   // Separate function for actual wallet connection
   const performWalletConnection = async (type = WALLET_TYPES.EVM) => {
+    console.log("🚨 [WalletContext] performWalletConnection START:", type);
     setIsLoading(true);
     setErrorMessage("");
     
     try {
       if (type === WALLET_TYPES.EVM) {
-        if (!window.ethereum) throw new Error("Please install MetaMask.");
+        console.log("🚨 [WalletContext] Starting EVM connection...");
+        if (!window.ethereum) {
+          console.error("❌ [WalletContext] window.ethereum not found!");
+          throw new Error("Please install MetaMask.");
+        }
+        console.log("🚨 [WalletContext] window.ethereum found, creating provider...");
         const web3Provider = createConfiguredProvider(window.ethereum);
+        console.log("🚨 [WalletContext] Provider created, requesting accounts...");
         const accounts = await web3Provider.send("eth_requestAccounts", []);
+        console.log("🚨 [WalletContext] Accounts received:", accounts);
         const network = await web3Provider.getNetwork();
+        console.log("🚨 [WalletContext] Network info:", network);
         const address = accounts[0];
 
+        console.log("🚨 [WalletContext] Setting wallet state...");
         setWalletAddress(address);
         setProvider(web3Provider);
         setSigner(web3Provider.getSigner()); // ✅ important!
@@ -131,7 +146,9 @@ export const WalletProvider = ({ children }) => {
         setWalletIcon(metamaskIcon);
         setWalletName("MetaMask");
 
+        console.log("🚨 [WalletContext] Fetching balances...");
         await fetchBalances(web3Provider, address);
+        console.log("🚨 [WalletContext] EVM connection SUCCESS!");
       }
 
       else if (type === WALLET_TYPES.SOLANA) {
@@ -234,9 +251,11 @@ export const WalletProvider = ({ children }) => {
       }
 
       else {
+        console.error("❌ [WalletContext] Unsupported wallet type:", type);
         throw new Error("Unsupported wallet type.");
       }
 
+      console.log("🚨 [WalletContext] Connection completed successfully!");
       setIsLoading(false);
     } catch (error) {
       console.error("⚠️ Wallet connect error:", error.message);
@@ -311,10 +330,17 @@ export const WalletProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    console.log("🚨 [WalletContext] MOUNT - checking saved wallet...");
     const savedAddress = localStorage.getItem("walletAddress");
     const savedType = localStorage.getItem("walletType");
+    console.log("🚨 [WalletContext] SAVED DATA:", { savedAddress, savedType });
+    console.log("🚨 [WalletContext] window.ethereum available:", !!window.ethereum);
+    console.log("🚨 [WalletContext] MetaMask detected:", window.ethereum?.isMetaMask);
     if (savedAddress && savedType) {
+      console.log("🚨 [WalletContext] CONNECTING TO SAVED WALLET:", savedType);
       connectWallet(savedType);
+    } else {
+      console.log("🚨 [WalletContext] NO SAVED WALLET FOUND");
     }
   }, []);
 

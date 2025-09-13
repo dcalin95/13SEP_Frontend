@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import STXPaperTrade from './STXPaperTrade';
 import TokenPaperTrade from './TokenPaperTrade';
@@ -7,6 +7,19 @@ import './PaperTradingPage.css';
 
 const PaperTradingPage = () => {
   const [activeTab, setActiveTab] = useState('bits-simulator');
+
+  // 🎯 GOOGLE ADS CONVERSION TRACKING - PAPER TRADING PAGE
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.gtag && !window.paperTradingTracked) {
+      window.paperTradingTracked = true;
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-952552862/jW1FCOKkrgQQnpubxgM',
+        value: 1.0,
+        currency: 'EUR'
+      });
+      console.log('🎯 Google Ads conversion tracked - Paper Trading Visit');
+    }
+  }, []);
 
   const handleTabChange = (tabName) => {
     console.log('Changing tab to:', tabName);

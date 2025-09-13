@@ -2402,3 +2402,249 @@
   color: #9333ea;
   font-weight: 700;
 }
+
+/* ==============================
+   🔗 BLOCKCHAIN NFT SECTION STYLES
+   ============================== */
+
+/* Blockchain NFT Section Styles */
+.blockchain-nft-section {
+  margin-top: 30px;
+  padding: 25px;
+  background: linear-gradient(135deg, rgba(0, 163, 255, 0.08), rgba(255, 51, 102, 0.08));
+  border-radius: 15px;
+  border: 1px solid rgba(0, 163, 255, 0.2);
+}
+
+.blockchain-divider {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 163, 255, 0.5), transparent);
+}
+
+.divider-text {
+  margin: 0 20px;
+  color: #00a3ff;
+  font-weight: bold;
+  font-size: 1.1em;
+  white-space: nowrap;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.mint-nft-section {
+  text-align: center;
+}
+
+.mint-info {
+  margin-bottom: 25px;
+}
+
+.mint-info h4 {
+  margin: 0 0 15px 0;
+  color: #00a3ff;
+  font-size: 1.3em;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.mint-info p {
+  color: #ccc;
+  margin-bottom: 15px;
+  line-height: 1.4;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.mint-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+  text-align: left;
+}
+
+.mint-info li {
+  color: #ccc;
+  margin: 8px 0;
+  padding-left: 0;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.mint-nft-btn {
+  background: linear-gradient(135deg, #00a3ff, #0080ff);
+  border: none;
+  border-radius: 12px;
+  padding: 15px 30px;
+  color: white;
+  font-weight: bold;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(0, 163, 255, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.mint-nft-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0080ff, #00a3ff);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 163, 255, 0.4);
+}
+
+.mint-nft-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.wallet-warning {
+  margin-top: 15px;
+  color: #ffa500;
+  font-style: italic;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.minted-nft-section {
+  text-align: center;
+}
+
+.minted-success {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 200, 100, 0.1));
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.minted-success h4 {
+  margin: 0 0 10px 0;
+  color: #00ff88;
+  font-size: 1.2em;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.minted-success p {
+  margin: 5px 0;
+  color: #ccc;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  filter: contrast(2.2) brightness(1.3);
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.minted-success strong {
+  color: #00ff88;
+}
+
+.nft-management-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.transfer-nft-btn, .view-nft-btn {
+  background: linear-gradient(135deg, #ff3366, #ff1a4d);
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 51, 102, 0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  
+  /* 🔥 LASER-SHARP RENDERING */
+  -webkit-font-smoothing: never;
+  text-rendering: geometricPrecision;
+}
+
+.view-nft-btn {
+  background: linear-gradient(135deg, #666, #888);
+  box-shadow: 0 4px 15px rgba(102, 102, 102, 0.3);
+}
+
+.transfer-nft-btn:hover {
+  background: linear-gradient(135deg, #ff1a4d, #ff3366);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 51, 102, 0.4);
+}
+
+.view-nft-btn:hover {
+  background: linear-gradient(135deg, #888, #666);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 102, 102, 0.4);
+}
+
+/* Responsive Design for NFT Section */
+@media (max-width: 600px) {
+  .blockchain-nft-section {
+    padding: 20px;
+  }
+  
+  .divider-text {
+    font-size: 0.95em;
+    margin: 0 15px;
+  }
+  
+  .mint-nft-btn {
+    padding: 12px 20px;
+    font-size: 1em;
+  }
+  
+  .nft-management-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .transfer-nft-btn, .view-nft-btn {
+    width: 200px;
+    justify-content: center;
+  }
+}
